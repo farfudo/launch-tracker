@@ -28,4 +28,6 @@ button { background: #6ee7d8; border: 0; color: #06201f; cursor: pointer; font-w
 .launch-details { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 .launch-details div { background: #0e192b; border: 1px solid #264565; border-radius: .75rem; padding: 1rem; }
 .launch-details dd { font-size: 1.1rem; margin: .4rem 0 0; }
+.source-note { color: #b7c4d6; margin-top: 1.5rem; }
+.source-note a { color: #6ee7d8; font-weight: 700; }
 @media (max-width: 760px) { .filters { grid-template-columns: 1fr; } }

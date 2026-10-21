@@ -15,4 +15,5 @@ class Launch(Base):
     net: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
     agency: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
     vehicle: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
+    source_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     source_updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

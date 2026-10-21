@@ -28,7 +28,9 @@ def test_launches_exposes_the_cached_contract(client, db_session) -> None:
 
     assert response.status_code == 200
     launch = response.json()[0]
-    assert {"id", "name", "status", "net", "agency", "vehicle", "source_updated_at"} <= launch.keys()
+    assert {
+        "id", "name", "status", "net", "agency", "vehicle", "source_url", "source_updated_at"
+    } <= launch.keys()
 
 
 def test_launches_can_be_searched_filtered_and_opened(client, db_session) -> None:

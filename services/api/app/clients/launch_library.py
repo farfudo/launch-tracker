@@ -18,6 +18,7 @@ class LaunchSummary(BaseModel):
     net: datetime
     agency: str | None = None
     vehicle: str | None = None
+    source_url: str | None = None
 
 
 def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
@@ -33,6 +34,7 @@ def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
         net=payload["net"],
         agency=provider.get("name"),
         vehicle=configuration.get("full_name"),
+        source_url=payload.get("url"),
     )
 
 

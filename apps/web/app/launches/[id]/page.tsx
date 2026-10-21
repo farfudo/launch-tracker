@@ -30,6 +30,10 @@ export default async function LaunchDetail({ params }: { params: RouteParams }) 
             <div><dt>Estado</dt><dd>{formatLaunchStatus(launch.status)}</dd></div>
             <div><dt>Dados atualizados</dt><dd>{formatLaunchDate(launch.source_updated_at)}</dd></div>
           </dl>
+          <p className="source-note">
+            Dados fornecidos pela Launch Library 2.
+            {launch.source_url ? <> <a href={launch.source_url} rel="noreferrer" target="_blank">Ver registo na fonte</a></> : null}
+          </p>
         </section>
       </main>
     );

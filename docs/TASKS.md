@@ -20,8 +20,9 @@
 - [x] Criar lista/calendário de próximos lançamentos.
 - [x] Adicionar pesquisa e filtros por agência e veículo.
 - [x] Criar página de detalhe com os dados normalizados disponíveis.
-- [ ] Guardar e apresentar fontes oficiais na página de detalhe.
-- [ ] Adicionar estados de carregamento, vazio e erro.
+- [x] Apresentar uma ligação transparente para a fonte de dados na página de detalhe.
+- [x] Adicionar estados de carregamento, vazio e erro.
+- [ ] Guardar e apresentar fontes oficiais, quando a fonte externa as disponibilizar.
 
 ## Incremento 4 — Confiança e lançamento
 

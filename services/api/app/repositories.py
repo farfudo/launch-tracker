@@ -70,6 +70,7 @@ def upsert_launches(db: Session, launches: list[LaunchSummary]) -> int:
         launch.net = summary.net
         launch.agency = summary.agency
         launch.vehicle = summary.vehicle
+        launch.source_url = summary.source_url
         launch.source_updated_at = datetime.now(UTC)
 
     db.commit()

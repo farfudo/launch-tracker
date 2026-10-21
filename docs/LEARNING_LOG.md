@@ -47,3 +47,11 @@ Os filtros são parâmetros na URL (`q`, `agency`, `vehicle`) enviados à API. A
 - Indicação da hora de atualização da cache.
 
 As fontes oficiais exigem que passemos a guardar URLs fornecidos pela fonte externa. Essa extensão será a próxima pequena migração do modelo de dados, em vez de inventar ligações que possam não ser oficiais.
+
+## Etapa 6 — Transparência da fonte e estados da interface
+
+### Decisão
+
+A Launch Library expõe uma URL canónica para cada lançamento, mas não garante uma URL oficial da agência. Guardamos essa URL como referência da fonte dos dados e identificamo-la explicitamente como tal na interface. Uma fonte oficial só será apresentada quando for disponibilizada e validada.
+
+Esta alteração exige a migração `20261021_02`: acrescenta a coluna opcional `source_url` sem afetar os registos existentes. A interface ganha ainda ecrãs específicos durante o carregamento, em caso de erro e quando uma pesquisa não encontra resultados.

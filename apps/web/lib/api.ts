@@ -5,6 +5,7 @@ export type Launch = {
   net: string;
   agency: string | null;
   vehicle: string | null;
+  source_url: string | null;
   source_updated_at: string;
 };
 

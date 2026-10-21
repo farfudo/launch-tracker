@@ -12,6 +12,7 @@ class LaunchResponse(BaseModel):
     net: datetime
     agency: str | None
     vehicle: str | None
+    source_url: str | None
     source_updated_at: datetime
 
 
