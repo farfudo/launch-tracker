@@ -23,6 +23,8 @@ O contentor expõe a base de dados em `localhost:5433`. A porta normal `5432` j�
 
 Cada camada tem uma responsabilidade única: o cliente externo obtém dados, o repositório persiste-os e os endpoints expõem-nos. Isto torna os testes e futuras alterações — como trocar de fornecedor ou acrescentar filtros — mais seguros.
 
-### Próxima melhoria desta etapa
+### Migrações versionadas
 
-O comando `python -m app.initialize_db` cria a tabela inicial no ambiente de desenvolvimento. Depois, a sincronização preenche a cache através de `POST /api/v1/launches/sync`. Quando o modelo estabilizar, substituiremos este inicializador por migrações versionadas.
+O estado da base de dados deixa de ser criado por código ao iniciar. A migração `20261021_01` descreve a estrutura inicial da tabela. O comando `alembic upgrade head` aplica todas as mudanças pendentes, enquanto `alembic downgrade -1` permite reverter a última alteração durante desenvolvimento.
+
+Como esta base de dados já foi criada no passo anterior, vamos marcá-la como estando nesta versão sem apagar os dados. Este processo chama-se *stamp* e é usado ao introduzir migrações num projeto existente.

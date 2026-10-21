@@ -10,7 +10,7 @@
 ## Incremento 2 — Dados de lançamentos
 
 - [x] Definir o modelo inicial de dados PostgreSQL para lançamentos.
-- [ ] Substituir o inicializador local por migrações versionadas.
+- [x] Substituir o inicializador local por migrações versionadas.
 - [x] Criar cliente Launch Library 2 com tratamento de falhas e limites.
 - [x] Implementar sincronização manual e cache PostgreSQL.
 - [x] Substituir dados de demonstração por dados persistidos.

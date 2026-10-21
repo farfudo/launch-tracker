@@ -29,7 +29,7 @@ cd services/api
 python -m venv .venv
 source .venv/bin/activate
 pip install -e '.[dev]'
-python -m app.initialize_db
+alembic upgrade head
 uvicorn app.main:app --reload --port 8000
 ```
 
