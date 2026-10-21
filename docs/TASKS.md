@@ -27,7 +27,7 @@
 ## Incremento 4 — Confiança e lançamento
 
 - [ ] Adicionar testes de interface e integração.
-- [ ] Configurar CI.
+- [x] Configurar CI no GitHub Actions.
 - [ ] Preparar ambiente de demonstração.
 
 ## Depois do MVP

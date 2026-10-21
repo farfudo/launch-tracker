@@ -55,3 +55,15 @@ As fontes oficiais exigem que passemos a guardar URLs fornecidos pela fonte exte
 A Launch Library expõe uma URL canónica para cada lançamento, mas não garante uma URL oficial da agência. Guardamos essa URL como referência da fonte dos dados e identificamo-la explicitamente como tal na interface. Uma fonte oficial só será apresentada quando for disponibilizada e validada.
 
 Esta alteração exige a migração `20261021_02`: acrescenta a coluna opcional `source_url` sem afetar os registos existentes. A interface ganha ainda ecrãs específicos durante o carregamento, em caso de erro e quando uma pesquisa não encontra resultados.
+
+## Etapa 7 — Integração contínua
+
+### Problema
+
+Testar manualmente antes de cada envio funciona enquanto o projeto é pequeno, mas torna-se fácil esquecer um passo ou introduzir uma alteração que quebra outra parte da aplicação.
+
+### Decisão
+
+O GitHub Actions executa dois trabalhos independentes a cada envio para `main` e em cada pull request: um para a API e outro para a interface. A API instala as dependências, verifica estilo com Ruff e corre os testes. A interface instala exatamente as versões do ficheiro de bloqueio, corre os testes e cria uma compilação de produção.
+
+Os trabalhos são independentes para que uma falha indique imediatamente se está no backend ou no frontend. Nesta fase não fazemos publicação automática: validar automaticamente não deve ser confundido com colocar a aplicação em produção.
