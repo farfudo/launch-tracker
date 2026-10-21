@@ -28,7 +28,42 @@ def test_launches_exposes_the_cached_contract(client, db_session) -> None:
 
     assert response.status_code == 200
     launch = response.json()[0]
-    assert {"id", "name", "status", "net", "agency", "vehicle"} <= launch.keys()
+    assert {"id", "name", "status", "net", "agency", "vehicle", "source_updated_at"} <= launch.keys()
+
+
+def test_launches_can_be_searched_filtered_and_opened(client, db_session) -> None:
+    upsert_launches(
+        db_session,
+        [
+            LaunchSummary(
+                id="example-launch-search",
+                name="Artemis demonstration",
+                status="Go",
+                net="2026-10-22T12:00:00Z",
+                agency="NASA",
+                vehicle="SLS",
+            ),
+            LaunchSummary(
+                id="example-launch-other",
+                name="Commercial mission",
+                status="Go",
+                net="2026-10-23T12:00:00Z",
+                agency="Example agency",
+                vehicle="Example rocket",
+            ),
+        ],
+    )
+
+    response = client.get("/api/v1/launches", params={"q": "Artemis", "agency": "NASA"})
+
+    assert response.status_code == 200
+    assert [launch["id"] for launch in response.json()] == ["example-launch-search"]
+    assert client.get("/api/v1/launches/example-launch-search").status_code == 200
+    assert client.get("/api/v1/launches/missing").status_code == 404
+    assert client.get("/api/v1/launches/filter-options").json() == {
+        "agencies": ["Example agency", "NASA"],
+        "vehicles": ["Example rocket", "SLS"],
+    }
 
 
 def test_sync_populates_the_cache(client, db_session, monkeypatch) -> None:

@@ -17,9 +17,10 @@
 
 ## Incremento 3 — Experiência do MVP
 
-- [ ] Criar lista/calendário de próximos lançamentos.
-- [ ] Adicionar pesquisa e filtros por agência e veículo.
-- [ ] Criar página de detalhe e fontes oficiais.
+- [x] Criar lista/calendário de próximos lançamentos.
+- [x] Adicionar pesquisa e filtros por agência e veículo.
+- [x] Criar página de detalhe com os dados normalizados disponíveis.
+- [ ] Guardar e apresentar fontes oficiais na página de detalhe.
 - [ ] Adicionar estados de carregamento, vazio e erro.
 
 ## Incremento 4 — Confiança e lançamento

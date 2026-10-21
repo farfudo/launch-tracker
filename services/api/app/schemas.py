@@ -12,7 +12,13 @@ class LaunchResponse(BaseModel):
     net: datetime
     agency: str | None
     vehicle: str | None
+    source_updated_at: datetime
 
 
 class SyncResponse(BaseModel):
     imported: int
+
+
+class FilterOptionsResponse(BaseModel):
+    agencies: list[str]
+    vehicles: list[str]

@@ -1,15 +1,24 @@
+import Link from "next/link";
 import { formatLaunchStatus } from "../lib/launch";
-import { getUpcomingLaunches } from "../lib/api";
+import { getFilterOptions, getUpcomingLaunches, type FilterOptions, type Launch } from "../lib/api";
 import { formatLaunchDate } from "../lib/date";
 
-export default async function Home() {
-  let launches;
+type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string }>;
+
+export default async function Home({ searchParams }: { searchParams: SearchParams }) {
+  const filters = await searchParams;
+  let launches: Launch[];
+  let filterOptions: FilterOptions;
   let hasLaunchData = true;
 
   try {
-    launches = await getUpcomingLaunches();
+    [launches, filterOptions] = await Promise.all([
+      getUpcomingLaunches(20, filters),
+      getFilterOptions()
+    ]);
   } catch {
     launches = [];
+    filterOptions = { agencies: [], vehicles: [] };
     hasLaunchData = false;
   }
 
@@ -28,19 +37,41 @@ export default async function Home() {
           </div>
           <span className="status">Dados em direto</span>
         </div>
+        <form className="filters" action="/" method="get">
+          <label>
+            <span>Pesquisar</span>
+            <input defaultValue={filters.q} name="q" placeholder="Missão, agência ou veículo" type="search" />
+          </label>
+          <label>
+            <span>Agência</span>
+            <select defaultValue={filters.agency ?? ""} name="agency">
+              <option value="">Todas</option>
+              {filterOptions.agencies.map((agency) => <option key={agency} value={agency}>{agency}</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Veículo</span>
+            <select defaultValue={filters.vehicle ?? ""} name="vehicle">
+              <option value="">Todos</option>
+              {filterOptions.vehicles.map((vehicle) => <option key={vehicle} value={vehicle}>{vehicle}</option>)}
+            </select>
+          </label>
+          <button type="submit">Aplicar filtros</button>
+          <Link className="clear-filters" href="/">Limpar</Link>
+        </form>
         {hasLaunchData ? (
-          <div className="launch-list">
+          launches.length ? <div className="launch-list">
             {launches.map((launch) => (
-              <article className="launch-card" key={launch.id}>
+              <Link className="launch-card" href={`/launches/${launch.id}`} key={launch.id}>
                 <p className="launch-date">{formatLaunchDate(launch.net)}</p>
                 <h3>{launch.name}</h3>
                 <p>{launch.agency ?? "Agência a confirmar"}</p>
                 <p className="launch-meta">
                   {launch.vehicle ?? "Veículo a confirmar"} · {formatLaunchStatus(launch.status)}
                 </p>
-              </article>
+              </Link>
             ))}
-          </div>
+          </div> : <article className="launch-card"><h3>Sem resultados</h3><p>Tenta outros termos ou remove alguns filtros.</p></article>
         ) : (
           <article className="launch-card">
             <h3>Os dados estão temporariamente indisponíveis.</h3>

@@ -28,3 +28,22 @@ Cada camada tem uma responsabilidade única: o cliente externo obtém dados, o r
 O estado da base de dados deixa de ser criado por código ao iniciar. A migração `20261021_01` descreve a estrutura inicial da tabela. O comando `alembic upgrade head` aplica todas as mudanças pendentes, enquanto `alembic downgrade -1` permite reverter a última alteração durante desenvolvimento.
 
 Como esta base de dados já foi criada no passo anterior, vamos marcá-la como estando nesta versão sem apagar os dados. Este processo chama-se *stamp* e é usado ao introduzir migrações num projeto existente.
+
+## Etapa 5 — Pesquisa, filtros e detalhe
+
+### Problema
+
+Uma lista longa de lançamentos só é útil se for possível encontrar rapidamente uma missão. A aplicação também precisa de uma ligação estável para cada lançamento, para suportar partilha e evoluir a página de detalhe.
+
+### Decisão
+
+Os filtros são parâmetros na URL (`q`, `agency`, `vehicle`) enviados à API. A filtragem é feita na base de dados, não no browser, e cada cartão aponta para `/launches/{id}`. Desta forma, uma pesquisa pode ser guardada ou partilhada e a interface móvel poderá reutilizar a mesma API.
+
+### O que foi entregue
+
+- Pesquisa por nome, agência ou veículo.
+- Filtros preenchidos a partir dos dados realmente disponíveis na cache.
+- Endpoint de detalhe e página individual de lançamento.
+- Indicação da hora de atualização da cache.
+
+As fontes oficiais exigem que passemos a guardar URLs fornecidos pela fonte externa. Essa extensão será a próxima pequena migração do modelo de dados, em vez de inventar ligações que possam não ser oficiais.
