@@ -20,6 +20,7 @@ class Launch(Base):
     mission_description: Mapped[str | None] = mapped_column(Text, nullable=True)
     pad_name: Mapped[str | None] = mapped_column(Text, nullable=True)
     location_name: Mapped[str | None] = mapped_column(Text, nullable=True)
+    launch_timezone: Mapped[str | None] = mapped_column(Text, nullable=True)
     window_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     window_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     source_updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

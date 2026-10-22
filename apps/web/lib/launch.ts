@@ -1,12 +1,24 @@
-export type LaunchStatus = "Go" | "TBD" | "TBC" | "Hold";
+import { dictionaries, type Locale, type Messages } from "./i18n";
 
-const statusLabels: Record<LaunchStatus, string> = {
-  Go: "Confirmado",
-  TBD: "Data por definir",
-  TBC: "A confirmar",
-  Hold: "Em espera"
+const statusKeys: Record<string, keyof Messages> = {
+  Go: "statusGo",
+  "Go for Launch": "statusGo",
+  TBD: "statusTbd",
+  "To Be Determined": "statusTbd",
+  TBC: "statusTbc",
+  "To Be Confirmed": "statusTbc",
+  Hold: "statusHold",
+  "Launch Successful": "statusSuccess",
+  Success: "statusSuccess",
+  "Launch Failure": "statusFailure",
+  Failure: "statusFailure",
+  "Launch was a Partial Failure": "statusPartialFailure",
+  "Partial Failure": "statusPartialFailure",
+  "Launch in Flight": "statusInFlight",
+  "In Flight": "statusInFlight"
 };
 
-export function formatLaunchStatus(status: string): string {
-  return statusLabels[status as LaunchStatus] ?? status;
+export function formatLaunchStatus(status: string, locale: Locale = "pt-PT"): string {
+  const key = statusKeys[status];
+  return key ? dictionaries[locale][key] : status;
 }

@@ -7,6 +7,7 @@ export type Launch = {
   vehicle: string | null;
   source_url: string | null;
   source_updated_at: string;
+  launch_timezone: string | null;
 };
 
 export type FilterOptions = {

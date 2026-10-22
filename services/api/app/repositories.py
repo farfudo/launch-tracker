@@ -88,6 +88,7 @@ def upsert_launches(db: Session, launches: list[LaunchSummary]) -> int:
         launch.mission_description = summary.mission_description
         launch.pad_name = summary.pad_name
         launch.location_name = summary.location_name
+        launch.launch_timezone = summary.launch_timezone
         launch.window_start = summary.window_start
         launch.window_end = summary.window_end
         launch.source_updated_at = datetime.now(UTC)

@@ -4,6 +4,8 @@ Uma aplicação web para descobrir e acompanhar lançamentos espaciais em todo o
 
 O primeiro objetivo é um MVP de portefólio: calendário global, pesquisa e filtros, e páginas de detalhe com estado, data prevista e fontes oficiais. Alertas, transmissões e telemetria ficam para fases posteriores.
 
+A interface permite escolher português, inglês e espanhol, guardando a preferência no browser. Os horários são apresentados em UTC, no fuso do local de lançamento e no fuso do visitante, com conversão automática do horário de verão. As descrições das missões permanecem no idioma original da fonte.
+
 ## Estrutura
 
 - `apps/web` — interface Next.js com TypeScript

@@ -15,7 +15,9 @@ def test_parse_launch_normalizes_an_upstream_launch() -> None:
             "rocket": {"configuration": {"full_name": "Example Rocket"}},
             "url": "https://ll.thespacedevs.com/2.3.0/launches/launch-123/",
             "mission": {"name": "Example mission", "description": "A science mission."},
-            "pad": {"name": "Pad A", "location": {"name": "Example spaceport"}},
+            "pad": {"name": "Pad A", "location": {
+                "name": "Example spaceport", "timezone_name": "America/Los_Angeles"
+            }},
             "window_start": "2026-10-20T12:00:00Z",
             "window_end": "2026-10-20T13:00:00Z",
         }
@@ -30,6 +32,7 @@ def test_parse_launch_normalizes_an_upstream_launch() -> None:
     assert launch.mission_description == "A science mission."
     assert launch.pad_name == "Pad A"
     assert launch.location_name == "Example spaceport"
+    assert launch.launch_timezone == "America/Los_Angeles"
     assert launch.window_start.isoformat() == "2026-10-20T12:00:00+00:00"
     assert launch.window_end.isoformat() == "2026-10-20T13:00:00+00:00"
 
@@ -47,6 +50,7 @@ def test_missing_mission_details_remain_unknown(optional_fields) -> None:
     assert launch.mission_description is None
     assert launch.pad_name is None
     assert launch.location_name is None
+    assert launch.launch_timezone is None
     assert launch.window_start is None
     assert launch.window_end is None
 

@@ -1,10 +1,15 @@
+"use client";
+
+import { useLocale } from "../components/locale-provider";
+
 export default function Loading() {
+  const { messages: t } = useLocale();
   return (
     <main aria-busy="true">
       <header>
-        <p className="eyebrow">LaunchSkyline · Lançamentos espaciais</p>
-        <h1>A carregar lançamentos…</h1>
-        <p className="intro">A preparar o calendário espacial.</p>
+        <p className="eyebrow">LaunchSkyline · {t.brandSubtitle}</p>
+        <h1>{t.loadingTitle}</h1>
+        <p className="intro">{t.loadingBody}</p>
       </header>
     </main>
   );

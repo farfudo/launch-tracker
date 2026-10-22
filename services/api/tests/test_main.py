@@ -17,6 +17,7 @@ def test_mission_details_are_persisted_and_updated(client, db_session) -> None:
         id="mission-detail", name="Example launch", status="Go", net="2099-01-01T12:00:00Z",
         mission_name="Science mission", mission_description="First description.",
         pad_name="Pad 1", location_name="Example spaceport",
+        launch_timezone="America/Los_Angeles",
         window_start="2099-01-01T12:00:00Z", window_end="2099-01-01T13:00:00Z",
     )
     upsert_launches(db_session, [summary])
@@ -26,9 +27,11 @@ def test_mission_details_are_persisted_and_updated(client, db_session) -> None:
     assert detail["mission_name"] == "Science mission"
     assert detail["location_name"] == "Example spaceport"
     assert detail["pad_name"] == "Pad 1"
+    assert detail["launch_timezone"] == "America/Los_Angeles"
     assert detail["window_start"].startswith("2099-01-01T12:00:00")
     assert detail["window_end"].startswith("2099-01-01T13:00:00")
     assert "mission_description" not in client.get("/api/v1/launches").json()[0]
+    assert client.get("/api/v1/launches").json()[0]["launch_timezone"] == "America/Los_Angeles"
 
     summary.mission_description = "Updated description."
     summary.window_end = None
@@ -64,6 +67,7 @@ def test_launches_exposes_the_cached_contract(client, db_session) -> None:
     assert detail["mission_description"] is None
     assert detail["location_name"] is None
     assert detail["window_start"] is None
+    assert detail["launch_timezone"] is None
 
 
 def test_launches_can_be_searched_filtered_and_opened(client, db_session) -> None:

@@ -27,6 +27,7 @@ class LaunchSummary(BaseModel):
     mission_description: str | None = None
     pad_name: str | None = None
     location_name: str | None = None
+    launch_timezone: str | None = None
     window_start: datetime | None = None
     window_end: datetime | None = None
 
@@ -52,6 +53,7 @@ def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
         mission_description=mission.get("description") or None,
         pad_name=pad.get("name") or None,
         location_name=location.get("name") or None,
+        launch_timezone=location.get("timezone_name") or None,
         window_start=payload.get("window_start"),
         window_end=payload.get("window_end"),
     )

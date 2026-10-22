@@ -1,5 +1,13 @@
 # Diário de aprendizagem — LaunchSkyline
 
+## Etapa 11 — Idiomas e fusos horários
+
+A interface suporta português de Portugal, inglês e espanhol. As mensagens ficam em dicionários com as mesmas chaves, verificados pelo TypeScript e por testes. A preferência é guardada num cookie por um ano e lida pelo servidor para que títulos, metadados e conteúdo inicial já venham traduzidos. Mudar o idioma atualiza a página atual sem remover os filtros nem abandonar o detalhe. As descrições externas mantêm o idioma original, explicitamente indicado.
+
+O identificador IANA do local de lançamento é fornecido pela Launch Library e guardado pela migração `20261022_04`. Datas continuam armazenadas em UTC. A interface apresenta o mesmo instante em UTC, no local de lançamento e no fuso detetado pelo browser do visitante. A conversão usa `Intl.DateTimeFormat`, que considera a data da missão, mudanças de dia e horário de verão; não usamos deslocamentos fixos nem geolocalização.
+
+O fuso do visitante é detetado apenas no browser e não é enviado à API nem guardado na base. Durante o carregamento inicial, a interface identifica que está a detetá-lo. Se a fonte omitir o fuso do lançamento ou enviar um valor inválido, mostramos indisponibilidade em vez de adivinhar. Os testes cobrem persistência de idioma, valores inválidos, traduções de estado, conversões durante o verão/inverno e mudanças de dia.
+
 ## Etapa 10 — Contexto de cada missão
 
 O detalhe passa a incluir nome e descrição da missão, local, plataforma e início/fim da janela. Os campos são opcionais porque a Launch Library pode omiti-los ou ainda não os conhecer. A migração `20261022_03` acrescenta colunas sem apagar os lançamentos existentes. A próxima sincronização preenche-as.

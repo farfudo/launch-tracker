@@ -14,6 +14,7 @@ class LaunchResponse(BaseModel):
     vehicle: str | None
     source_url: str | None
     source_updated_at: datetime
+    launch_timezone: str | None
 
 
 class LaunchDetailResponse(LaunchResponse):
