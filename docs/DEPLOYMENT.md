@@ -26,6 +26,8 @@ docker compose -f compose.demo.yaml down
 
 ## Alojamento público
 
+No Render, usar Root Directory `services/api`, runtime Docker e Docker Command `/bin/sh /app/start.sh`. Este ficheiro executa as migrações, a sincronização inicial e o servidor na porta definida pelo alojamento. Se qualquer passo falhar, o arranque termina com erro visível nos registos. Evita colar sequências com `sh -c` e aspas no campo de comando.
+
 Esta configuração é um ensaio local. O alojamento deve fornecer HTTPS, armazenamento persistente e cópias de segurança. Expor apenas a interface; a API e o PostgreSQL comunicam na rede privada. O endpoint de sincronização é uma operação administrativa e não deve ficar acessível publicamente sem autenticação.
 
 Definir `API_BASE_URL` no servidor Next.js e `DATABASE_URL` na API. Executar `alembic upgrade head` antes de iniciar a nova versão e `python -m app.sync` como tarefa agendada, respeitando os limites do fornecedor. Uma falha dessa tarefa deve gerar um alerta operacional; os dados existentes continuam disponíveis na cache.
