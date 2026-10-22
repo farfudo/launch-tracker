@@ -1,16 +1,23 @@
 import Link from "next/link";
 import { RetryButton } from "../components/retry-button";
-import { formatLaunchStatus } from "../lib/launch";
+import { FavoriteLaunchList } from "../components/favorites";
 import { getDataStatus, getFilterOptions, getUpcomingLaunches, type FilterOptions, type Launch } from "../lib/api";
 import { formatLaunchDate } from "../lib/date";
-import { LaunchTimes } from "../components/launch-times";
 import { dictionaries } from "../lib/i18n";
 import { getLocale } from "../lib/locale-server";
 
-type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string }>;
+type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string; favorites?: string }>;
 
 export default async function Home({ searchParams }: { searchParams: SearchParams }) {
   const filters = await searchParams;
+  const favoritesOnly = filters.favorites === "1";
+  const viewParams = new URLSearchParams();
+  for (const key of ["q", "agency", "vehicle"] as const) {
+    if (filters[key]) viewParams.set(key, filters[key]);
+  }
+  const allHref = `/?${viewParams.toString()}`;
+  viewParams.set("favorites", "1");
+  const favoritesHref = `/?${viewParams.toString()}`;
   const locale = await getLocale();
   const t = dictionaries[locale];
   const dataStatusPromise = getDataStatus().catch(() => null);
@@ -20,7 +27,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
 
   try {
     [launches, filterOptions] = await Promise.all([
-      getUpcomingLaunches(20, filters),
+      getUpcomingLaunches(100, { q: filters.q, agency: filters.agency, vehicle: filters.vehicle }),
       getFilterOptions()
     ]);
   } catch {
@@ -54,6 +61,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           </p>
         ) : null}
         <form className="filters" action="/" method="get">
+          {favoritesOnly ? <input type="hidden" name="favorites" value="1" /> : null}
           <label>
             <span>{t.search}</span>
             <input defaultValue={filters.q} name="q" placeholder={t.searchPlaceholder} type="search" />
@@ -75,23 +83,12 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           <button type="submit">{t.applyFilters}</button>
           <Link className="clear-filters" href="/">{t.clear}</Link>
         </form>
+        <nav className="favorite-views" aria-label={t.calendarView}>
+          <Link href={allHref} aria-current={!favoritesOnly ? "page" : undefined}>{t.allLaunches}</Link>
+          <Link href={favoritesHref} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}</Link>
+        </nav>
         {hasLaunchData ? (
-          launches.length ? <div className="launch-list">
-            {launches.map((launch) => (
-              <Link className="launch-card" href={`/launches/${launch.id}`} key={launch.id}>
-                <p className="launch-date">{formatLaunchDate(launch.net, locale)}</p>
-                <h3>{launch.name}</h3>
-                <p>{launch.agency ?? t.agencyPending}</p>
-                <p className="launch-meta">
-                  {launch.vehicle ?? t.vehiclePending} · {formatLaunchStatus(launch.status, locale)}
-                </p>
-                <LaunchTimes isoDate={launch.net} launchTimeZone={launch.launch_timezone} />
-              </Link>
-            ))}
-          </div> : <article className="launch-card">
-            <h3>{dataStatus?.cached_launches === 0 ? t.emptyTitle : t.noResults}</h3>
-            <p>{dataStatus?.cached_launches === 0 ? t.emptyBody : t.noResultsBody}</p>
-          </article>
+          <FavoriteLaunchList launches={launches} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} />
         ) : (
           <article className="launch-card">
             <h3>{t.unavailableTitle}</h3>
