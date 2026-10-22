@@ -1,5 +1,17 @@
 # Diário de aprendizagem — LaunchSkyline
 
+## Etapa 12 — Verificação integrada e esperas limitadas
+
+A preview com limite de 20 segundos foi aprovada pelo utilizador, com autorização separada para push em 22 de outubro de 2026. A execução manual `39793720670` terminou com sucesso; a validação do agendamento automático continua separada desta execução manual.
+
+O teste no site público confirmou pesquisa combinada com filtros, detalhe, traduções e persistência do idioma. Encontrou também dados de imagem ainda vazios: o último preenchimento público antecedia o código que passou a guardar fotografias. Publicar código, aplicar uma migração e preencher os campos são operações distintas.
+
+Em 22 de outubro foi autorizada e iniciada a execução manual `39793720670` com o commit `55e4adf`. O resultado deve ser confirmado no GitHub e na API antes de declarar as imagens resolvidas. O workflow está ativo, na branch principal, com Actions permitido e `SYNC_ENABLED=true`; ainda não observámos uma execução com evento `schedule`. Não consideramos a configuração equivalente a prova de funcionamento automático.
+
+O rascunho local limita cada pedido da interface à API a 20 segundos, sem tentativas automáticas. Após oito segundos, o ecrã de carregamento anuncia que o serviço pode estar a iniciar. O calendário permite tentar novamente sem limpar a pesquisa. Um arranque gratuito que demore mais de 20 segundos poderá exigir uma nova tentativa; esta alteração não acelera o alojamento nem altera a quota do fornecedor. O limite pode ser antecipado por limites próprios da plataforma.
+
+A rota `/preview/loading` simula apenas a apresentação da espera prolongada, sem consultar a API; requer `DESIGN_PREVIEW=true` e devolve 404 fora desse ambiente. Os testes verificam o temporizador, a sua limpeza, a propagação das falhas e a aplicação do limite aos quatro pedidos. Preview e push continuam sujeitos a aprovação separada.
+
 ## Etapa 11 — Idiomas e fusos horários
 
 A interface suporta português de Portugal, inglês e espanhol. As mensagens ficam em dicionários com as mesmas chaves, verificados pelo TypeScript e por testes. A preferência é guardada num cookie por um ano e lida pelo servidor para que títulos, metadados e conteúdo inicial já venham traduzidos. Mudar o idioma atualiza a página atual sem remover os filtros nem abandonar o detalhe. As descrições externas mantêm o idioma original, explicitamente indicado.

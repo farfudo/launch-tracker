@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { RetryButton } from "../components/retry-button";
 import { formatLaunchStatus } from "../lib/launch";
 import { getDataStatus, getFilterOptions, getUpcomingLaunches, type FilterOptions, type Launch } from "../lib/api";
 import { formatLaunchDate } from "../lib/date";
@@ -95,6 +96,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           <article className="launch-card">
             <h3>{t.unavailableTitle}</h3>
             <p>{t.unavailableBody}</p>
+            <RetryButton />
           </article>
         )}
       </section>

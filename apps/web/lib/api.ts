@@ -38,12 +38,18 @@ export type DataStatus = {
 };
 
 export async function getDataStatus(): Promise<DataStatus> {
-  const response = await fetch(`${apiBaseUrl}/api/v1/data-status`, { cache: "no-store" });
+  const response = await fetchApi(`${apiBaseUrl}/api/v1/data-status`);
   if (!response.ok) throw new Error("Unable to retrieve data status.");
   return response.json() as Promise<DataStatus>;
 }
 
 const apiBaseUrl = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+
+export const API_TIMEOUT_MS = 20_000;
+
+function fetchApi(url: string) {
+  return fetch(url, { cache: "no-store", signal: AbortSignal.timeout(API_TIMEOUT_MS) });
+}
 
 export type LaunchFilters = {
   q?: string;
@@ -56,9 +62,7 @@ export async function getUpcomingLaunches(limit = 20, filters: LaunchFilters = {
   for (const [key, value] of Object.entries(filters)) {
     if (value) params.set(key, value);
   }
-  const response = await fetch(`${apiBaseUrl}/api/v1/launches?${params.toString()}`, {
-    cache: "no-store"
-  });
+  const response = await fetchApi(`${apiBaseUrl}/api/v1/launches?${params.toString()}`);
 
   if (!response.ok) {
     throw new Error("Unable to retrieve launch data.");
@@ -68,13 +72,13 @@ export async function getUpcomingLaunches(limit = 20, filters: LaunchFilters = {
 }
 
 export async function getFilterOptions(): Promise<FilterOptions> {
-  const response = await fetch(`${apiBaseUrl}/api/v1/launches/filter-options`, { cache: "no-store" });
+  const response = await fetchApi(`${apiBaseUrl}/api/v1/launches/filter-options`);
   if (!response.ok) throw new Error("Unable to retrieve filter options.");
   return response.json() as Promise<FilterOptions>;
 }
 
 export async function getLaunch(launchId: string): Promise<LaunchDetail> {
-  const response = await fetch(`${apiBaseUrl}/api/v1/launches/${launchId}`, { cache: "no-store" });
+  const response = await fetchApi(`${apiBaseUrl}/api/v1/launches/${launchId}`);
   if (!response.ok) throw new Error("Unable to retrieve launch.");
   return response.json() as Promise<LaunchDetail>;
 }
