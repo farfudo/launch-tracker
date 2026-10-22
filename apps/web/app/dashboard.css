@@ -206,3 +206,11 @@ body { background: var(--surface); }
 .mission-streams li p { margin: .3rem 0; }
 .stream-state { font-size: .7rem; color: var(--accent-strong); }
 .mission-streams .stream-updated { font-size: .65rem; }
+.mission-calendar { margin-block: 1rem; min-width: 0; }
+.mission-calendar summary, .mission-calendar button, .mission-calendar-options a { border: 1px solid var(--border); border-radius: 12px; padding: .7rem 1rem; font: inherit; color: inherit; background: var(--surface); }
+.mission-calendar summary { cursor: pointer; width: fit-content; }
+.mission-calendar button:disabled { opacity: .65; cursor: not-allowed; }
+.mission-calendar p { font-size: .85rem; line-height: 1.6; max-width: 65ch; }
+.mission-calendar-options { display: flex; flex-wrap: wrap; gap: .75rem; }
+.mission-calendar-options a { text-decoration: none; overflow-wrap: anywhere; }
+.mission-calendar :is(summary, a):focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }

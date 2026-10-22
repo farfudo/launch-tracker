@@ -13,6 +13,7 @@ import { VehicleVisual } from "../../../components/vehicle-visual";
 import { DesignReview, resolveDesign } from "../../../components/design-review";
 import { BrandMark } from "../../../components/brand";
 import { MissionStreams } from "../../../components/mission-streams";
+import { MissionCalendar } from "../../../components/mission-calendar";
 
 type RouteParams = Promise<{ id: string }>;
 
@@ -51,6 +52,7 @@ export default async function LaunchDetail({ params, searchParams }: {
             <p className="mission-vehicle"><MissionIcon name="rocket" />{launch.vehicle || t.vehiclePending}<span aria-hidden="true">/</span>{launch.agency || t.agencyPending}</p>
             <span className="mission-status"><span aria-hidden="true" />{formatLaunchStatus(launch.status, locale)}</span>
             <FavoriteButton id={launch.id} name={launch.name} />
+            <MissionCalendar launch={launch} />
             <div className="mission-target">
               <span className="mission-target-icon"><MissionIcon name="clock" /></span>
               <div><p>{t.expectedDate}</p><time dateTime={launch.net}>{formatLaunchDate(launch.net, locale)}</time></div>
