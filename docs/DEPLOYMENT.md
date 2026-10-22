@@ -26,7 +26,7 @@ docker compose -f compose.demo.yaml down
 
 ## Alojamento público
 
-No Render, usar Root Directory `services/api`, runtime Docker e Docker Command `/bin/sh /app/start.sh`. Este ficheiro executa as migrações, a sincronização inicial e o servidor na porta definida pelo alojamento. Se qualquer passo falhar, o arranque termina com erro visível nos registos. Evita colar sequências com `sh -c` e aspas no campo de comando.
+No Render, usar Root Directory `services/api`, runtime Docker e Docker Command `/bin/sh /app/start.sh`. Este ficheiro executa as migrações, tenta a sincronização inicial e inicia o servidor na porta definida pelo alojamento. Uma falha nas migrações impede o arranque. Uma falha na sincronização gera um aviso e permite servir a cache existente; numa base nova, a lista ficará vazia até uma sincronização bem-sucedida. Se a fonte responder com 429, respeitar o tempo indicado pelo fornecedor e evitar redeploys repetidos para tentar sincronizar. Evita colar sequências com `sh -c` e aspas no campo de comando.
 
 Esta configuração é um ensaio local. O alojamento deve fornecer HTTPS, armazenamento persistente e cópias de segurança. Expor apenas a interface; a API e o PostgreSQL comunicam na rede privada. O endpoint de sincronização é uma operação administrativa e não deve ficar acessível publicamente sem autenticação.
 
