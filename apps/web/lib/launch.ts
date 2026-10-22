@@ -22,3 +22,12 @@ export function formatLaunchStatus(status: string, locale: Locale = "pt-PT"): st
   const key = statusKeys[status];
   return key ? dictionaries[locale][key] : status;
 }
+
+export function launchStatusTone(status: string): string {
+  const key = statusKeys[status];
+  if (key === "statusGo" || key === "statusSuccess") return "positive";
+  if (key === "statusTbc" || key === "statusTbd" || key === "statusHold") return "pending";
+  if (key === "statusFailure" || key === "statusPartialFailure") return "negative";
+  if (key === "statusInFlight") return "active";
+  return "neutral";
+}

@@ -12,6 +12,16 @@ it("does not invent a stream or live status when no video link was supplied", ()
   expect(render(base, true)).toBe("");
   expect(render(base)).toContain("No video link supplied");
 });
+it("starts collapsed and offers every stream in compact mode rather than opening the first", () => {
+  const html = render({...base, id: "example", streams: [{url:"https://example.com/one"}, {url:"https://example.com/two"}]}, true);
+  const container = document.createElement("div");
+  container.innerHTML = html;
+  const disclosure = container.querySelector("details")!;
+  expect(disclosure.open).toBe(false);
+  expect(disclosure.querySelector("summary")?.textContent).toContain("Watch here");
+  expect(disclosure.querySelector("summary a")).toBeNull();
+  expect(disclosure.querySelectorAll("li a")).toHaveLength(2);
+});
 it("rejects unsafe links and opens valid source links with attribution in a new tab", () => {
   const html = render({...base,streams:[{url:"javascript:alert(1)"},{url:"https://example.com/video",publisher:"Channel",live:false}]});
   expect(html).not.toContain("javascript:");

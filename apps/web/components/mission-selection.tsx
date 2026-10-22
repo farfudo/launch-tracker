@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { Launch, LaunchDetail } from "../lib/api";
-import { formatLaunchStatus } from "../lib/launch";
+import { formatLaunchStatus, launchStatusTone } from "../lib/launch";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { useLocale } from "./locale-provider";
 import { LocalLaunchDate } from "./local-launch-date";
@@ -83,7 +83,7 @@ export function MissionDetailPanel() {
     <p className="eyebrow">{d.selectedMission}</p>
     <h2 id="selected-mission-heading">{detail?.mission_name || selected.name}</h2>
     <p className="selected-mission-agency">{selected.agency || t.agencyPending} · {selected.vehicle || t.vehiclePending}</p>
-    <span className="launch-status-tag">{formatLaunchStatus(selected.status, locale)}</span>
+    <span className="launch-status-tag" data-tone={launchStatusTone(selected.status)}>{formatLaunchStatus(selected.status, locale)}</span>
     <p className="selected-mission-date"><LocalLaunchDate date={selected.net} /></p>
     <p className="visually-hidden" role="status">{loading ? d.loadingMission : `${d.selectedMission}: ${selected.name}`}</p>
     {loading ? <p className="panel-feedback">{d.loadingMission}</p> : null}

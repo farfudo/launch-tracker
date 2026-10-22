@@ -8,7 +8,7 @@ import { VehicleVisual } from "./vehicle-visual";
 import { Countdown } from "./countdown";
 import { LocalLaunchDate } from "./local-launch-date";
 import { dashboardCopy } from "../lib/dashboard-i18n";
-import { formatLaunchStatus } from "../lib/launch";
+import { formatLaunchStatus, launchStatusTone } from "../lib/launch";
 import { useLocale } from "./locale-provider";
 import { LaunchTimes } from "./launch-times";
 import { useMissionSelection } from "./mission-selection";
@@ -57,7 +57,7 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache }: {
         <p className="launch-agency">{launch.agency ?? t.agencyPending} · {launch.vehicle ?? t.vehiclePending}</p>
         <h3>{launch.name}</h3>
         <p className="launch-date"><LocalLaunchDate date={launch.net} /></p>
-        <span className="launch-status-tag">{formatLaunchStatus(launch.status, locale)}</span>
+        <span className="launch-status-tag" data-tone={launchStatusTone(launch.status)}>{formatLaunchStatus(launch.status, locale)}</span>
         <span className="row-detail-link">{d.viewDetails} →</span>
         {selection?.selected?.id === launch.id ? <span className="mission-selected-label">{d.selectedMission}</span> : null}
       </Link>

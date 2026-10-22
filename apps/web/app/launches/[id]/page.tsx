@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import { getLaunch } from "../../../lib/api";
 import { formatLaunchDate } from "../../../lib/date";
-import { formatLaunchStatus } from "../../../lib/launch";
+import { formatLaunchStatus, launchStatusTone } from "../../../lib/launch";
 import { dictionaries } from "../../../lib/i18n";
 import { getLocale } from "../../../lib/locale-server";
 import { LaunchTimes } from "../../../components/launch-times";
@@ -50,7 +50,7 @@ export default async function LaunchDetail({ params, searchParams }: {
             <p className="eyebrow"><span className="mission-signal" aria-hidden="true" />{t.launchDetail}</p>
             <h1 id="mission-title">{launch.mission_name || launch.name}</h1>
             <p className="mission-vehicle"><MissionIcon name="rocket" />{launch.vehicle || t.vehiclePending}<span aria-hidden="true">/</span>{launch.agency || t.agencyPending}</p>
-            <span className="mission-status"><span aria-hidden="true" />{formatLaunchStatus(launch.status, locale)}</span>
+            <span className="mission-status" data-tone={launchStatusTone(launch.status)}><span aria-hidden="true" />{formatLaunchStatus(launch.status, locale)}</span>
             <FavoriteButton id={launch.id} name={launch.name} />
             <MissionCalendar launch={launch} />
             <div className="mission-target">

@@ -72,6 +72,10 @@ body { background: var(--surface); }
 .calendar-panel .launch-card h3 { font-size: .92rem; line-height: 1.3; letter-spacing: -.025em; }
 .calendar-panel .launch-date { font-size: .63rem; color: var(--text-soft); font-weight: 400; margin: .45rem 0; }
 .launch-status-tag { display: inline-block; padding: .2rem .4rem; font-size: .58rem; border-radius: 99px; background: var(--surface); color: var(--text-soft); }
+:is(.launch-status-tag, .mission-status)[data-tone="positive"] { background: #dff3e7; color: #205b3c; border-color: #a4d6b6; }
+:is(.launch-status-tag, .mission-status)[data-tone="pending"] { background: #fff0c2; color: #705000; border-color: #e1c46a; }
+:is(.launch-status-tag, .mission-status)[data-tone="negative"] { background: #fce3e3; color: #8b3030; border-color: #e6aaaa; }
+:is(.launch-status-tag, .mission-status)[data-tone="active"] { background: #deedff; color: #224f82; border-color: #a5c3e6; }
 .row-detail-link { display: block; color: var(--accent-strong); font-size: .65rem; margin-top: .5rem; }
 .launch-row-actions .countdown { color: var(--accent-strong); gap: .35rem; margin: .15rem 0 .7rem; }
 .launch-row-actions .countdown strong { font-size: .85rem; }
@@ -206,6 +210,17 @@ body { background: var(--surface); }
 .mission-streams li p { margin: .3rem 0; }
 .stream-state { font-size: .7rem; color: var(--accent-strong); }
 .mission-streams .stream-updated { font-size: .65rem; }
+.stream-disclosure { padding: 0; border: 0; background: transparent; }
+.stream-disclosure > summary { cursor: pointer; list-style: none; margin-top: 0; width: 100%; box-sizing: border-box; min-height: 48px; padding: .6rem .9rem; gap: .6rem; border-radius: 12px; border: 1px solid #e95720; background: linear-gradient(115deg, #ff6b2c, #ff934f); color: #14232f; font-size: .85rem; font-weight: 700; box-shadow: 0 3px 10px #ff6b2c20; transition: background .2s, box-shadow .2s; }
+.stream-disclosure > summary:hover { background: linear-gradient(115deg, #ff7a3e, #ffa565); box-shadow: 0 6px 20px #ff6b2c45; }
+.stream-disclosure > summary span:not(.visually-hidden) { color: #14232f; font-size: inherit; }
+.stream-disclosure > summary > span:first-child { display: grid; place-items: center; width: 26px; height: 26px; border: 1px solid #ffffff55; border-radius: 50%; background: #ffffff15; font-size: 1rem; }
+.stream-disclosure > summary .stream-chevron { margin-left: auto; }
+.stream-disclosure > summary::-webkit-details-marker { display: none; }
+.stream-disclosure > summary:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 4px; }
+.stream-disclosure > summary .stream-count { border-radius: 99px; padding: .25rem .55rem; background: #ffffff20; font-size: .8rem; }
+.stream-disclosure[open] .stream-chevron { transform: rotate(180deg); }
+.stream-disclosure-content { margin-top: .75rem; padding: 1rem; border: 1px solid var(--border); border-radius: 15px; background: var(--surface-raised); }
 .mission-calendar { margin-block: 1rem; min-width: 0; }
 .mission-calendar summary, .mission-calendar button, .mission-calendar-options a { border: 1px solid var(--border); border-radius: 12px; padding: .7rem 1rem; font: inherit; color: inherit; background: var(--surface); }
 .mission-calendar summary { cursor: pointer; width: fit-content; }

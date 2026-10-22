@@ -120,11 +120,6 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         )}
       </section>
       {featured ? <FeaturedLaunch launch={featured} locale={locale} /> : null}
-      <div className="dashboard-explore">
-        <Link href="#launch-calendar" className="explore-card"><MissionIcon name="clock" /><h2>{d.calendar}</h2><p>{d.calendarBody}</p><span aria-hidden="true">↗</span></Link>
-        <Link href="/?favorites=1#launch-calendar" className="explore-card"><MissionIcon name="status" /><h2>{d.yourFavorites}</h2><p>{d.favoritesBody}</p><span aria-hidden="true">↗</span></Link>
-        {nextLaunch ? <Link href={`/launches/${nextLaunch.id}`} className="explore-card"><MissionIcon name="rocket" /><h2>{d.details}</h2><p>{d.detailsBody}</p><span aria-hidden="true">↗</span></Link> : null}
-      </div>
       {nextLaunch?.image_url ? <p className="dashboard-image-credit">{d.imagery}: {nextLaunch.image_credit || "Launch Library 2"} · {nextLaunch.image_license || t.imageLicenseUnknown}. {d.reference} <Link href={`/launches/${nextLaunch.id}`}>{d.imageInfo} ↗</Link></p> : null}
       <footer className="dashboard-footer"><p>NextRocketLaunch <span>· {d.tagline}</span></p><p>{t.dataSource} {t.datesNotice}</p></footer>
     </main>
