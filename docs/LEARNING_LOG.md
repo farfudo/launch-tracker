@@ -58,6 +58,7 @@ Esta alteração exige a migração `20261021_02`: acrescenta a coluna opcional 
 
 ## Etapa 7 — Integração contínua
 
+
 ### Problema
 
 Testar manualmente antes de cada envio funciona enquanto o projeto é pequeno, mas torna-se fácil esquecer um passo ou introduzir uma alteração que quebra outra parte da aplicação.
@@ -67,3 +68,11 @@ Testar manualmente antes de cada envio funciona enquanto o projeto é pequeno, m
 O GitHub Actions executa dois trabalhos independentes a cada envio para `main` e em cada pull request: um para a API e outro para a interface. A API instala as dependências, verifica estilo com Ruff e corre os testes. A interface instala exatamente as versões do ficheiro de bloqueio, corre os testes e cria uma compilação de produção.
 
 Os trabalhos são independentes para que uma falha indique imediatamente se está no backend ou no frontend. Nesta fase não fazemos publicação automática: validar automaticamente não deve ser confundido com colocar a aplicação em produção.
+
+## Etapa 8 — Ensaio de produção em Docker
+
+Criámos imagens para a API e a interface e um ambiente de demonstração isolado na porta 3100. A base de dados tem um volume próprio e as migrações correm antes do arranque da API. O endereço interno da API é configurável em tempo de execução através de `API_BASE_URL`.
+
+O ensaio encontrou uma dependência de produção incorretamente classificada como desenvolvimento: `httpx`, usada pelo cliente externo. Foi movida para as dependências normais. Este teste demonstra por que razão os testes numa máquina com todas as ferramentas instaladas não substituem um arranque limpo.
+
+A sincronização também pode ser executada com `python -m app.sync`, permitindo ao alojamento agendá-la sem chamar um endpoint público. O orçamento aprovado é apenas gratuito; a publicação online depende da configuração das contas de alojamento. Os passos operacionais estão em `DEPLOYMENT.md`.

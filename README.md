@@ -36,3 +36,7 @@ uvicorn app.main:app --reload --port 8000
 A interface ficará disponível em `http://localhost:3000`; a documentação da API em `http://localhost:8000/docs`.
 
 Consulte [SPEC.md](SPEC.md) para o âmbito e [docs/TASKS.md](docs/TASKS.md) para as próximas tarefas.
+
+## Demonstração Docker
+
+A interface e a API também têm imagens Docker. O ensaio isolado, as variáveis necessárias e os passos de publicação estão em [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).

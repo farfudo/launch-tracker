@@ -28,7 +28,8 @@
 
 - [ ] Adicionar testes de interface e integração.
 - [x] Configurar CI no GitHub Actions.
-- [ ] Preparar ambiente de demonstração.
+- [x] Preparar imagens Docker e ambiente isolado de demonstração.
+- [ ] Publicar demonstração online com alojamento gratuito.
 
 ## Depois do MVP
 

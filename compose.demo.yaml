@@ -1,0 +1,41 @@
+# Isolated demo stack: different ports and volume from local development.
+name: launch-tracker-demo
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: launch_tracker
+      POSTGRES_USER: launch_tracker
+      POSTGRES_PASSWORD: ${DEMO_DATABASE_PASSWORD:?Set DEMO_DATABASE_PASSWORD}
+    volumes:
+      - demo_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U launch_tracker -d launch_tracker"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  migrate:
+    build: ./services/api
+    environment: &api-environment
+      DATABASE_URL: postgresql+psycopg://launch_tracker:${DEMO_DATABASE_PASSWORD:?Set DEMO_DATABASE_PASSWORD}@postgres:5432/launch_tracker
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+  api:
+    build: ./services/api
+    environment: *api-environment
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+  web:
+    build: ./apps/web
+    environment:
+      API_BASE_URL: http://api:8000
+    ports:
+      - "127.0.0.1:3100:3000"
+    depends_on:
+      api:
+        condition: service_started
+volumes:
+  demo_data:
