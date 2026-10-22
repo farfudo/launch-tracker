@@ -1,3 +1,5 @@
+from datetime import UTC, datetime, timedelta
+
 from app.clients.launch_library import LaunchSummary
 from app.models import Launch
 from app.repositories import upsert_launches
@@ -69,6 +71,7 @@ def test_launches_can_be_searched_filtered_and_opened(client, db_session) -> Non
 
 
 def test_sync_populates_the_cache(client, db_session, monkeypatch) -> None:
+    monkeypatch.setenv("SYNC_TOKEN", "test-only-token")
     monkeypatch.setattr(
         "app.main.get_upcoming_launches",
         lambda *, limit: [
@@ -81,8 +84,43 @@ def test_sync_populates_the_cache(client, db_session, monkeypatch) -> None:
         ],
     )
 
-    response = client.post("/api/v1/launches/sync")
+    response = client.post("/api/v1/launches/sync", headers={"X-Sync-Token": "test-only-token"})
 
     assert response.status_code == 200
     assert response.json() == {"imported": 1}
     assert db_session.get(Launch, "example-launch-2") is not None
+
+
+
+def test_public_requests_cannot_trigger_upstream_sync(client, monkeypatch) -> None:
+    def unexpected_fetch(**kwargs):
+        raise AssertionError("Unauthorized requests must not call the external provider")
+
+    monkeypatch.setattr("app.main.get_upcoming_launches", unexpected_fetch)
+    monkeypatch.delenv("SYNC_TOKEN", raising=False)
+    assert client.post("/api/v1/launches/sync").status_code == 503
+    monkeypatch.setenv("SYNC_TOKEN", "test-only-token")
+    assert client.post("/api/v1/launches/sync").status_code == 401
+    assert client.post(
+        "/api/v1/launches/sync", headers={"X-Sync-Token": "wrong-token"}
+    ).status_code == 401
+
+
+def test_data_status_distinguishes_empty_fresh_and_stale_cache(client, db_session) -> None:
+    empty = client.get("/api/v1/data-status").json()
+    assert empty["cached_launches"] == 0
+    assert empty["last_updated_at"] is None
+    assert empty["stale"] is True
+
+    upsert_launches(db_session, [LaunchSummary(
+        id="status-example", name="Example", status="Go", net="2099-01-01T12:00:00Z"
+    )])
+    fresh = client.get("/api/v1/data-status").json()
+    assert fresh["cached_launches"] == 1
+    assert fresh["last_updated_at"] is not None
+    assert fresh["stale"] is False
+
+    launch = db_session.get(Launch, "status-example")
+    launch.source_updated_at = datetime.now(UTC) - timedelta(hours=7)
+    db_session.commit()
+    assert client.get("/api/v1/data-status").json()["stale"] is True

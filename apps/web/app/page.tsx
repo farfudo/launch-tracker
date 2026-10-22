@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { formatLaunchStatus } from "../lib/launch";
-import { getFilterOptions, getUpcomingLaunches, type FilterOptions, type Launch } from "../lib/api";
+import { getDataStatus, getFilterOptions, getUpcomingLaunches, type FilterOptions, type Launch } from "../lib/api";
 import { formatLaunchDate } from "../lib/date";
 
 type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string }>;
 
 export default async function Home({ searchParams }: { searchParams: SearchParams }) {
   const filters = await searchParams;
+  const dataStatusPromise = getDataStatus().catch(() => null);
   let launches: Launch[];
   let filterOptions: FilterOptions;
   let hasLaunchData = true;
@@ -21,6 +22,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
     filterOptions = { agencies: [], vehicles: [] };
     hasLaunchData = false;
   }
+  const dataStatus = await dataStatusPromise;
 
   return (
     <main>
@@ -35,8 +37,16 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <p className="eyebrow">Calendário global</p>
             <h2 id="next-launch-heading">Próximos lançamentos</h2>
           </div>
-          <span className="status">Dados em direto</span>
+          <span className="status">
+            {!hasLaunchData ? "Dados indisponíveis" : dataStatus?.cached_launches === 0 ? "A aguardar dados" : dataStatus?.stale ? "Dados por atualizar" : "Calendário de lançamentos"}
+          </span>
         </div>
+        {hasLaunchData && dataStatus?.last_updated_at ? (
+          <p className="launch-meta">
+            Fonte: {dataStatus.source} · Última atualização: {formatLaunchDate(dataStatus.last_updated_at)}.
+            {dataStatus.stale ? " A atualização está atrasada; as datas podem ter mudado." : " As datas previstas podem sofrer alterações."}
+          </p>
+        ) : null}
         <form className="filters" action="/" method="get">
           <label>
             <span>Pesquisar</span>
@@ -71,7 +81,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
                 </p>
               </Link>
             ))}
-          </div> : <article className="launch-card"><h3>Sem resultados</h3><p>Tenta outros termos ou remove alguns filtros.</p></article>
+          </div> : <article className="launch-card">
+            <h3>{dataStatus?.cached_launches === 0 ? "O calendário está a ser preparado" : "Sem resultados"}</h3>
+            <p>{dataStatus?.cached_launches === 0 ? "Ainda não recebemos os primeiros lançamentos da fonte de dados. Volta a consultar mais tarde." : "Tenta outros termos ou remove alguns filtros."}</p>
+          </article>
         ) : (
           <article className="launch-card">
             <h3>Os dados estão temporariamente indisponíveis.</h3>

@@ -1,10 +1,23 @@
 from datetime import UTC, datetime
 
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.clients.launch_library import LaunchSummary
 from app.models import Launch
+from app.schemas import DataStatusResponse
+
+
+def get_data_status(db: Session) -> DataStatusResponse:
+    count, last_updated = db.execute(
+        select(func.count(Launch.id), func.max(Launch.source_updated_at))
+    ).one()
+    if last_updated is not None and last_updated.tzinfo is None:
+        last_updated = last_updated.replace(tzinfo=UTC)
+    stale = last_updated is None or (datetime.now(UTC) - last_updated).total_seconds() > 21600
+    return DataStatusResponse(
+        cached_launches=count, last_updated_at=last_updated, stale=stale
+    )
 
 
 def list_launches(

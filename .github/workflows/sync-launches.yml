@@ -1,0 +1,41 @@
+name: Sync launches
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-launches-production
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.event_name == 'workflow_dispatch' || vars.SYNC_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+    defaults:
+      run:
+        working-directory: services/api
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check database configuration
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::Configure the NEON_DATABASE_URL Actions secret before running sync."
+            exit 1
+          fi
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: services/api/pyproject.toml
+      - name: Install dependencies
+        run: python -m pip install .
+      - name: Refresh launch cache
+        run: python -m app.sync

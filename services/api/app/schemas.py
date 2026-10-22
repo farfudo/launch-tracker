@@ -23,3 +23,10 @@ class SyncResponse(BaseModel):
 class FilterOptionsResponse(BaseModel):
     agencies: list[str]
     vehicles: list[str]
+
+
+class DataStatusResponse(BaseModel):
+    source: str = "Launch Library 2"
+    cached_launches: int
+    last_updated_at: datetime | None
+    stale: bool

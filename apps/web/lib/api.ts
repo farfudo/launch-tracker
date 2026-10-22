@@ -14,6 +14,19 @@ export type FilterOptions = {
   vehicles: string[];
 };
 
+export type DataStatus = {
+  source: string;
+  cached_launches: number;
+  last_updated_at: string | null;
+  stale: boolean;
+};
+
+export async function getDataStatus(): Promise<DataStatus> {
+  const response = await fetch(`${apiBaseUrl}/api/v1/data-status`, { cache: "no-store" });
+  if (!response.ok) throw new Error("Unable to retrieve data status.");
+  return response.json() as Promise<DataStatus>;
+}
+
 const apiBaseUrl = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
 
 export type LaunchFilters = {

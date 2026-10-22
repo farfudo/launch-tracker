@@ -1,5 +1,13 @@
 # Diário de aprendizagem — LaunchSkyline
 
+## Etapa 9 — Fiabilidade e atualização dos dados
+
+A publicação mostrou que o arranque dependia da disponibilidade da fonte externa e consumia uma consulta a cada deploy. A sincronização passa para um workflow horário independente no GitHub. A tarefa só é ativada após configurar um segredo de ligação ao Neon e uma variável de ativação. Esta etapa não requer um plano pago.
+
+Uma resposta 429 é identificada explicitamente e o tempo `Retry-After`, quando enviado pelo fornecedor, é preservado no erro da tarefa. Não fazemos tentativas em ciclo. O endpoint de sincronização HTTP exige um token administrativo e fica desativado se esse token não estiver configurado, evitando que pedidos de visitantes consumam a quota da fonte.
+
+A interface apresenta a hora de atualização e distingue dados ainda não carregados de uma pesquisa sem resultados. O indicador de cache antiga usa seis horas como limite operacional, não como garantia de validade dos horários das missões. Testamos a proteção do endpoint, os estados vazio/recente/antigo, a ausência de sincronização no arranque e o tratamento de limites sem consultas reais ao fornecedor.
+
 ## Etapa 4 — Persistência e cache
 
 ### Problema

@@ -29,7 +29,9 @@
 - [ ] Adicionar testes de interface e integração.
 - [x] Configurar CI no GitHub Actions.
 - [x] Preparar imagens Docker e ambiente isolado de demonstração.
-- [ ] Publicar demonstração online com alojamento gratuito.
+- [x] Publicar demonstração online com alojamento gratuito.
+- [x] Preparar sincronização horária e apresentar a idade dos dados.
+- [ ] Configurar o segredo Neon no GitHub e validar a primeira sincronização agendada.
 
 ## Depois do MVP
 

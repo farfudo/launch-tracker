@@ -10,6 +10,10 @@ UPCOMING_LAUNCHES_URL = "https://ll.thespacedevs.com/2.3.0/launches/upcoming/"
 class LaunchLibraryError(Exception):
     """Raised when Launch Library cannot provide a usable response."""
 
+    def __init__(self, message: str, retry_after: str | None = None):
+        super().__init__(message)
+        self.retry_after = retry_after
+
 
 class LaunchSummary(BaseModel):
     id: str
@@ -45,6 +49,11 @@ def get_upcoming_launches(limit: int = 20) -> list[LaunchSummary]:
             params={"format": "json", "mode": "normal", "ordering": "net", "limit": limit},
             timeout=10.0,
         )
+        if response.status_code == 429:
+            raise LaunchLibraryError(
+                "Launch Library rate limit reached. Retry later.",
+                retry_after=response.headers.get("Retry-After"),
+            )
         response.raise_for_status()
         payload = response.json()
         return [parse_launch(launch) for launch in payload["results"]]

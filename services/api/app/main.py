@@ -1,6 +1,8 @@
+import os
+import secrets
 from typing import Literal
 
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -9,9 +11,9 @@ from app.clients.launch_library import (
     get_upcoming_launches,
 )
 from app.db import get_db
-from app.repositories import get_filter_options, get_launch, upsert_launches
+from app.repositories import get_data_status, get_filter_options, get_launch, upsert_launches
 from app.repositories import list_launches as list_cached_launches
-from app.schemas import FilterOptionsResponse, LaunchResponse, SyncResponse
+from app.schemas import DataStatusResponse, FilterOptionsResponse, LaunchResponse, SyncResponse
 
 app = FastAPI(title="LaunchSkyline API", version="0.1.0")
 
@@ -23,6 +25,11 @@ class HealthResponse(BaseModel):
 @app.get("/health", response_model=HealthResponse, tags=["system"])
 def health() -> HealthResponse:
     return HealthResponse(status="ok")
+
+
+@app.get("/api/v1/data-status", response_model=DataStatusResponse, tags=["system"])
+def data_status(db: Session = Depends(get_db)) -> DataStatusResponse:
+    return get_data_status(db)
 
 
 @app.get("/api/v1/launches", response_model=list[LaunchResponse], tags=["launches"])
@@ -58,8 +65,15 @@ def launch_detail(launch_id: str, db: Session = Depends(get_db)) -> LaunchRespon
 
 
 @app.post("/api/v1/launches/sync", response_model=SyncResponse, tags=["launches"])
-def sync_launches(db: Session = Depends(get_db)) -> SyncResponse:
+def sync_launches(
+    x_sync_token: str | None = Header(default=None), db: Session = Depends(get_db)
+) -> SyncResponse:
     """Refresh the local cache from the external launch provider."""
+    sync_token = os.getenv("SYNC_TOKEN")
+    if not sync_token:
+        raise HTTPException(status_code=503, detail="HTTP sync is disabled. Use the scheduled job.")
+    if x_sync_token is None or not secrets.compare_digest(x_sync_token, sync_token):
+        raise HTTPException(status_code=401, detail="Invalid sync credentials.")
     try:
         launches = get_upcoming_launches(limit=100)
     except LaunchLibraryError as error:
