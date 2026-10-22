@@ -31,7 +31,7 @@ GitHub Actions → Launch Library 2 → dados normalizados no PostgreSQL
 
 ## Desenvolvimento local
 
-Pré-requisitos: Node.js 22, Python 3.12+, Docker com Compose.
+Pré-requisitos: Node.js 22.12+ (linha 22) ou 24+, Python 3.12+, Docker com Compose.
 
 Na raiz:
 
