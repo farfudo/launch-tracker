@@ -17,27 +17,25 @@ function readPreference(): Theme | null {
 }
 
 function getTheme(): Theme {
-  return readPreference() ?? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  return readPreference() ?? "light";
 }
 
 function subscribe(notify: () => void) {
-  const media = window.matchMedia("(prefers-color-scheme: dark)");
   const update = () => { document.documentElement.dataset.theme = getTheme(); notify(); };
   const storage = (event: StorageEvent) => {
     if (event.key === storageKey || event.key === null) { visitPreference = null; update(); }
   };
-  media.addEventListener("change", update);
+  update();
   window.addEventListener("storage", storage);
   window.addEventListener("nextrocketlaunch-theme-change", update);
   return () => {
-    media.removeEventListener("change", update);
     window.removeEventListener("storage", storage);
     window.removeEventListener("nextrocketlaunch-theme-change", update);
   };
 }
 
 export function ThemeScript() {
-  const script = `var saved; try { saved = localStorage.getItem('${storageKey}'); } catch (_) {} document.documentElement.dataset.theme = saved === 'light' || saved === 'dark' ? saved : (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');`;
+  const script = `var saved; try { saved = localStorage.getItem('${storageKey}'); } catch (_) {} document.documentElement.dataset.theme = saved === 'dark' ? 'dark' : 'light';`;
   return <script dangerouslySetInnerHTML={{ __html: script }} />;
 }
 

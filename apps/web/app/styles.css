@@ -241,26 +241,6 @@ button { background: #6ee7d8; border: 0; color: #06201f; cursor: pointer; font-w
   --warning: #ffc4ad;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) {
-    color-scheme: dark;
-    --page: #080f13;
-    --surface: #101b21;
-    --surface-raised: #15232a;
-    --surface-strong: #1b2d35;
-    --text: #edf8f7;
-    --text-soft: #b4c9cb;
-    --text-faint: #8ca6aa;
-    --border: #294149;
-    --border-strong: #41616a;
-    --accent: #39d9c0;
-    --accent-strong: #74ead8;
-    --accent-soft: #153b3d;
-    --accent-ink: #062b2a;
-    --status: #153338;
-    --warning: #ffc4ad;
-  }
-}
 
 html, body { min-height: 100%; background: var(--page); color: var(--text); }
 body { transition: background-color .2s ease, color .2s ease; }

@@ -22,14 +22,19 @@ async function render() {
   const { LocaleProvider } = await import("../components/locale-provider");
   await act(async () => root.render(<LocaleProvider locale="en-GB"><ThemeToggle /></LocaleProvider>));
 }
-it("follows system changes until the visitor makes a choice", async () => {
+it("defaults to light even on a dark system and allows an explicit dark preference", async () => {
+  dark = true;
   await render();
-  await act(async () => { dark = true; mediaEvents.dispatchEvent(new Event("change")); });
-  expect(document.documentElement.dataset.theme).toBe("dark");
-  await act(async () => container.querySelector("button")!.click());
-  expect(localStorage.getItem("nextrocketlaunch-theme")).toBe("light");
-  await act(async () => mediaEvents.dispatchEvent(new Event("change")));
   expect(document.documentElement.dataset.theme).toBe("light");
+  await act(async () => container.querySelector("button")!.click());
+  expect(localStorage.getItem("nextrocketlaunch-theme")).toBe("dark");
+  await act(async () => mediaEvents.dispatchEvent(new Event("change")));
+  expect(document.documentElement.dataset.theme).toBe("dark");
+});
+it("preserves a saved dark preference on arrival", async () => {
+  localStorage.setItem("nextrocketlaunch-theme", "dark");
+  await render();
+  expect(document.documentElement.dataset.theme).toBe("dark");
 });
 it("keeps the toggle usable when browser storage is blocked", async () => {
   vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => { throw new Error("blocked"); });
