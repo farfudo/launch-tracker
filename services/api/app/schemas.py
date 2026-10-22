@@ -16,6 +16,15 @@ class LaunchResponse(BaseModel):
     source_updated_at: datetime
 
 
+class LaunchDetailResponse(LaunchResponse):
+    mission_name: str | None
+    mission_description: str | None
+    pad_name: str | None
+    location_name: str | None
+    window_start: datetime | None
+    window_end: datetime | None
+
+
 class SyncResponse(BaseModel):
     imported: int
 

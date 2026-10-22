@@ -12,6 +12,33 @@ def test_health_returns_ok(client) -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_mission_details_are_persisted_and_updated(client, db_session) -> None:
+    summary = LaunchSummary(
+        id="mission-detail", name="Example launch", status="Go", net="2099-01-01T12:00:00Z",
+        mission_name="Science mission", mission_description="First description.",
+        pad_name="Pad 1", location_name="Example spaceport",
+        window_start="2099-01-01T12:00:00Z", window_end="2099-01-01T13:00:00Z",
+    )
+    upsert_launches(db_session, [summary])
+    db_session.expire_all()
+    detail = client.get("/api/v1/launches/mission-detail").json()
+    assert detail["mission_description"] == "First description."
+    assert detail["mission_name"] == "Science mission"
+    assert detail["location_name"] == "Example spaceport"
+    assert detail["pad_name"] == "Pad 1"
+    assert detail["window_start"].startswith("2099-01-01T12:00:00")
+    assert detail["window_end"].startswith("2099-01-01T13:00:00")
+    assert "mission_description" not in client.get("/api/v1/launches").json()[0]
+
+    summary.mission_description = "Updated description."
+    summary.window_end = None
+    upsert_launches(db_session, [summary])
+    db_session.expire_all()
+    updated = client.get("/api/v1/launches/mission-detail").json()
+    assert updated["mission_description"] == "Updated description."
+    assert updated["window_end"] is None
+
+
 def test_launches_exposes_the_cached_contract(client, db_session) -> None:
     upsert_launches(
         db_session,
@@ -33,6 +60,10 @@ def test_launches_exposes_the_cached_contract(client, db_session) -> None:
     assert {
         "id", "name", "status", "net", "agency", "vehicle", "source_url", "source_updated_at"
     } <= launch.keys()
+    detail = client.get("/api/v1/launches/example-launch-1").json()
+    assert detail["mission_description"] is None
+    assert detail["location_name"] is None
+    assert detail["window_start"] is None
 
 
 def test_launches_can_be_searched_filtered_and_opened(client, db_session) -> None:

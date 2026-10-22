@@ -13,7 +13,13 @@ from app.clients.launch_library import (
 from app.db import get_db
 from app.repositories import get_data_status, get_filter_options, get_launch, upsert_launches
 from app.repositories import list_launches as list_cached_launches
-from app.schemas import DataStatusResponse, FilterOptionsResponse, LaunchResponse, SyncResponse
+from app.schemas import (
+    DataStatusResponse,
+    FilterOptionsResponse,
+    LaunchDetailResponse,
+    LaunchResponse,
+    SyncResponse,
+)
 
 app = FastAPI(title="LaunchSkyline API", version="0.1.0")
 
@@ -55,8 +61,8 @@ def filter_options(db: Session = Depends(get_db)) -> FilterOptionsResponse:
     return FilterOptionsResponse(agencies=agencies, vehicles=vehicles)
 
 
-@app.get("/api/v1/launches/{launch_id}", response_model=LaunchResponse, tags=["launches"])
-def launch_detail(launch_id: str, db: Session = Depends(get_db)) -> LaunchResponse:
+@app.get("/api/v1/launches/{launch_id}", response_model=LaunchDetailResponse, tags=["launches"])
+def launch_detail(launch_id: str, db: Session = Depends(get_db)) -> LaunchDetailResponse:
     """Return one launch from the local cache."""
     launch = get_launch(db, launch_id)
     if launch is None:

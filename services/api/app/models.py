@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, String
+from sqlalchemy import DateTime, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -16,4 +16,10 @@ class Launch(Base):
     agency: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
     vehicle: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
     source_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    mission_name: Mapped[str | None] = mapped_column(Text, nullable=True)
+    mission_description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    pad_name: Mapped[str | None] = mapped_column(Text, nullable=True)
+    location_name: Mapped[str | None] = mapped_column(Text, nullable=True)
+    window_start: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    window_end: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     source_updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

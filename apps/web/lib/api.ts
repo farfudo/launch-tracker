@@ -14,6 +14,15 @@ export type FilterOptions = {
   vehicles: string[];
 };
 
+export type LaunchDetail = Launch & {
+  mission_name: string | null;
+  mission_description: string | null;
+  pad_name: string | null;
+  location_name: string | null;
+  window_start: string | null;
+  window_end: string | null;
+};
+
 export type DataStatus = {
   source: string;
   cached_launches: number;
@@ -57,8 +66,8 @@ export async function getFilterOptions(): Promise<FilterOptions> {
   return response.json() as Promise<FilterOptions>;
 }
 
-export async function getLaunch(launchId: string): Promise<Launch> {
+export async function getLaunch(launchId: string): Promise<LaunchDetail> {
   const response = await fetch(`${apiBaseUrl}/api/v1/launches/${launchId}`, { cache: "no-store" });
   if (!response.ok) throw new Error("Unable to retrieve launch.");
-  return response.json() as Promise<Launch>;
+  return response.json() as Promise<LaunchDetail>;
 }

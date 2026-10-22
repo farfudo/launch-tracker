@@ -1,5 +1,13 @@
 # Diário de aprendizagem — LaunchSkyline
 
+## Etapa 10 — Contexto de cada missão
+
+O detalhe passa a incluir nome e descrição da missão, local, plataforma e início/fim da janela. Os campos são opcionais porque a Launch Library pode omiti-los ou ainda não os conhecer. A migração `20261022_03` acrescenta colunas sem apagar os lançamentos existentes. A próxima sincronização preenche-as.
+
+A API usa um contrato específico para o detalhe (`LaunchDetailResponse`), mantendo a resposta do calendário leve. A descrição é apresentada como texto no idioma original da fonte, sem tradução automática nem conteúdo HTML executável. Os horários continuam em UTC, explicitamente indicado na página. As datas são previsões sujeitas a alteração.
+
+Os testes verificam transformação da resposta externa, dados ausentes, persistência, atualização dos campos e manutenção do contrato da lista. A implantação tem duas fases: aplicar a migração e, depois, sincronizar dados para enriquecer os registos existentes.
+
 A primeira execução manual do workflow `Sync launches` terminou com sucesso em 22 de outubro de 2026 (execução GitHub `39766771749`). A API pública confirmou 100 lançamentos e uma cache recente. A variável `SYNC_ENABLED=true` foi ativada após essa validação; as execuções horárias futuras ficam dependentes do agendador GitHub.
 
 ## Etapa 9 — Fiabilidade e atualização dos dados

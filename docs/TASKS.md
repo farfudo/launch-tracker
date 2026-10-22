@@ -20,6 +20,7 @@
 - [x] Criar lista/calendário de próximos lançamentos.
 - [x] Adicionar pesquisa e filtros por agência e veículo.
 - [x] Criar página de detalhe com os dados normalizados disponíveis.
+- [x] Acrescentar descrição e nome da missão, local, plataforma e janela prevista.
 - [x] Apresentar uma ligação transparente para a fonte de dados na página de detalhe.
 - [x] Adicionar estados de carregamento, vazio e erro.
 - [ ] Guardar e apresentar fontes oficiais, quando a fonte externa as disponibilizar.

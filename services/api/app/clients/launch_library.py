@@ -23,6 +23,12 @@ class LaunchSummary(BaseModel):
     agency: str | None = None
     vehicle: str | None = None
     source_url: str | None = None
+    mission_name: str | None = None
+    mission_description: str | None = None
+    pad_name: str | None = None
+    location_name: str | None = None
+    window_start: datetime | None = None
+    window_end: datetime | None = None
 
 
 def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
@@ -30,6 +36,9 @@ def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
     rocket = payload.get("rocket") or {}
     configuration = rocket.get("configuration") or {}
     status = payload.get("status") or {}
+    mission = payload.get("mission") or {}
+    pad = payload.get("pad") or {}
+    location = pad.get("location") or {}
 
     return LaunchSummary(
         id=payload["id"],
@@ -39,6 +48,12 @@ def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
         agency=provider.get("name"),
         vehicle=configuration.get("full_name"),
         source_url=payload.get("url"),
+        mission_name=mission.get("name") or None,
+        mission_description=mission.get("description") or None,
+        pad_name=pad.get("name") or None,
+        location_name=location.get("name") or None,
+        window_start=payload.get("window_start"),
+        window_end=payload.get("window_end"),
     )
 
 

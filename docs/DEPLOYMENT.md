@@ -49,3 +49,5 @@ Sem `SYNC_ENABLED`, as execuções agendadas são ignoradas. Sem o segredo, uma 
 `GET /api/v1/data-status` indica quantos registos existem, quando foi atualizado o registo mais recente e se a cache tem mais de seis horas. A interface distingue cache vazia de pesquisa sem resultados e mostra um aviso quando a atualização está atrasada.
 
 O endpoint `POST /api/v1/launches/sync` fica desativado por omissão. Se for necessário usá-lo administrativamente, configurar `SYNC_TOKEN` na API e enviar o mesmo valor no cabeçalho `X-Sync-Token`. A tarefa GitHub usa a CLI e não precisa desse token. Evitar desencadear sincronizações simultaneamente por várias vias.
+
+Ao acrescentar campos persistidos, aguardar que o deploy da API aplique a migração antes de executar manualmente `Sync launches`. A migração `20261022_03`, por exemplo, acrescenta os campos opcionais de missão/local/janela: os registos anteriores permanecem acessíveis e recebem essa informação na sincronização seguinte.
