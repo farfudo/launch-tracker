@@ -12,6 +12,7 @@ import { MissionIcon, type MissionIconName } from "../../../components/mission-i
 import { VehicleVisual } from "../../../components/vehicle-visual";
 import { DesignReview, resolveDesign } from "../../../components/design-review";
 import { BrandMark } from "../../../components/brand";
+import { MissionStreams } from "../../../components/mission-streams";
 
 type RouteParams = Promise<{ id: string }>;
 
@@ -70,6 +71,7 @@ export default async function LaunchDetail({ params, searchParams }: {
         </section>
 
         <div className="mission-content-grid">
+          <MissionStreams launch={launch} />
           <section className="mission-panel mission-story" aria-labelledby="mission-heading">
             <div className="mission-panel-heading"><span className="panel-icon"><MissionIcon name="orbit" /></span><h2 id="mission-heading">{t.aboutMission}</h2><span className="panel-index" aria-hidden="true">01</span></div>
             <p className="mission-description">{launch.mission_description || t.descriptionPending}</p>

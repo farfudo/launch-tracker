@@ -1,6 +1,7 @@
 import type { Locale } from "./i18n";
 
 const en = {
+  watchStream: "Watch stream", newTab: "opens in a new tab", streamsHeading: "Video and coverage", streamsNotice: "Links supplied by Launch Library 2. Publishers may be official or independent. Availability and live status can change; check the publisher's page.", streamReportedLive: "Reported live at last update", streamScheduled: "Scheduled at last update", streamAvailable: "Video link available", streamMissing: "No video link supplied in the latest cached data.", streamStarts: "Video start", streamSnapshot: "Last checked by this app", missionSources: "Mission links",
   loadingLaunches: "Updating launches…",
   exploreNext: "Explore the next mission",
   selectedMission: "Selected mission", loadingMission: "Loading mission details…", missionError: "Could not load this mission. Try again or open the full details.", fullDetails: "View full details", featured: "Featured launch", featuredNote: "Another upcoming mission to explore",
@@ -11,6 +12,7 @@ const en = {
 };
 type Copy = { [K in keyof typeof en]: string };
 const pt: Copy = {
+  watchStream: "Ver transmissão", newTab: "abre num novo separador", streamsHeading: "Vídeo e cobertura", streamsNotice: "Ligações fornecidas pela Launch Library 2. Os canais podem ser oficiais ou independentes. A disponibilidade e o estado de direto podem mudar; consulta a página do canal.", streamReportedLive: "Indicado em direto na última atualização", streamScheduled: "Agendado na última atualização", streamAvailable: "Ligação de vídeo disponível", streamMissing: "Sem ligação de vídeo nos últimos dados em cache.", streamStarts: "Início do vídeo", streamSnapshot: "Última consulta pela aplicação", missionSources: "Ligações da missão",
   loadingLaunches: "A atualizar lançamentos…",
   exploreNext: "Explorar próxima missão",
   selectedMission: "Missão selecionada", loadingMission: "A carregar detalhes da missão…", missionError: "Não foi possível carregar esta missão. Tenta novamente ou abre os detalhes completos.", fullDetails: "Ver detalhes completos", featured: "Lançamento em destaque", featuredNote: "Outra missão futura para explorar",
@@ -19,6 +21,7 @@ const pt: Copy = {
   filters: "Mais filtros", filterAgency: "Filtrar por agência", all: "Todas", calendar: "Calendário de lançamentos", calendarBody: "Encontra a próxima missão. Pesquisa agências e veículos.", yourFavorites: "Os teus favoritos", favoritesBody: "Mantém por perto as missões que queres acompanhar.", details: "Detalhes da missão", detailsBody: "Explora foguetões, janelas de lançamento e informações das missões.", viewDetails: "Ver detalhes", zones: "Fusos horários", loadMore: "Carregar mais lançamentos", privacy: "Sobre os teus favoritos", yourTime: "A tua hora", utc: "UTC", estimate: "Horário previsto", unconfirmed: "Hora de lançamento por confirmar", elapsed: "Hora prevista atingida · consulta o estado da missão", timer: "Tempo até ao lançamento previsto", days: "Dias", hours: "Horas", mins: "Min", secs: "Seg", light: "Claro", dark: "Escuro", switchLight: "Mudar para o tema claro", switchDark: "Mudar para o tema escuro", themeError: "Tema alterado nesta visita; o navegador não conseguiu guardar a preferência.", imagery: "Imagem", reference: "A imagem de referência pode mostrar outra missão.", imageInfo: "Informação da imagem", tagline: "O espaço, no momento certo."
 };
 const es: Copy = {
+  watchStream: "Ver transmisión", newTab: "abre en una pestaña nueva", streamsHeading: "Vídeo y cobertura", streamsNotice: "Enlaces facilitados por Launch Library 2. Los canales pueden ser oficiales o independientes. La disponibilidad y el estado en directo pueden cambiar; consulta la página del canal.", streamReportedLive: "Indicado en directo en la última actualización", streamScheduled: "Programado en la última actualización", streamAvailable: "Enlace de vídeo disponible", streamMissing: "Sin enlace de vídeo en los últimos datos en caché.", streamStarts: "Inicio del vídeo", streamSnapshot: "Última consulta de la aplicación", missionSources: "Enlaces de la misión",
   loadingLaunches: "Actualizando lanzamientos…",
   exploreNext: "Explorar próxima misión",
   selectedMission: "Misión seleccionada", loadingMission: "Cargando detalles de la misión…", missionError: "No se pudo cargar esta misión. Inténtalo de nuevo o abre los detalles completos.", fullDetails: "Ver detalles completos", featured: "Lanzamiento destacado", featuredNote: "Otra próxima misión para explorar",

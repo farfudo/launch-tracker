@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, String, Text
+from sqlalchemy import JSON, DateTime, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -29,4 +29,6 @@ class Launch(Base):
     image_license_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     image_kind: Mapped[str | None] = mapped_column(Text, nullable=True)
     image_title: Mapped[str | None] = mapped_column(Text, nullable=True)
+    streams: Mapped[list] = mapped_column(JSON, default=list, server_default="[]")
+    mission_links: Mapped[list] = mapped_column(JSON, default=list, server_default="[]")
     source_updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

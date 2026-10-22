@@ -9,6 +9,7 @@ import { useLocale } from "./locale-provider";
 import { LocalLaunchDate } from "./local-launch-date";
 import { LaunchTimes } from "./launch-times";
 import { FavoriteButton } from "./favorites";
+import { MissionStreams } from "./mission-streams";
 
 type Selection = {
   selected: Launch | null;
@@ -87,6 +88,7 @@ export function MissionDetailPanel() {
     {loading ? <p className="panel-feedback">{d.loadingMission}</p> : null}
     {error ? <div className="panel-feedback" role="alert"><p>{d.missionError}</p><button type="button" onClick={() => select(selected)}>{t.retry}</button></div> : null}
     {detail ? <div className={revision > 0 ? "mission-detail-enter" : undefined}>
+      <MissionStreams launch={detail} />
       <h3>{t.aboutMission}</h3>
       <p className="selected-mission-description">{detail.mission_description || t.descriptionPending}</p>
       {detail.mission_description ? <p className="launch-meta">{t.originalDescription}</p> : null}

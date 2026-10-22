@@ -193,3 +193,16 @@ body { background: var(--surface); }
   .hero-action-mobile { display: inline-flex; }
   .hero-action-desktop { display: none; }
 }
+
+.stream-button { display: inline-flex; align-items: center; gap: .4rem; border: 1px solid var(--border-strong); border-radius: 99px; background: var(--surface-raised); color: var(--text); text-decoration: none; padding: .75rem 1rem; margin-top: .8rem; font-size: .8rem; font-weight: 650; }
+.stream-button span:not(.visually-hidden) { color: var(--text-soft); font-size: .7rem; }
+.mission-streams { border: 1px solid var(--border); background: var(--surface-raised); border-radius: 15px; padding: 1.1rem; margin: 1rem 0; min-width: 0; }
+.mission-content-grid > .mission-streams { grid-column: 1 / -1; margin: 0; }
+.mission-streams h3 { font-size: 1rem; margin: 0 0 .75rem; }
+.mission-streams p { color: var(--text-soft); font-size: .75rem; line-height: 1.6; }
+.mission-streams ul { list-style: none; padding: 0; margin: .8rem 0; display: grid; gap: .75rem; }
+.mission-streams li { padding: .8rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow-wrap: anywhere; }
+.mission-streams li a { display: block; margin-top: .5rem; font-size: .88rem; color: var(--accent-strong); font-weight: 650; }
+.mission-streams li p { margin: .3rem 0; }
+.stream-state { font-size: .7rem; color: var(--accent-strong); }
+.mission-streams .stream-updated { font-size: .65rem; }

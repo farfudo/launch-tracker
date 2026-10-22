@@ -22,6 +22,8 @@ export type FilterOptions = {
 };
 
 export type LaunchDetail = Launch & {
+  streams?: MissionLink[];
+  mission_links?: MissionLink[];
   mission_name: string | null;
   mission_description: string | null;
   pad_name: string | null;
@@ -34,6 +36,16 @@ export type LaunchDetail = Launch & {
   image_license_url: string | null;
   image_kind: "vehicle" | "launch" | null;
   image_title: string | null;
+};
+
+export type MissionLink = {
+  url: string;
+  title?: string | null;
+  source?: string | null;
+  publisher?: string | null;
+  live?: boolean | null;
+  start_time?: string | null;
+  end_time?: string | null;
 };
 
 export type DataStatus = {

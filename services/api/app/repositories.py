@@ -97,6 +97,8 @@ def upsert_launches(db: Session, launches: list[LaunchSummary]) -> int:
         launch.image_license_url = summary.image_license_url
         launch.image_kind = summary.image_kind
         launch.image_title = summary.image_title
+        launch.streams = summary.streams
+        launch.mission_links = summary.mission_links
         launch.source_updated_at = datetime.now(UTC)
 
     db.commit()

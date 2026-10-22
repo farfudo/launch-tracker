@@ -12,6 +12,21 @@ def test_health_returns_ok(client) -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_streams_persist_and_removed_links_do_not_remain_in_cache(client, db_session):
+    summary = LaunchSummary(id="stream", name="Mission", status="Go", net="2099-01-01T12:00:00Z",
+                            streams=[{"url": "https://example.com/watch", "live": True}],
+                            mission_links=[{"url": "https://example.com/mission"}])
+    upsert_launches(db_session, [summary])
+    detail = client.get("/api/v1/launches/stream").json()
+    assert detail["streams"][0]["live"] is True
+    assert detail["mission_links"][0]["url"] == "https://example.com/mission"
+    assert "streams" not in client.get("/api/v1/launches").json()[0]
+    summary.streams = []
+    summary.mission_links = []
+    upsert_launches(db_session, [summary])
+    assert client.get("/api/v1/launches/stream").json()["streams"] == []
+
+
 def test_mission_details_are_persisted_and_updated(client, db_session) -> None:
     summary = LaunchSummary(
         id="mission-detail", name="Example launch", status="Go", net="2099-01-01T12:00:00Z",

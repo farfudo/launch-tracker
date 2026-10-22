@@ -1,6 +1,17 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class MissionLinkResponse(BaseModel):
+    url: str
+    title: str | None = None
+    source: str | None = None
+    publisher: str | None = None
+    priority: int = 99
+    live: bool | None = None
+    start_time: datetime | None = None
+    end_time: datetime | None = None
 
 
 class LaunchResponse(BaseModel):
@@ -30,6 +41,8 @@ class LaunchDetailResponse(LaunchResponse):
     location_name: str | None
     window_start: datetime | None
     window_end: datetime | None
+    streams: list[MissionLinkResponse] = Field(default_factory=list)
+    mission_links: list[MissionLinkResponse] = Field(default_factory=list)
 
 
 class SyncResponse(BaseModel):

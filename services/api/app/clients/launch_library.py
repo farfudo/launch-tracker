@@ -3,7 +3,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 import httpx
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 UPCOMING_LAUNCHES_URL = "https://ll.thespacedevs.com/2.3.0/launches/upcoming/"
 
@@ -37,6 +37,36 @@ class LaunchSummary(BaseModel):
     image_license_url: str | None = None
     image_kind: str | None = None
     image_title: str | None = None
+    streams: list[dict[str, Any]] = Field(default_factory=list)
+    mission_links: list[dict[str, Any]] = Field(default_factory=list)
+
+
+def parse_links(value: Any, *, video: bool = False) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        return []
+    links = []
+    seen = set()
+    for item in value:
+        if not isinstance(item, dict):
+            continue
+        url = safe_image_url(item.get("url"))
+        if not url or url in seen:
+            continue
+        seen.add(url)
+        link = {"url": url}
+        for key in ("title", "publisher", "source"):
+            link[key] = item[key].strip() if isinstance(item.get(key), str) else None
+        link["priority"] = item["priority"] if type(item.get("priority")) is int else 99
+        if video:
+            link["live"] = item["live"] if type(item.get("live")) is bool else None
+            for key in ("start_time", "end_time"):
+                try:
+                    date = datetime.fromisoformat(item.get(key, ""))
+                    link[key] = date.isoformat() if date.tzinfo else None
+                except (ValueError, TypeError, AttributeError):
+                    link[key] = None
+        links.append(link)
+    return sorted(links, key=lambda link: link["priority"])
 
 
 def safe_image_url(value: Any) -> str | None:
@@ -44,7 +74,9 @@ def safe_image_url(value: Any) -> str | None:
         return None
     try:
         parsed = urlsplit(value)
-        if parsed.scheme == "https" and parsed.hostname and not parsed.username:
+        if (parsed.scheme == "https" and parsed.hostname
+                and parsed.username is None and parsed.password is None
+                and not any(char.isspace() for char in value)):
             return value
     except ValueError:
         pass
@@ -96,6 +128,8 @@ def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
         launch_timezone=location.get("timezone_name") or None,
         window_start=payload.get("window_start"),
         window_end=payload.get("window_end"),
+        streams=parse_links(payload.get("vid_urls"), video=True),
+        mission_links=parse_links(payload.get("info_urls")),
         **parse_image(configuration, payload),
     )
 
@@ -104,8 +138,8 @@ def get_upcoming_launches(limit: int = 20) -> list[LaunchSummary]:
     try:
         response = httpx.get(
             UPCOMING_LAUNCHES_URL,
-            params={"format": "json", "mode": "normal", "ordering": "net", "limit": limit},
-            timeout=10.0,
+            params={"format": "json", "mode": "detailed", "ordering": "net", "limit": limit},
+            timeout=30.0,
         )
         if response.status_code == 429:
             raise LaunchLibraryError(

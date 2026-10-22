@@ -110,3 +110,36 @@ def test_missing_or_unsafe_image_remains_unknown() -> None:
     })
     assert launch.image_url is None
     assert launch.image_kind is None
+
+
+def test_video_links_are_validated_deduplicated_and_not_inferred_from_launch_time():
+    launch = parse_launch({
+        "id": "stream", "name": "Mission", "net": "2026-01-01T12:00:00Z",
+        "webcast_live": True,
+        "vid_urls": [None, {"url": "javascript:alert(1)"},
+                     {"url": "https://user:pass@example.com/video"},
+                     {"url": "https://example.com/watch", "publisher": "Channel", "live": False,
+                      "start_time": "2099-01-01T12:00:00Z", "priority": 1},
+                     {"url": "https://example.com/watch", "live": True},
+                     {"url": "https://example.com/other", "live": "true", "start_time": "invalid"}],
+        "info_urls": [{"url": "https://example.com/mission", "title": "Mission page"}],
+    })
+    assert len(launch.streams) == 2
+    assert launch.streams[0]["live"] is False
+    assert launch.streams[0]["publisher"] == "Channel"
+    assert launch.streams[1]["live"] is None
+    assert launch.streams[1]["start_time"] is None
+    assert launch.mission_links[0]["title"] == "Mission page"
+
+
+def test_sync_requests_detailed_mode_once(monkeypatch):
+    calls = []
+
+    def get(url, **kwargs):
+        calls.append(kwargs)
+        return httpx.Response(200, json={"results": []}, request=httpx.Request("GET", url))
+
+    monkeypatch.setattr("app.clients.launch_library.httpx.get", get)
+    assert get_upcoming_launches() == []
+    assert len(calls) == 1
+    assert calls[0]["params"]["mode"] == "detailed"
