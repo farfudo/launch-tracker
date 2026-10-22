@@ -31,7 +31,7 @@
 - [x] Preparar imagens Docker e ambiente isolado de demonstração.
 - [x] Publicar demonstração online com alojamento gratuito.
 - [x] Preparar sincronização horária e apresentar a idade dos dados.
-- [ ] Configurar o segredo Neon no GitHub e validar a primeira sincronização agendada.
+- [x] Configurar o segredo Neon no GitHub, validar a primeira sincronização manual e ativar o agendamento horário.
 
 ## Depois do MVP
 

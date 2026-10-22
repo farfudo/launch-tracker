@@ -1,5 +1,7 @@
 # Diário de aprendizagem — LaunchSkyline
 
+A primeira execução manual do workflow `Sync launches` terminou com sucesso em 22 de outubro de 2026 (execução GitHub `39766771749`). A API pública confirmou 100 lançamentos e uma cache recente. A variável `SYNC_ENABLED=true` foi ativada após essa validação; as execuções horárias futuras ficam dependentes do agendador GitHub.
+
 ## Etapa 9 — Fiabilidade e atualização dos dados
 
 A publicação mostrou que o arranque dependia da disponibilidade da fonte externa e consumia uma consulta a cada deploy. A sincronização passa para um workflow horário independente no GitHub. A tarefa só é ativada após configurar um segredo de ligação ao Neon e uma variável de ativação. Esta etapa não requer um plano pago.
