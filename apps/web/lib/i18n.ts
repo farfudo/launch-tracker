@@ -1,6 +1,6 @@
 export const locales = ["pt-PT", "en-GB", "es-ES"] as const;
 export type Locale = typeof locales[number];
-export const defaultLocale: Locale = "pt-PT";
+export const defaultLocale: Locale = "en-GB";
 export const localeCookie = "launchskyline_locale";
 export const languageNames: Record<Locale, string> = {
   "pt-PT": "Português (Portugal)",
@@ -33,7 +33,7 @@ const pt = {
   languageError: "Não foi possível mudar o idioma. Tenta novamente.",
   brandSubtitle: "Lançamentos espaciais",
   pageTitle: "Acompanhamento de lançamentos espaciais",
-  pageDescription: "Calendário global de lançamentos espaciais. Acompanhe missões, agências, foguetões e datas previstas com o LaunchSkyline.",
+  pageDescription: "Calendário global de lançamentos espaciais. Acompanhe missões, agências, foguetões e datas previstas com o NextRocketLaunch.",
   heroTitle: "O espaço, no momento certo.",
   heroIntro: "Descobre lançamentos de agências de todo o mundo, com informação clara e a origem dos dados identificada.",
   globalCalendar: "Calendário global",
@@ -137,7 +137,7 @@ const en: Messages = {
   languageError: "Unable to change the language. Please try again.",
   brandSubtitle: "Space launches",
   pageTitle: "Space launch tracker",
-  pageDescription: "A global space launch calendar. Follow missions, agencies, rockets and expected launch dates with LaunchSkyline.",
+  pageDescription: "A global space launch calendar. Follow missions, agencies, rockets and expected launch dates with NextRocketLaunch.",
   heroTitle: "Space, right on time.",
   heroIntro: "Discover launches from agencies around the world, with clear information and identified data sources.",
   globalCalendar: "Global calendar",
@@ -239,7 +239,7 @@ const es: Messages = {
   languageError: "No se pudo cambiar el idioma. Inténtalo de nuevo.",
   brandSubtitle: "Lanzamientos espaciales",
   pageTitle: "Seguimiento de lanzamientos espaciales",
-  pageDescription: "Calendario global de lanzamientos espaciales. Sigue misiones, agencias, cohetes y fechas previstas con LaunchSkyline.",
+  pageDescription: "Calendario global de lanzamientos espaciales. Sigue misiones, agencias, cohetes y fechas previstas con NextRocketLaunch.",
   heroTitle: "El espacio, en el momento justo.",
   heroIntro: "Descubre lanzamientos de agencias de todo el mundo, con información clara y fuentes de datos identificadas.",
   globalCalendar: "Calendario global",

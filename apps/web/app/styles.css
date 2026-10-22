@@ -199,3 +199,141 @@ button { background: #6ee7d8; border: 0; color: #06201f; cursor: pointer; font-w
   .design-cinematic .photo-type { bottom: 5rem; left: 1.5rem; right: 1.5rem; width: auto; text-align: left; }
 }
 @media (prefers-reduced-motion: reduce) { .mission-detail-page * { scroll-behavior: auto; transition: none; } }
+
+/* NextRocketLaunch theme tokens. The light theme is the default; the inline
+   preference script sets data-theme before the app becomes interactive. */
+:root {
+  color-scheme: light;
+  --page: #ffffff;
+  --surface: #f6f8f9;
+  --surface-raised: #ffffff;
+  --surface-strong: #edf2f3;
+  --text: #102d3a;
+  --text-soft: #56707b;
+  --text-faint: #718891;
+  --border: #d9e4e6;
+  --border-strong: #b9cdd1;
+  --accent: #0f9f98;
+  --accent-strong: #087f7a;
+  --accent-soft: #dff8f5;
+  --accent-ink: #063e3c;
+  --status: #e8f7f5;
+  --warning: #9b421f;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #080f13;
+  --surface: #101b21;
+  --surface-raised: #15232a;
+  --surface-strong: #1b2d35;
+  --text: #edf8f7;
+  --text-soft: #b4c9cb;
+  --text-faint: #8ca6aa;
+  --border: #294149;
+  --border-strong: #41616a;
+  --accent: #39d9c0;
+  --accent-strong: #74ead8;
+  --accent-soft: #153b3d;
+  --accent-ink: #062b2a;
+  --status: #153338;
+  --warning: #ffc4ad;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --page: #080f13;
+    --surface: #101b21;
+    --surface-raised: #15232a;
+    --surface-strong: #1b2d35;
+    --text: #edf8f7;
+    --text-soft: #b4c9cb;
+    --text-faint: #8ca6aa;
+    --border: #294149;
+    --border-strong: #41616a;
+    --accent: #39d9c0;
+    --accent-strong: #74ead8;
+    --accent-soft: #153b3d;
+    --accent-ink: #062b2a;
+    --status: #153338;
+    --warning: #ffc4ad;
+  }
+}
+
+html, body { min-height: 100%; background: var(--page); color: var(--text); }
+body { transition: background-color .2s ease, color .2s ease; }
+.site-toolbar { align-items: center; gap: .8rem; }
+.language-control { gap: .5rem; }
+.language-control label, .language-control p { color: var(--text-soft); }
+.language-control p, .favorite-action [role="alert"] { color: var(--warning); }
+.brand-mark { color: var(--text); font-weight: 800; letter-spacing: -.055em; text-transform: none; white-space: nowrap; }
+.brand-mark-accent { color: var(--accent); }
+.theme-toggle { align-items: center; background: var(--surface-raised); border: 1px solid var(--border); color: var(--text); display: inline-flex; font-size: .82rem; gap: .45rem; min-height: 2.45rem; padding: .45rem .7rem; }
+.theme-toggle:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-strong); }
+a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible { outline-color: var(--accent); }
+.eyebrow, .launch-date, .time-heading { color: var(--accent-strong); }
+.intro, .launch-meta, .source-note, .mission-panel .launch-meta { color: var(--text-soft); }
+.status { background: var(--status); color: var(--accent-strong); }
+.launch-card, .mission-fact-card { background: var(--surface-raised); border-color: var(--border); box-shadow: 0 12px 30px color-mix(in srgb, var(--text) 6%, transparent); }
+.favorite-views a { border-color: var(--border); color: var(--text-soft); }
+.favorite-views a[aria-current="page"], .favorite-button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-strong); }
+.favorite-button { border-color: var(--border-strong); color: var(--text-soft); }
+.launch-list a:hover { border-color: var(--accent); }
+.filters { background: var(--surface); border-color: var(--border); }
+.filters span, dt { color: var(--text-faint); }
+input, select { background: var(--surface-raised); border-color: var(--border-strong); color: var(--text); }
+button { background: var(--accent); color: var(--accent-ink); }
+button:hover { background: var(--accent-strong); }
+.clear-filters, .back-link, .source-note a { color: var(--accent-strong); }
+.launch-details div { background: var(--surface-raised); border-color: var(--border); }
+.mission-description { color: var(--text-soft); }
+.time-comparison > div { border-color: var(--border-strong); }
+.time-comparison dd, .mission-target time { color: var(--text); }
+
+.mission-detail-page::before { background: radial-gradient(ellipse at 86% 30%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 55%); }
+.mission-navigation .back-link { color: var(--text-soft); }
+.mission-navigation .back-link:hover, .window-time-details summary:hover { color: var(--accent-strong); }
+.mission-wordmark { color: var(--text); font-size: 1rem; }
+.mission-wordmark .mission-icon { color: var(--accent); }
+.mission-signal { background: var(--accent); box-shadow: 0 0 13px color-mix(in srgb, var(--accent) 45%, transparent); }
+.mission-vehicle { color: var(--text-soft); }
+.mission-vehicle .mission-icon, .mission-coordinate { color: var(--text-faint); }
+.mission-vehicle > span { color: var(--border-strong); }
+.mission-status { background: var(--status); border-color: var(--border); color: var(--accent-strong); }
+.mission-target { border-color: var(--border); }
+.mission-target-icon, .fact-card-icon { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); color: var(--accent-strong); }
+.mission-target p, .mission-window-track p { color: var(--text-faint); }
+.vehicle-visual-frame { background: radial-gradient(ellipse at 50% 100%, color-mix(in srgb, var(--accent) 20%, var(--surface)), var(--surface) 70%); border-color: var(--border); }
+.vehicle-visual-frame::after { background: linear-gradient(0deg, color-mix(in srgb, var(--page) 90%, transparent), transparent 32%, color-mix(in srgb, var(--page) 12%, transparent) 85%); }
+.photo-type { color: var(--text); }
+.vehicle-visual figcaption, .photo-reference-note { color: var(--text-faint); }
+.vehicle-visual figcaption a { color: var(--accent-strong); text-decoration-color: var(--border-strong); }
+.photo-orbit { border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
+.fact-card-heading dt { color: var(--text-faint); }
+.mission-fact-card dd { color: var(--text); }
+.mission-panel { background: var(--surface-raised); border-color: var(--border); }
+.mission-panel-heading { border-color: var(--border); }
+.panel-icon { color: var(--accent); }
+.panel-index { color: var(--text-faint); }
+.mission-story .mission-description { color: var(--text-soft); }
+.mission-clock-panel .time-comparison > div { border-color: var(--border); }
+.mission-clock-panel .zone-name { color: var(--text-faint); }
+.mission-window-track li { border-color: var(--border-strong); }
+.window-track-dot { background: var(--surface-raised); border-color: var(--border-strong); }
+.target-point .window-track-dot { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 14%, transparent); }
+.mission-window-track time, .mission-window-track li > span:last-child, .mission-window-track .target-point time { color: var(--text); }
+.window-time-details, .mission-source-footer { border-color: var(--border); }
+.window-time-details summary, .mission-source-footer { color: var(--text-soft); }
+.mission-source-footer .mission-icon, .mission-source-footer a { color: var(--accent-strong); }
+.design-review { background: var(--surface); border-color: var(--border-strong); }
+.design-review strong { color: var(--text); }
+.design-review p { color: var(--text-soft); }
+.design-review nav a { background: var(--surface-raised); border-color: var(--border); color: var(--text-soft); }
+.design-review nav a[aria-current] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+@media (max-width: 640px) {
+  .site-toolbar { align-items: flex-end; flex-direction: column; margin-top: 1rem; margin-bottom: -3.5rem; }
+  .theme-toggle { align-self: flex-end; }
+}

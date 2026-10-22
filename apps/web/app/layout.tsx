@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { LocaleProvider } from "../components/locale-provider";
 import { LanguageSelector } from "../components/language-selector";
+import { ThemeScript, ThemeToggle } from "../components/theme-toggle";
 import { dictionaries } from "../lib/i18n";
 import { getLocale } from "../lib/locale-server";
 import "./styles.css";
@@ -8,8 +9,8 @@ import "./styles.css";
 export async function generateMetadata(): Promise<Metadata> {
   const t = dictionaries[await getLocale()];
   return {
-    title: `LaunchSkyline — ${t.pageTitle}`,
-    applicationName: "LaunchSkyline",
+    title: `NextRocketLaunch — ${t.pageTitle}`,
+    applicationName: "NextRocketLaunch",
     description: t.pageDescription
   };
 }
@@ -17,10 +18,11 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body>
+        <ThemeScript />
         <LocaleProvider locale={locale}>
-          <div className="site-toolbar"><LanguageSelector /></div>
+          <div className="site-toolbar"><ThemeToggle /><LanguageSelector /></div>
           {children}
         </LocaleProvider>
       </body>

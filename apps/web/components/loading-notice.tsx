@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale } from "./locale-provider";
+import { BrandMark } from "./brand";
 
 export function LoadingNotice({ previewSlow = false }: { previewSlow?: boolean }) {
   const { messages: t } = useLocale();
@@ -12,7 +13,7 @@ export function LoadingNotice({ previewSlow = false }: { previewSlow?: boolean }
   }, []);
   return <main aria-busy="true">
     <header>
-      <p className="eyebrow">LaunchSkyline · {t.brandSubtitle}</p>
+      <p className="eyebrow"><BrandMark /> <span aria-hidden="true">·</span> {t.brandSubtitle}</p>
       <h1>{t.loadingTitle}</h1>
       <p className="intro">{t.loadingBody}</p>
       <div role="status" aria-live="polite">{slow ? <p className="launch-card">{t.loadingSlow}</p> : null}</div>

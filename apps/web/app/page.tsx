@@ -5,6 +5,7 @@ import { getDataStatus, getFilterOptions, getUpcomingLaunches, type FilterOption
 import { formatLaunchDate } from "../lib/date";
 import { dictionaries } from "../lib/i18n";
 import { getLocale } from "../lib/locale-server";
+import { BrandMark } from "../components/brand";
 
 type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string; favorites?: string }>;
 
@@ -40,7 +41,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   return (
     <main>
       <header>
-        <p className="eyebrow">LaunchSkyline · {t.brandSubtitle}</p>
+        <p className="eyebrow"><BrandMark /> <span aria-hidden="true">·</span> {t.brandSubtitle}</p>
         <h1>{t.heroTitle}</h1>
         <p className="intro">{t.heroIntro}</p>
       </header>

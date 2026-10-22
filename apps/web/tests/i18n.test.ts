@@ -4,7 +4,7 @@ import { dictionaries, isLocale, locales, resolveLocale } from "../lib/i18n";
 describe("language preferences", () => {
   it("falls back safely for missing or unsupported cookies", () => {
     for (const value of [undefined, null, "", "fr-FR", "__proto__"]) {
-      expect(resolveLocale(value)).toBe("pt-PT");
+      expect(resolveLocale(value)).toBe("en-GB");
       expect(isLocale(value)).toBe(false);
     }
     expect(resolveLocale("es-ES")).toBe("es-ES");

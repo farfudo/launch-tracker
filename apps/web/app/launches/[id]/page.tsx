@@ -11,6 +11,7 @@ import { LaunchTimes } from "../../../components/launch-times";
 import { MissionIcon, type MissionIconName } from "../../../components/mission-icon";
 import { VehicleVisual } from "../../../components/vehicle-visual";
 import { DesignReview, resolveDesign } from "../../../components/design-review";
+import { BrandMark } from "../../../components/brand";
 
 type RouteParams = Promise<{ id: string }>;
 
@@ -40,7 +41,7 @@ export default async function LaunchDetail({ params, searchParams }: {
         {preview ? <DesignReview launchId={id} selected={design} messages={t} /> : null}
         <div className="mission-navigation">
           <Link className="back-link" href="/">← {t.backToCalendar}</Link>
-          <span className="mission-wordmark"><MissionIcon name="orbit" />LaunchSkyline</span>
+          <BrandMark className="mission-wordmark" />
         </div>
 
         <section className="mission-hero" aria-labelledby="mission-title">
