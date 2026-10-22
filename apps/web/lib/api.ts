@@ -22,6 +22,12 @@ export type LaunchDetail = Launch & {
   location_name: string | null;
   window_start: string | null;
   window_end: string | null;
+  image_url: string | null;
+  image_credit: string | null;
+  image_license: string | null;
+  image_license_url: string | null;
+  image_kind: "vehicle" | "launch" | null;
+  image_title: string | null;
 };
 
 export type DataStatus = {

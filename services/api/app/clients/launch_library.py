@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Any
+from urllib.parse import urlsplit
 
 import httpx
 from pydantic import BaseModel
@@ -30,6 +31,45 @@ class LaunchSummary(BaseModel):
     launch_timezone: str | None = None
     window_start: datetime | None = None
     window_end: datetime | None = None
+    image_url: str | None = None
+    image_credit: str | None = None
+    image_license: str | None = None
+    image_license_url: str | None = None
+    image_kind: str | None = None
+    image_title: str | None = None
+
+
+def safe_image_url(value: Any) -> str | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        parsed = urlsplit(value)
+        if parsed.scheme == "https" and parsed.hostname and not parsed.username:
+            return value
+    except ValueError:
+        pass
+    return None
+
+
+def parse_image(configuration: dict[str, Any], payload: dict[str, Any]) -> dict[str, str | None]:
+    for kind, candidate in (("vehicle", configuration.get("image")), ("launch", payload.get("image"))):
+        if not isinstance(candidate, dict):
+            continue
+        url = safe_image_url(candidate.get("image_url"))
+        if not url:
+            continue
+        license_data = candidate.get("license")
+        if not isinstance(license_data, dict):
+            license_data = {}
+        return {
+            "image_url": url,
+            "image_credit": candidate.get("credit") or None,
+            "image_license": license_data.get("name") or None,
+            "image_license_url": safe_image_url(license_data.get("link")),
+            "image_kind": kind,
+            "image_title": candidate.get("name") or None,
+        }
+    return {}
 
 
 def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
@@ -56,6 +96,7 @@ def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
         launch_timezone=location.get("timezone_name") or None,
         window_start=payload.get("window_start"),
         window_end=payload.get("window_end"),
+        **parse_image(configuration, payload),
     )
 
 

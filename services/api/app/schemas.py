@@ -24,6 +24,12 @@ class LaunchDetailResponse(LaunchResponse):
     location_name: str | None
     window_start: datetime | None
     window_end: datetime | None
+    image_url: str | None
+    image_credit: str | None
+    image_license: str | None
+    image_license_url: str | None
+    image_kind: str | None
+    image_title: str | None
 
 
 class SyncResponse(BaseModel):

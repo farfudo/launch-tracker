@@ -67,3 +67,46 @@ def test_rate_limit_preserves_retry_after_without_retrying(monkeypatch) -> None:
         get_upcoming_launches()
     assert error.value.retry_after == "3600"
     assert len(calls) == 1
+
+
+def test_vehicle_image_is_preferred_and_attribution_preserved() -> None:
+    image = {
+        "name": "Falcon 9 liftoff",
+        "image_url": "https://images.example.com/falcon.jpg",
+        "credit": "SpaceX",
+        "license": {"name": "CC BY-NC 2.0", "link": "https://creativecommons.org/licenses/by-nc/2.0/"},
+    }
+    launch = parse_launch({
+        "id": "image-example", "name": "Falcon 9 | Example", "net": "2099-01-01T12:00:00Z",
+        "rocket": {"configuration": {"image": image}},
+        "image": {"image_url": "https://images.example.com/mission.jpg"},
+    })
+    assert launch.image_url == image["image_url"]
+    assert launch.image_credit == "SpaceX"
+    assert launch.image_license == "CC BY-NC 2.0"
+    assert launch.image_license_url == "https://creativecommons.org/licenses/by-nc/2.0/"
+    assert launch.image_kind == "vehicle"
+    assert launch.image_title == "Falcon 9 liftoff"
+
+
+@pytest.mark.parametrize("vehicle_image", [None, "invalid", {
+    "image_url": "javascript:alert(1)"
+}])
+def test_invalid_or_missing_vehicle_image_uses_mission_image(vehicle_image) -> None:
+    launch = parse_launch({
+        "id": "image-fallback", "name": "Example", "net": "2099-01-01T12:00:00Z",
+        "rocket": {"configuration": {"image": vehicle_image}},
+        "image": {"image_url": "https://images.example.com/mission.jpg", "license": None},
+    })
+    assert launch.image_kind == "launch"
+    assert launch.image_url == "https://images.example.com/mission.jpg"
+    assert launch.image_license is None
+
+
+def test_missing_or_unsafe_image_remains_unknown() -> None:
+    launch = parse_launch({
+        "id": "no-image", "name": "Example", "net": "2099-01-01T12:00:00Z",
+        "image": {"image_url": "data:text/html,unsafe"},
+    })
+    assert launch.image_url is None
+    assert launch.image_kind is None

@@ -7,63 +7,104 @@ import { formatLaunchStatus } from "../../../lib/launch";
 import { dictionaries } from "../../../lib/i18n";
 import { getLocale } from "../../../lib/locale-server";
 import { LaunchTimes } from "../../../components/launch-times";
+import { MissionIcon, type MissionIconName } from "../../../components/mission-icon";
+import { VehicleVisual } from "../../../components/vehicle-visual";
+import { DesignReview, resolveDesign } from "../../../components/design-review";
 
 type RouteParams = Promise<{ id: string }>;
 
-export default async function LaunchDetail({ params }: { params: RouteParams }) {
+export default async function LaunchDetail({ params, searchParams }: {
+  params: RouteParams;
+  searchParams: Promise<{ design?: string }>;
+}) {
   const { id } = await params;
   const locale = await getLocale();
   const t = dictionaries[locale];
+  const preview = process.env.DESIGN_PREVIEW === "true";
+  const design = preview ? resolveDesign((await searchParams).design) : "mission-control";
 
   try {
     const launch = await getLaunch(id);
+    const cards: { label: string; value: string; icon: MissionIconName }[] = [
+      { label: t.agency, value: launch.agency || t.pending, icon: "agency" },
+      { label: t.vehicle, value: launch.vehicle || t.pending, icon: "rocket" },
+      { label: t.status, value: formatLaunchStatus(launch.status, locale), icon: "status" },
+      { label: t.launchSite, value: launch.location_name || t.pending, icon: "location" },
+      { label: t.launchPad, value: launch.pad_name || t.pending, icon: "pad" },
+      { label: t.dataUpdated, value: formatLaunchDate(launch.source_updated_at, locale), icon: "clock" }
+    ];
 
     return (
-      <main>
-        <Link className="back-link" href="/">← {t.backToCalendar}</Link>
-        <header className="detail-header">
-          <p className="eyebrow">{t.launchDetail}</p>
-          <h1>{launch.name}</h1>
-          <p className="intro">{formatLaunchDate(launch.net, locale)} · {formatLaunchStatus(launch.status, locale)}</p>
-        </header>
-        <section className="mission-section" aria-labelledby="mission-heading">
-          <p className="eyebrow">{t.aboutMission}</p>
-          <h2 id="mission-heading">{launch.mission_name || t.missionPending}</h2>
-          <p className="mission-description">{launch.mission_description || t.descriptionPending}</p>
-          {launch.mission_description ? <p className="launch-meta">{t.originalDescription}</p> : null}
-        </section>
-        <section className="mission-section" aria-labelledby="launch-times-heading">
-          <h2 id="launch-times-heading">{t.timeReferences}</h2>
-          <h3 className="time-heading">{t.expectedDate}</h3>
-          <LaunchTimes isoDate={launch.net} launchTimeZone={launch.launch_timezone} />
-          <div className="window-times">
-            <div>
-              <h3 className="time-heading">{t.windowStart}</h3>
-              {launch.window_start ? <LaunchTimes isoDate={launch.window_start} launchTimeZone={launch.launch_timezone} /> : <p>{t.pending}</p>}
+      <main className={`mission-detail-page design-${design}`}>
+        {preview ? <DesignReview launchId={id} selected={design} messages={t} /> : null}
+        <div className="mission-navigation">
+          <Link className="back-link" href="/">← {t.backToCalendar}</Link>
+          <span className="mission-wordmark"><MissionIcon name="orbit" />LaunchSkyline</span>
+        </div>
+
+        <section className="mission-hero" aria-labelledby="mission-title">
+          <div className="mission-hero-copy">
+            <p className="eyebrow"><span className="mission-signal" aria-hidden="true" />{t.launchDetail}</p>
+            <h1 id="mission-title">{launch.mission_name || launch.name}</h1>
+            <p className="mission-vehicle"><MissionIcon name="rocket" />{launch.vehicle || t.vehiclePending}<span aria-hidden="true">/</span>{launch.agency || t.agencyPending}</p>
+            <span className="mission-status"><span aria-hidden="true" />{formatLaunchStatus(launch.status, locale)}</span>
+            <div className="mission-target">
+              <span className="mission-target-icon"><MissionIcon name="clock" /></span>
+              <div><p>{t.expectedDate}</p><time dateTime={launch.net}>{formatLaunchDate(launch.net, locale)}</time></div>
             </div>
-            <div>
-              <h3 className="time-heading">{t.windowEnd}</h3>
-              {launch.window_end ? <LaunchTimes isoDate={launch.window_end} launchTimeZone={launch.launch_timezone} /> : <p>{t.pending}</p>}
-            </div>
+            <div className="mission-coordinate"><MissionIcon name="location" />{launch.location_name || t.pending}</div>
           </div>
-          <p className="launch-meta">{t.timezoneNotice}</p>
+          <VehicleVisual key={launch.image_url || launch.id} launch={launch} />
+        </section>
+
+        <section className="mission-facts" aria-labelledby="mission-facts-heading">
+          <h2 id="mission-facts-heading" className="visually-hidden">{t.availableInfo}</h2>
+          <dl className="mission-fact-grid">
+            {cards.map((card) => <div className="mission-fact-card" key={card.label}>
+              <div className="fact-card-heading"><span className="fact-card-icon"><MissionIcon name={card.icon} /></span><dt>{card.label}</dt></div>
+              <dd>{card.value}</dd>
+            </div>)}
+          </dl>
+        </section>
+
+        <div className="mission-content-grid">
+          <section className="mission-panel mission-story" aria-labelledby="mission-heading">
+            <div className="mission-panel-heading"><span className="panel-icon"><MissionIcon name="orbit" /></span><h2 id="mission-heading">{t.aboutMission}</h2><span className="panel-index" aria-hidden="true">01</span></div>
+            <p className="mission-description">{launch.mission_description || t.descriptionPending}</p>
+            {launch.mission_description ? <p className="launch-meta">{t.originalDescription}</p> : null}
+          </section>
+
+          <section className="mission-panel mission-clock-panel" aria-labelledby="launch-times-heading">
+            <div className="mission-panel-heading"><span className="panel-icon"><MissionIcon name="clock" /></span><h2 id="launch-times-heading">{t.timeReferences}</h2><span className="panel-index" aria-hidden="true">02</span></div>
+            <LaunchTimes isoDate={launch.net} launchTimeZone={launch.launch_timezone} />
+            <p className="launch-meta">{t.timezoneNotice}</p>
+          </section>
+        </div>
+
+        <section className="mission-panel mission-window-panel" aria-labelledby="launch-window-heading">
+          <div className="mission-panel-heading"><span className="panel-icon"><MissionIcon name="pad" /></span><h2 id="launch-window-heading">{t.launchWindow}</h2><span className="panel-index" aria-hidden="true">03</span></div>
+          <ol className="mission-window-track">
+            {[
+              { label: t.windowStart, date: launch.window_start },
+              { label: t.expectedDate, date: launch.net },
+              { label: t.windowEnd, date: launch.window_end }
+            ].map((point, index) => <li key={point.label} className={index === 1 ? "target-point" : ""}>
+              <span className="window-track-dot" aria-hidden="true" />
+              <p>{point.label}</p>
+              {point.date ? <time dateTime={point.date}>{formatLaunchDate(point.date, locale)}</time> : <span>{t.pending}</span>}
+            </li>)}
+          </ol>
+          <details className="window-time-details">
+            <summary>{t.fullWindowTimes}</summary>
+            <div className="window-times">
+              <div><h3 className="time-heading">{t.windowStart}</h3>{launch.window_start ? <LaunchTimes isoDate={launch.window_start} launchTimeZone={launch.launch_timezone} /> : <p>{t.pending}</p>}</div>
+              <div><h3 className="time-heading">{t.windowEnd}</h3>{launch.window_end ? <LaunchTimes isoDate={launch.window_end} launchTimeZone={launch.launch_timezone} /> : <p>{t.pending}</p>}</div>
+            </div>
+          </details>
           <p className="launch-meta">{t.windowNotice}</p>
         </section>
-        <section aria-labelledby="launch-data-heading">
-          <h2 id="launch-data-heading">{t.availableInfo}</h2>
-          <dl className="launch-details">
-            <div><dt>{t.agency}</dt><dd>{launch.agency ?? t.pending}</dd></div>
-            <div><dt>{t.vehicle}</dt><dd>{launch.vehicle ?? t.pending}</dd></div>
-            <div><dt>{t.status}</dt><dd>{formatLaunchStatus(launch.status, locale)}</dd></div>
-            <div><dt>{t.launchSite}</dt><dd>{launch.location_name || t.pending}</dd></div>
-            <div><dt>{t.launchPad}</dt><dd>{launch.pad_name || t.pending}</dd></div>
-            <div><dt>{t.dataUpdated}</dt><dd>{formatLaunchDate(launch.source_updated_at, locale)}</dd></div>
-          </dl>
-          <p className="source-note">
-            {t.dataSource}
-            {launch.source_url ? <> <a href={launch.source_url} rel="noreferrer" target="_blank">{t.viewSource}</a></> : null}
-          </p>
-        </section>
+
+        <footer className="mission-source-footer"><span><MissionIcon name="orbit" />{t.dataSource}</span>{launch.source_url ? <a href={launch.source_url} rel="noreferrer" target="_blank">{t.viewSource} ↗</a> : null}</footer>
       </main>
     );
   } catch {

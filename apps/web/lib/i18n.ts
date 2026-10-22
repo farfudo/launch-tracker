@@ -89,7 +89,20 @@ const pt = {
   statusSuccess: "Lançamento bem-sucedido",
   statusFailure: "Falha no lançamento",
   statusPartialFailure: "Falha parcial",
-  statusInFlight: "Em voo"
+  statusInFlight: "Em voo",
+  vehiclePhoto: "Fotografia de referência do veículo",
+  missionPhoto: "Imagem associada à missão",
+  referencePhotoNote: "Imagem de referência; pode corresponder a outra missão do mesmo veículo.",
+  imageUnavailable: "Fotografia indisponível · ilustração temática",
+  imageCredit: "Fotografia",
+  imageLicenseUnknown: "Licença não indicada pela fonte",
+  launchWindow: "Janela de lançamento",
+  fullWindowTimes: "Ver a janela nos três fusos horários",
+  previewTitle: "Preview local · à tua aprovação",
+  previewDescription: "Compara as três opções. O site publicado ainda não foi alterado.",
+  designMissionControl: "Controlo de missão",
+  designCinematic: "Cinemático",
+  designCompact: "Compacto"
 };
 
 export type Messages = { [Key in keyof typeof pt]: string };
@@ -167,7 +180,20 @@ const en: Messages = {
   statusSuccess: "Launch successful",
   statusFailure: "Launch failed",
   statusPartialFailure: "Partial failure",
-  statusInFlight: "In flight"
+  statusInFlight: "In flight",
+  vehiclePhoto: "Vehicle reference photograph",
+  missionPhoto: "Image associated with the mission",
+  referencePhotoNote: "Reference image; it may show another mission using the same vehicle.",
+  imageUnavailable: "Photograph unavailable · thematic illustration",
+  imageCredit: "Photography",
+  imageLicenseUnknown: "Image licence not specified by the source",
+  launchWindow: "Launch window",
+  fullWindowTimes: "View the window in all three time zones",
+  previewTitle: "Local preview · awaiting your approval",
+  previewDescription: "Compare the three options. The published site has not changed.",
+  designMissionControl: "Mission control",
+  designCinematic: "Cinematic",
+  designCompact: "Compact"
 };
 
 const es: Messages = {
@@ -243,7 +269,20 @@ const es: Messages = {
   statusSuccess: "Lanzamiento exitoso",
   statusFailure: "Lanzamiento fallido",
   statusPartialFailure: "Fallo parcial",
-  statusInFlight: "En vuelo"
+  statusInFlight: "En vuelo",
+  vehiclePhoto: "Fotografía de referencia del vehículo",
+  missionPhoto: "Imagen asociada a la misión",
+  referencePhotoNote: "Imagen de referencia; puede mostrar otra misión con el mismo vehículo.",
+  imageUnavailable: "Fotografía no disponible · ilustración temática",
+  imageCredit: "Fotografía",
+  imageLicenseUnknown: "La fuente no indica la licencia de la imagen",
+  launchWindow: "Ventana de lanzamiento",
+  fullWindowTimes: "Ver la ventana en las tres zonas horarias",
+  previewTitle: "Vista previa local · pendiente de tu aprobación",
+  previewDescription: "Compara las tres opciones. El sitio publicado aún no ha cambiado.",
+  designMissionControl: "Control de misión",
+  designCinematic: "Cinemático",
+  designCompact: "Compacto"
 };
 
 export const dictionaries: Record<Locale, Messages> = { "pt-PT": pt, "en-GB": en, "es-ES": es };
