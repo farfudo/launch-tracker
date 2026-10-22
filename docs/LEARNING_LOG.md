@@ -1,4 +1,4 @@
-# Diário de aprendizagem — Launch Tracker
+# Diário de aprendizagem — LaunchSkyline
 
 ## Etapa 4 — Persistência e cache
 

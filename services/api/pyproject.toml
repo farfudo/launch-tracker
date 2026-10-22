@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "launch-tracker-api"
 version = "0.1.0"
-description = "API for Launch Tracker"
+description = "API for LaunchSkyline space launch tracking"
 requires-python = ">=3.12"
 dependencies = [
   "alembic>=1.14,<2.0",

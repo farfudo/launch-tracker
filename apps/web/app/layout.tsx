@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./styles.css";
 
 export const metadata: Metadata = {
-  title: "Launch Tracker",
-  description: "Acompanhe lançamentos espaciais em todo o mundo."
+  title: "LaunchSkyline — Acompanhamento de lançamentos espaciais",
+  applicationName: "LaunchSkyline",
+  description: "Calendário global de lançamentos espaciais. Acompanhe missões, agências, foguetões e datas previstas com o LaunchSkyline."
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -1,6 +1,6 @@
-# Launch Tracker
+# LaunchSkyline
 
-Uma aplicação web para descobrir e acompanhar lançamentos espaciais em todo o mundo.
+Uma aplicação web para descobrir e acompanhar lançamentos espaciais em todo o mundo. Anteriormente chamada Launch Tracker; o nome público passou a LaunchSkyline.
 
 O primeiro objetivo é um MVP de portefólio: calendário global, pesquisa e filtros, e páginas de detalhe com estado, data prevista e fontes oficiais. Alertas, transmissões e telemetria ficam para fases posteriores.
 

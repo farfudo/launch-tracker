@@ -25,7 +25,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   return (
     <main>
       <header>
-        <p className="eyebrow">Launch Tracker</p>
+        <p className="eyebrow">LaunchSkyline · Lançamentos espaciais</p>
         <h1>O espaço, no momento certo.</h1>
         <p className="intro">Descubra lançamentos de agências de todo o mundo, com informação clara e fontes oficiais.</p>
       </header>

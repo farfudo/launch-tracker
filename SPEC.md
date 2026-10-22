@@ -1,8 +1,8 @@
-# Launch Tracker — Especificação do MVP
+# LaunchSkyline — Especificação do MVP
 
 ## Visão
 
-O Launch Tracker ajuda entusiastas do espaço a encontrar, compreender e acompanhar lançamentos orbitais e suborbitais. O produto começa como uma aplicação web de portefólio, mas a arquitetura deve permitir evoluir para alertas e funcionalidades comerciais.
+O LaunchSkyline ajuda entusiastas do espaço a encontrar, compreender e acompanhar lançamentos orbitais e suborbitais. O produto começa como uma aplicação web de portefólio, mas a arquitetura deve permitir evoluir para alertas e funcionalidades comerciais.
 
 ## Utilizador-alvo
 

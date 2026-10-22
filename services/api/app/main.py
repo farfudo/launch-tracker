@@ -13,7 +13,7 @@ from app.repositories import get_filter_options, get_launch, upsert_launches
 from app.repositories import list_launches as list_cached_launches
 from app.schemas import FilterOptionsResponse, LaunchResponse, SyncResponse
 
-app = FastAPI(title="Launch Tracker API", version="0.1.0")
+app = FastAPI(title="LaunchSkyline API", version="0.1.0")
 
 
 class HealthResponse(BaseModel):
