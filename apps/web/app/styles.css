@@ -10,13 +10,13 @@ main { width: min(960px, calc(100% - 2rem)); margin: 0 auto; padding: 7rem 0; }
 select:disabled { opacity: .6; }
 a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid #6ee7d8; outline-offset: 4px; }
 header { max-width: 720px; margin-bottom: 5rem; }
-h1 { font-size: clamp(3rem, 8vw, 6rem); letter-spacing: -0.07em; line-height: .95; margin: .35rem 0 1.5rem; }
+h1 { font-size: clamp(3rem, 8vw, 6rem); letter-spacing: -0.07em; line-height: .95; margin: .35rem 0 1.5rem; overflow-wrap: anywhere; }
 h2 { font-size: 2rem; margin: .25rem 0; }
 h3 { font-size: 1.5rem; margin: .25rem 0; }
 p { line-height: 1.5; }
 .eyebrow { color: #6ee7d8; font-size: .8rem; font-weight: 700; letter-spacing: .12em; margin: 0; text-transform: uppercase; }
 .intro { color: #b7c4d6; font-size: 1.2rem; max-width: 600px; }
-.section-heading { align-items: end; display: flex; justify-content: space-between; margin-bottom: 1rem; }
+.section-heading { align-items: end; display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; margin-bottom: 1rem; }
 .status { background: #183451; border-radius: 99px; color: #9fd3ff; font-size: .8rem; padding: .45rem .7rem; }
 .launch-card { background: linear-gradient(135deg, #10253e, #0e192b); border: 1px solid #264565; border-radius: 1rem; padding: 1.5rem; }
 .launch-list { display: grid; gap: 1rem; }
@@ -24,8 +24,9 @@ p { line-height: 1.5; }
 .launch-list a:hover { border-color: #6ee7d8; transform: translateY(-2px); }
 .launch-date { color: #6ee7d8; font-weight: 700; margin: 0; }
 .launch-meta { color: #b7c4d6; font-size: .9rem; }
-.filters { align-items: end; background: #0e192b; border: 1px solid #264565; border-radius: 1rem; display: grid; gap: 1rem; grid-template-columns: 2fr 1fr 1fr auto auto; margin: 0 0 1.5rem; padding: 1rem; }
-.filters label { display: grid; gap: .35rem; }
+.filters { align-items: end; background: #0e192b; border: 1px solid #264565; border-radius: 1rem; display: grid; gap: 1rem; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) auto auto; margin: 0 0 1.5rem; padding: 1rem; }
+.filters label { display: grid; gap: .35rem; min-width: 0; }
+.filters input, .filters select { min-width: 0; width: 100%; }
 .filters span, dt { color: #9fb3ca; font-size: .8rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
 input, select, button { border-radius: .5rem; font: inherit; min-height: 2.65rem; padding: .55rem .7rem; }
 input, select { background: #08111f; border: 1px solid #375977; color: #edf4ff; }
