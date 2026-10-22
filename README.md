@@ -1,44 +1,103 @@
-# LaunchSkyline
+# NextRocketLaunch
 
-Uma aplicação web para descobrir e acompanhar lançamentos espaciais em todo o mundo. Anteriormente chamada Launch Tracker; o nome público passou a LaunchSkyline.
+Aplicação web de portefólio para descobrir e acompanhar lançamentos espaciais. Anteriormente Launch Tracker / LaunchSkyline; o repositório conserva o nome `launch-tracker`.
 
-O primeiro objetivo é um MVP de portefólio: calendário global, pesquisa e filtros, e páginas de detalhe com estado, data prevista e fontes oficiais. Alertas, transmissões e telemetria ficam para fases posteriores.
+[Demonstração pública](https://launch-tracker-beryl.vercel.app/) · [Documentação da API](https://launch-tracker-ie09.onrender.com/docs)
 
-A interface permite escolher português, inglês e espanhol, guardando a preferência no browser. Os horários são apresentados em UTC, no fuso do local de lançamento e no fuso do visitante, com conversão automática do horário de verão. As descrições das missões permanecem no idioma original da fonte.
+## Funcionalidades
 
-## Estrutura
+- Calendário global, pesquisa e filtros por agência/veículo; contagem decrescente para a data prevista, não telemetria.
+- Detalhes de missão, veículo, local, plataforma, janela e estado, com cores e texto.
+- Favoritos neste navegador, sem conta ou sincronização entre dispositivos.
+- Português, inglês e espanhol; descrições externas mantidas no idioma original.
+- Horários UTC, do local de lançamento e do visitante, incluindo horário de verão.
+- Imagens com crédito/licença e ilustração de recurso quando indisponíveis.
+- «Watch here» com opções colapsadas, ligadas a canais oficiais ou independentes; disponibilidade de direto não garantida.
+- Adicionar ao calendário; modo claro predefinido e opção escura com preferência persistida.
 
-- `apps/web` — interface Next.js com TypeScript
-- `services/api` — API FastAPI e integração futura com Launch Library 2
-- `docs` — decisões e planeamento do produto
-- `tests` — testes de integração e apoio transversal
+Os dados vêm da Launch Library 2 e são guardados em PostgreSQL. A sincronização agendada é independente de visitas/deploys. Datas podem mudar; a interface mostra a hora de atualização. O alojamento gratuito da API pode demorar a iniciar após inatividade. Alertas automáticos e telemetria ainda não estão implementados.
 
-## Começar localmente
+## Arquitetura
 
-Pré-requisitos: Node.js LTS e Python 3.12 ou mais recente.
+```text
+Visitante → Next.js / TypeScript (Vercel) → FastAPI / Python (Render) → PostgreSQL (Neon)
+GitHub Actions → Launch Library 2 → dados normalizados no PostgreSQL
+```
+
+- `apps/web`: interface e testes de componentes/browser.
+- `services/api`: API, normalização, persistência, migrações e testes.
+- `.github/workflows`: validação e sincronização.
+- `docs`: decisões, operações e aprendizagem.
+
+## Desenvolvimento local
+
+Pré-requisitos: Node.js 22, Python 3.12+, Docker com Compose.
+
+Na raiz:
 
 ```sh
-# Base de dados (opcional nesta primeira etapa; necessária no incremento de persistência)
 docker compose up -d postgres
+```
 
-# Interface
-cd apps/web
-npm install
-npm run dev
+Num terminal para a API:
 
-# Noutro terminal, API
+```sh
 cd services/api
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -e '.[dev]'
 alembic upgrade head
 uvicorn app.main:app --reload --port 8000
 ```
 
-A interface ficará disponível em `http://localhost:3000`; a documentação da API em `http://localhost:8000/docs`.
+Noutro terminal para a interface:
 
-Consulte [SPEC.md](SPEC.md) para o âmbito e [docs/TASKS.md](docs/TASKS.md) para as próximas tarefas.
+```sh
+cd apps/web
+npm ci
+npm run dev
+```
 
-## Demonstração Docker
+Interface: `http://localhost:3000`. API: `http://localhost:8000/docs`. PostgreSQL local: porta 5433. Para preencher a base **local**, executar `python -m app.sync` em `services/api`, com o ambiente virtual ativo e respeitando os limites da fonte. Sem sincronização, o calendário pode estar vazio.
 
-A interface e a API também têm imagens Docker. O ensaio isolado, as variáveis necessárias e os passos de publicação estão em [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+`DATABASE_URL` configura a base da API; `API_BASE_URL` configura a API usada pelo servidor Next.js. Nunca guardar credenciais no Git nem usar a base pública para ensaios. A configuração Docker local contém credenciais de desenvolvimento, não adequadas a produção.
+
+## Testes
+
+API, em `services/api`, com o ambiente virtual ativo:
+
+```sh
+ruff check app tests
+pytest
+```
+
+Interface, em `apps/web`:
+
+```sh
+npm test
+npm run build
+```
+
+### Percurso completo no browser (E2E)
+
+```sh
+cd apps/web
+npm ci
+npx playwright install chromium
+npm run build
+npm run test:e2e
+```
+
+Playwright inicia uma API fictícia na porta 3301 e uma compilação de produção do Next.js na 3300, ambas em `127.0.0.1`. As portas têm de estar livres; não reutiliza servidores existentes. Não precisa de Docker, Neon, credenciais ou chamadas à Launch Library. Recursos externos do browser são bloqueados.
+
+O percurso corre em Chromium desktop e móvel: pesquisa/filtros → missão → favorito persistido → opções de transmissão → idioma persistido → tema persistido → remover favorito. Os dados fictícios incluem duas missões estáveis. Isto valida a interface com um contrato simulado, **não substitui** os testes da API/base real nem a verificação de produção. Não cobre todos os browsers ou toda a acessibilidade.
+
+Relatório: `npx playwright show-report`. Evidência em `test-results/` e `playwright-report/`, ignorada pelo Git. O CI está preparado para executar os percursos e guardar relatórios; a nova etapa no GitHub só poderá ser validada depois do push.
+
+## Publicação e colaboração
+
+Consultar [DEPLOYMENT.md](docs/DEPLOYMENT.md) para Docker e alojamento. A sincronização usa `NEON_DATABASE_URL` (segredo) e `SYNC_ENABLED=true` (variável). A execução automática `39809464415` importou 100 lançamentos; isso não garante pontualidade de futuras execuções.
+
+Fluxo: rascunho local → testes/preview → aprovação → confirmação separada para push. As integrações Vercel/Render podem publicar automaticamente após um push.
+
+[Especificação](SPEC.md) · [Tarefas](docs/TASKS.md) · [Diário de aprendizagem](docs/LEARNING_LOG.md)

@@ -1,0 +1,20 @@
+import { defineConfig, devices } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+  fullyParallel: false,
+  workers: 1,
+  retries: process.env.CI ? 1 : 0,
+  forbidOnly: !!process.env.CI,
+  reporter: [['list'], ['html', { open: 'never' }]],
+  use: { baseURL: 'http://127.0.0.1:3300', trace: 'retain-on-failure', screenshot: 'only-on-failure', timezoneId: 'Europe/Lisbon' },
+  projects: [
+    { name: 'desktop-chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'mobile-chromium', use: { ...devices['Pixel 7'], defaultBrowserType: 'chromium' } }
+  ],
+  webServer: [
+    { command: 'node e2e/mock-api.mjs', url: 'http://127.0.0.1:3301/health', reuseExistingServer: false },
+    { command: 'npm run start -- --hostname 127.0.0.1 --port 3300', url: 'http://127.0.0.1:3300', reuseExistingServer: false,
+      env: { API_BASE_URL: 'http://127.0.0.1:3301', NEXT_PUBLIC_API_BASE_URL: 'http://127.0.0.1:3301', DESIGN_PREVIEW: 'false' } }
+  ]
+});
