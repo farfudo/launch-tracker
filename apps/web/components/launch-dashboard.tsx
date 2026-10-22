@@ -7,6 +7,7 @@ import { dictionaries } from "../lib/i18n";
 import { Countdown } from "./countdown";
 import { VehicleVisual } from "./vehicle-visual";
 import { MissionIcon } from "./mission-icon";
+import { HeroAction } from "./hero-action";
 
 export function LaunchHero({ launch, locale }: { launch: LaunchDetail | null; locale: Locale }) {
   const d = dashboardCopy[locale];
@@ -16,7 +17,7 @@ export function LaunchHero({ launch, locale }: { launch: LaunchDetail | null; lo
       <p className="eyebrow">{d.frontier}</p>
       <h1 id="hero-title">{d.gateway}<br />{d.next}<br /><span>{d.rocket}</span></h1>
       <p>{d.intro}</p>
-      <Link className="pill-button" href="#launch-calendar">{d.upcoming} <span aria-hidden="true">→</span></Link>
+      <HeroAction launch={launch} />
     </div>
     {launch ? <Link href={`/launches/${launch.id}`} className="next-launch-panel">
       <span className="eyebrow">{d.nextLaunch}</span>

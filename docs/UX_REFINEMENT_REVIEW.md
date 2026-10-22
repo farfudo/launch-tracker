@@ -9,6 +9,8 @@
 - Painel de missão abaixo do destaque: seleção de cartões em desktop atualiza descrição, local, plataforma, estado e janela sem sair do calendário. Começa com a próxima missão e preserva a ligação à página completa. Em ecrãs até 800 px, os cartões continuam a abrir diretamente a página de detalhe.
 - O painel trata carregamento, erro, nova tentativa e respostas fora de ordem; usa um endpoint Next.js na mesma origem, que consulta apenas o detalhe já existente da API.
 - Cartão e painel partilham a faixa turquesa de seleção. Uma seleção realça brevemente a borda do painel e apresenta o conteúdo com fade e deslocação de 6 px em 200 ms. A página só se desloca quando o cabeçalho do painel não está visível; com redução de movimento, a atualização e a deslocação são imediatas.
+- Botão do destaque adaptado ao ecrã: em desktop, «Explorar próxima missão» seleciona a próxima missão no painel; até 800 px, «Ver próximos lançamentos» mantém o scroll até à lista. Sem dados da próxima missão, o acesso à lista continua disponível em todos os ecrãs.
+- Filtros rápidos de agência com indicador imediato, anúncio de atualização e resultados anteriores esbatidos enquanto a navegação termina. Preservam pesquisa, veículo e favoritos; os pedidos independentes do calendário e da próxima missão passam a começar em paralelo.
 - Featured launch reposto com a missão seguinte, diferente da próxima missão do destaque principal. É uma seleção automática de dados reais, não uma escolha editorial manual.
 - Datas no fuso do visitante, identificado no cartão; UTC durante a deteção inicial.
 - Contagens apenas para estados Go / Go for Launch, identificadas como estimativas. Outros estados mostram hora por confirmar; ao atingir a hora, o cartão pede consulta do estado e não anuncia lançamento ou transmissão.
@@ -25,7 +27,7 @@ Preview isolada: http://localhost:3200/ — cache local de dados reais, independ
 
 ## Verificação
 
-- 37 testes da interface e 19 testes da API passaram.
+- 38 testes da interface e 19 testes da API passaram.
 - Lint global, build de produção e verificação de whitespace passaram.
 - Novos testes: preferência do sistema, escolha manual, armazenamento bloqueado, alteração de tema entre separadores e carregamento progressivo preservando favoritos.
 - Navegador: pesquisa Starlink, filtro SpaceX operado por teclado, guardar/remover favorito, vista de favoritos, carregamento de 6 para 12 cartões e tradução para espanhol.

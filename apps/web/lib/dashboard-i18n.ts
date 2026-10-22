@@ -1,6 +1,8 @@
 import type { Locale } from "./i18n";
 
 const en = {
+  loadingLaunches: "Updating launches…",
+  exploreNext: "Explore the next mission",
   selectedMission: "Selected mission", loadingMission: "Loading mission details…", missionError: "Could not load this mission. Try again or open the full details.", fullDetails: "View full details", featured: "Featured launch", featuredNote: "Another upcoming mission to explore",
   frontier: "Explore the next frontier", gateway: "Your gateway", next: "to the next", rocket: "rocket launch.",
   intro: "Follow space launches around the world. Real schedules. Mission details. One place.", upcoming: "View upcoming launches", nextLaunch: "Next launch", explore: "Explore mission",
@@ -9,12 +11,16 @@ const en = {
 };
 type Copy = { [K in keyof typeof en]: string };
 const pt: Copy = {
+  loadingLaunches: "A atualizar lançamentos…",
+  exploreNext: "Explorar próxima missão",
   selectedMission: "Missão selecionada", loadingMission: "A carregar detalhes da missão…", missionError: "Não foi possível carregar esta missão. Tenta novamente ou abre os detalhes completos.", fullDetails: "Ver detalhes completos", featured: "Lançamento em destaque", featuredNote: "Outra missão futura para explorar",
   frontier: "Explora a próxima fronteira", gateway: "A tua ligação", next: "ao próximo", rocket: "lançamento espacial.", intro: "Segue lançamentos espaciais em todo o mundo. Datas reais e detalhes das missões num só lugar.", upcoming: "Ver próximos lançamentos", nextLaunch: "Próximo lançamento", explore: "Explorar missão",
   launches: "Lançamentos", favorites: "Favoritos", skip: "Saltar para o conteúdo", overview: "Resumo do calendário", inView: "Lançamentos nesta vista", agencies: "Agências nesta vista", local: "Hora local", schedule: "O teu horário de lançamento", worldwide: "Mundial", coverage: "Cobertura de lançamentos",
   filters: "Mais filtros", filterAgency: "Filtrar por agência", all: "Todas", calendar: "Calendário de lançamentos", calendarBody: "Encontra a próxima missão. Pesquisa agências e veículos.", yourFavorites: "Os teus favoritos", favoritesBody: "Mantém por perto as missões que queres acompanhar.", details: "Detalhes da missão", detailsBody: "Explora foguetões, janelas de lançamento e informações das missões.", viewDetails: "Ver detalhes", zones: "Fusos horários", loadMore: "Carregar mais lançamentos", privacy: "Sobre os teus favoritos", yourTime: "A tua hora", utc: "UTC", estimate: "Horário previsto", unconfirmed: "Hora de lançamento por confirmar", elapsed: "Hora prevista atingida · consulta o estado da missão", timer: "Tempo até ao lançamento previsto", days: "Dias", hours: "Horas", mins: "Min", secs: "Seg", light: "Claro", dark: "Escuro", switchLight: "Mudar para o tema claro", switchDark: "Mudar para o tema escuro", themeError: "Tema alterado nesta visita; o navegador não conseguiu guardar a preferência.", imagery: "Imagem", reference: "A imagem de referência pode mostrar outra missão.", imageInfo: "Informação da imagem", tagline: "O espaço, no momento certo."
 };
 const es: Copy = {
+  loadingLaunches: "Actualizando lanzamientos…",
+  exploreNext: "Explorar próxima misión",
   selectedMission: "Misión seleccionada", loadingMission: "Cargando detalles de la misión…", missionError: "No se pudo cargar esta misión. Inténtalo de nuevo o abre los detalles completos.", fullDetails: "Ver detalles completos", featured: "Lanzamiento destacado", featuredNote: "Otra próxima misión para explorar",
   frontier: "Explora la próxima frontera", gateway: "Tu conexión", next: "con el próximo", rocket: "lanzamiento espacial.", intro: "Sigue lanzamientos espaciales en todo el mundo. Fechas reales y detalles de las misiones en un solo lugar.", upcoming: "Ver próximos lanzamientos", nextLaunch: "Próximo lanzamiento", explore: "Explorar misión",
   launches: "Lanzamientos", favorites: "Favoritos", skip: "Saltar al contenido", overview: "Resumen del calendario", inView: "Lanzamientos en esta vista", agencies: "Agencias en esta vista", local: "Hora local", schedule: "Tu horario de lanzamiento", worldwide: "Mundial", coverage: "Cobertura de lanzamientos",

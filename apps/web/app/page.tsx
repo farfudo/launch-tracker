@@ -9,6 +9,7 @@ import { LaunchHero, FeaturedLaunch } from "../components/launch-dashboard";
 import { MissionSelectionProvider, MissionDetailPanel } from "../components/mission-selection";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { MissionIcon } from "../components/mission-icon";
+import { AgencyFilters } from "../components/agency-filters";
 
 type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string; favorites?: string }>;
 
@@ -26,6 +27,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const t = dictionaries[locale];
   const d = dashboardCopy[locale];
   const dataStatusPromise = getDataStatus().catch(() => null);
+  const nextCandidatesPromise = filters.q || filters.agency || filters.vehicle ? getUpcomingLaunches(2).catch(() => []) : null;
   let launches: Launch[];
   let filterOptions: FilterOptions;
   let hasLaunchData = true;
@@ -40,9 +42,11 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
     filterOptions = { agencies: [], vehicles: [] };
     hasLaunchData = false;
   }
-  const dataStatus = await dataStatusPromise;
-  const nextCandidates = filters.q || filters.agency || filters.vehicle ? await getUpcomingLaunches(2).catch(() => []) : launches;
-  const nextLaunch: LaunchDetail | null = nextCandidates[0] ? await getLaunch(nextCandidates[0].id).catch(() => null) : null;
+  const nextCandidates = nextCandidatesPromise ? await nextCandidatesPromise : launches;
+  const [dataStatus, nextLaunch]: [Awaited<ReturnType<typeof getDataStatus>> | null, LaunchDetail | null] = await Promise.all([
+    dataStatusPromise,
+    nextCandidates[0] ? getLaunch(nextCandidates[0].id).catch(() => null) : Promise.resolve(null)
+  ]);
   const agencies = new Set(launches.map(launch => launch.agency).filter(Boolean));
   const featured = nextCandidates.find(launch => launch.id !== nextCandidates[0]?.id);
 
@@ -74,19 +78,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             {" "}{dataStatus.stale ? t.staleNotice : t.datesNotice}
           </p>
         ) : null}
-        <nav className="agency-chips" aria-label={d.filterAgency}>
-          {["", ...[...filterOptions.agencies].sort((a, b) => {
-            const priority = ["SpaceX", "Rocket Lab", "Blue Origin", "United Launch Alliance", "Arianespace"];
-            return (priority.includes(a) ? priority.indexOf(a) : 99) - (priority.includes(b) ? priority.indexOf(b) : 99);
-          }).slice(0, 5)].map(agency => {
-            const params = new URLSearchParams();
-            if (filters.q) params.set("q", filters.q);
-            if (filters.vehicle) params.set("vehicle", filters.vehicle);
-            if (favoritesOnly) params.set("favorites", "1");
-            if (agency) params.set("agency", agency);
-            return <Link key={agency} href={`/?${params}#launch-calendar`} aria-current={(filters.agency || "") === agency ? "page" : undefined}>{agency || d.all}</Link>;
-          })}
-        </nav>
+        <AgencyFilters agencies={filterOptions.agencies} filters={filters} />
         <form className="filters" action="/#launch-calendar" method="get">
           {favoritesOnly ? <input type="hidden" name="favorites" value="1" /> : null}
           <label>

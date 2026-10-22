@@ -179,3 +179,17 @@ body { background: var(--surface); }
   .favorite-launch-card { transition: none; }
 }
 @media (max-width: 800px) { .mission-selected-label { display: none; } }
+
+.hero-action-mobile { display: none; }
+.agency-chips a { position: relative; padding-right: 1.35rem; }
+.agency-filter-spinner { position: absolute; right: .4rem; top: calc(50% - 4px); width: 8px; height: 8px; border: 1px solid currentColor; border-right-color: transparent; border-radius: 50%; opacity: 0; }
+.agency-chips a[data-pending] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); }
+.agency-chips a[data-pending] .agency-filter-spinner { opacity: 1; animation: agency-filter-spin .7s linear infinite; }
+.agency-filter-feedback { min-height: 1.2em; margin: -.5rem 0 .5rem; font-size: .75rem; color: var(--accent-strong); }
+.calendar-panel:has(.agency-filter-navigation[aria-busy="true"]) .launch-list { opacity: .5; }
+@keyframes agency-filter-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .agency-chips a[data-pending] .agency-filter-spinner { animation: none; } }
+@media (max-width: 800px) {
+  .hero-action-mobile { display: inline-flex; }
+  .hero-action-desktop { display: none; }
+}
