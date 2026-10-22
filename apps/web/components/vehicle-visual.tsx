@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 
-import type { LaunchDetail } from "../lib/api";
+import type { Launch } from "../lib/api";
 import { useLocale } from "./locale-provider";
 import { RocketArt } from "./rocket-art";
 
@@ -16,7 +16,7 @@ function httpsUrl(value: string | null | undefined) {
   }
 }
 
-export function VehicleVisual({ launch }: { launch: LaunchDetail }) {
+export function VehicleVisual({ launch, priority = true }: { launch: Launch; priority?: boolean }) {
   const { messages: t } = useLocale();
   const [failed, setFailed] = useState(false);
   const url = httpsUrl(launch.image_url);
@@ -32,7 +32,7 @@ export function VehicleVisual({ launch }: { launch: LaunchDetail }) {
         fill
         sizes="(max-width: 800px) 100vw, 560px"
         unoptimized
-        preload
+        preload={priority}
         referrerPolicy="no-referrer"
         onError={() => setFailed(true)}
       /> : <RocketArt />}

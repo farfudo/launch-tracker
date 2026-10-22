@@ -6,6 +6,8 @@ import { formatLaunchDate } from "../lib/date";
 import { dictionaries } from "../lib/i18n";
 import { getLocale } from "../lib/locale-server";
 import { LaunchHero, FeaturedLaunch } from "../components/launch-dashboard";
+import { MissionSelectionProvider, MissionDetailPanel } from "../components/mission-selection";
+import { dashboardCopy } from "../lib/dashboard-i18n";
 import { MissionIcon } from "../components/mission-icon";
 
 type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string; favorites?: string }>;
@@ -22,6 +24,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const favoritesHref = `/?${viewParams.toString()}`;
   const locale = await getLocale();
   const t = dictionaries[locale];
+  const d = dashboardCopy[locale];
   const dataStatusPromise = getDataStatus().catch(() => null);
   let launches: Launch[];
   let filterOptions: FilterOptions;
@@ -38,23 +41,23 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
     hasLaunchData = false;
   }
   const dataStatus = await dataStatusPromise;
-  const nextCandidates = filters.q || filters.agency || filters.vehicle ? await getUpcomingLaunches(1).catch(() => []) : launches;
-  const detailIds = [...new Set([...nextCandidates.slice(0, 1), ...launches.slice(0, 6)].map(launch => launch.id))];
-  const previews = await Promise.all(detailIds.map(id => getLaunch(id).catch(() => null)));
-  const launchPreviews = previews.filter((launch): launch is LaunchDetail => launch !== null);
-  const nextLaunch = launchPreviews.find(launch => launch.id === nextCandidates[0]?.id) ?? null;
+  const nextCandidates = filters.q || filters.agency || filters.vehicle ? await getUpcomingLaunches(2).catch(() => []) : launches;
+  const nextLaunch: LaunchDetail | null = nextCandidates[0] ? await getLaunch(nextCandidates[0].id).catch(() => null) : null;
   const agencies = new Set(launches.map(launch => launch.agency).filter(Boolean));
+  const featured = nextCandidates.find(launch => launch.id !== nextCandidates[0]?.id);
 
   return (
+    <MissionSelectionProvider key={JSON.stringify(filters)} initial={nextLaunch}>
     <main className="launch-dashboard" id="main-content">
       <div className="dashboard-introduction">
         <LaunchHero launch={nextLaunch} locale={locale} />
-        <div className="dashboard-benefits" aria-label="Calendar overview">
-          <div><MissionIcon name="rocket" /><span><strong>{hasLaunchData ? launches.length : "—"}</strong><small>Launches in this view</small></span></div>
-          <div><MissionIcon name="orbit" /><span><strong>{hasLaunchData ? agencies.size : "—"}</strong><small>Agencies in this view</small></span></div>
-          <div><MissionIcon name="clock" /><span><strong>Local time</strong><small>Your launch schedule</small></span></div>
-          <div><MissionIcon name="location" /><span><strong>Worldwide</strong><small>Launch coverage</small></span></div>
+        <div className="dashboard-benefits" aria-label={d.overview}>
+          <div><MissionIcon name="rocket" /><span><strong>{hasLaunchData ? launches.length : "—"}</strong><small>{d.inView}</small></span></div>
+          <div><MissionIcon name="orbit" /><span><strong>{hasLaunchData ? agencies.size : "—"}</strong><small>{d.agencies}</small></span></div>
+          <div><MissionIcon name="clock" /><span><strong>{d.local}</strong><small>{d.schedule}</small></span></div>
+          <div><MissionIcon name="location" /><span><strong>{d.worldwide}</strong><small>{d.coverage}</small></span></div>
         </div>
+        <MissionDetailPanel />
       </div>
       <section className="calendar-panel" id="launch-calendar" aria-labelledby="next-launch-heading">
         <div className="section-heading">
@@ -71,7 +74,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             {" "}{dataStatus.stale ? t.staleNotice : t.datesNotice}
           </p>
         ) : null}
-        <nav className="agency-chips" aria-label="Filter by agency">
+        <nav className="agency-chips" aria-label={d.filterAgency}>
           {["", ...[...filterOptions.agencies].sort((a, b) => {
             const priority = ["SpaceX", "Rocket Lab", "Blue Origin", "United Launch Alliance", "Arianespace"];
             return (priority.includes(a) ? priority.indexOf(a) : 99) - (priority.includes(b) ? priority.indexOf(b) : 99);
@@ -81,7 +84,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             if (filters.vehicle) params.set("vehicle", filters.vehicle);
             if (favoritesOnly) params.set("favorites", "1");
             if (agency) params.set("agency", agency);
-            return <Link key={agency} href={`/?${params}#launch-calendar`} aria-current={(filters.agency || "") === agency ? "page" : undefined}>{agency || "All"}</Link>;
+            return <Link key={agency} href={`/?${params}#launch-calendar`} aria-current={(filters.agency || "") === agency ? "page" : undefined}>{agency || d.all}</Link>;
           })}
         </nav>
         <form className="filters" action="/#launch-calendar" method="get">
@@ -90,7 +93,9 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <span>{t.search}</span>
             <input defaultValue={filters.q} name="q" placeholder={t.searchPlaceholder} type="search" />
           </label>
-          <label>
+          <details className="advanced-filters" open={Boolean(filters.agency || filters.vehicle)}>
+          <summary>{d.filters}</summary>
+          <div className="advanced-filter-fields"><label>
             <span>{t.agency}</span>
             <select defaultValue={filters.agency ?? ""} name="agency">
               <option value="">{t.allAgencies}</option>
@@ -104,6 +109,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               {filterOptions.vehicles.map((vehicle) => <option key={vehicle} value={vehicle}>{vehicle}</option>)}
             </select>
           </label>
+          </div></details>
           <button type="submit">{t.applyFilters}</button>
           <Link className="clear-filters" href="/">{t.clear}</Link>
         </form>
@@ -112,7 +118,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           <Link href={favoritesHref} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}</Link>
         </nav>
         {hasLaunchData ? (
-          <FavoriteLaunchList launches={launches} previews={launchPreviews} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} />
+          <FavoriteLaunchList key={JSON.stringify(filters)} launches={launches} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} />
         ) : (
           <article className="launch-card">
             <h3>{t.unavailableTitle}</h3>
@@ -121,14 +127,15 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           </article>
         )}
       </section>
+      {featured ? <FeaturedLaunch launch={featured} locale={locale} /> : null}
       <div className="dashboard-explore">
-        <Link href="#launch-calendar" className="explore-card"><MissionIcon name="clock" /><h2>Launch calendar</h2><p>Find your next mission. Search agencies and vehicles.</p><span aria-hidden="true">↗</span></Link>
-        <Link href="/?favorites=1#launch-calendar" className="explore-card"><MissionIcon name="status" /><h2>Your favorites</h2><p>Keep the missions you want to follow close at hand.</p><span aria-hidden="true">↗</span></Link>
-        {nextLaunch ? <Link href={`/launches/${nextLaunch.id}`} className="explore-card"><MissionIcon name="rocket" /><h2>Mission details</h2><p>Explore rockets, launch windows and mission information.</p><span aria-hidden="true">↗</span></Link> : null}
+        <Link href="#launch-calendar" className="explore-card"><MissionIcon name="clock" /><h2>{d.calendar}</h2><p>{d.calendarBody}</p><span aria-hidden="true">↗</span></Link>
+        <Link href="/?favorites=1#launch-calendar" className="explore-card"><MissionIcon name="status" /><h2>{d.yourFavorites}</h2><p>{d.favoritesBody}</p><span aria-hidden="true">↗</span></Link>
+        {nextLaunch ? <Link href={`/launches/${nextLaunch.id}`} className="explore-card"><MissionIcon name="rocket" /><h2>{d.details}</h2><p>{d.detailsBody}</p><span aria-hidden="true">↗</span></Link> : null}
       </div>
-      {nextLaunch ? <FeaturedLaunch launch={nextLaunch} locale={locale} /> : null}
-      {nextLaunch?.image_url ? <p className="dashboard-image-credit">Featured imagery: {nextLaunch.image_credit || "Launch Library 2"} · {nextLaunch.image_license || "Licence not specified by source"}. Reference imagery may show a different mission. <Link href={`/launches/${nextLaunch.id}`}>Image information ↗</Link></p> : null}
-      <footer className="dashboard-footer"><p>NextRocketLaunch <span>· Space, right on time.</span></p><p>{t.dataSource} {t.datesNotice}</p></footer>
+      {nextLaunch?.image_url ? <p className="dashboard-image-credit">{d.imagery}: {nextLaunch.image_credit || "Launch Library 2"} · {nextLaunch.image_license || t.imageLicenseUnknown}. {d.reference} <Link href={`/launches/${nextLaunch.id}`}>{d.imageInfo} ↗</Link></p> : null}
+      <footer className="dashboard-footer"><p>NextRocketLaunch <span>· {d.tagline}</span></p><p>{t.dataSource} {t.datesNotice}</p></footer>
     </main>
+    </MissionSelectionProvider>
   );
 }

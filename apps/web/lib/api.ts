@@ -8,6 +8,12 @@ export type Launch = {
   source_url: string | null;
   source_updated_at: string;
   launch_timezone: string | null;
+  image_url?: string | null;
+  image_credit?: string | null;
+  image_license?: string | null;
+  image_license_url?: string | null;
+  image_kind?: "vehicle" | "launch" | null;
+  image_title?: string | null;
 };
 
 export type FilterOptions = {

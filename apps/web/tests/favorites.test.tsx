@@ -26,6 +26,15 @@ const button = () => container.querySelector("button")!;
 const renderButton = async () => act(async () => root.render(<LocaleProvider locale="pt-PT"><FavoriteButton id="falcon" name="Example" /></LocaleProvider>));
 
 describe("browser favorites", () => {
+  it("reveals more results without losing saved favorites", async () => {
+    const launches = Array.from({ length: 9 }, (_, index) => ({ ...launch, id: `launch-${index}` }));
+    await act(async () => root.render(<LocaleProvider locale="en-GB"><FavoriteLaunchList launches={launches} favoritesOnly={false} emptyCache={false} /></LocaleProvider>));
+    expect(container.querySelectorAll("article")).toHaveLength(6);
+    await act(async () => container.querySelector<HTMLButtonElement>(".favorite-button")!.click());
+    await act(async () => container.querySelector<HTMLButtonElement>(".load-more")!.click());
+    expect(container.querySelectorAll("article")).toHaveLength(9);
+    expect(container.querySelector(".favorite-button")!.getAttribute("aria-pressed")).toBe("true");
+  });
   it("ignores malformed storage and deduplicates valid identifiers", () => {
     expect(parseFavorites("broken")).toEqual([]);
     expect(parseFavorites('{"id":"falcon"}')).toEqual([]);

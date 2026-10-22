@@ -11,7 +11,7 @@ export function LoadingNotice({ previewSlow = false }: { previewSlow?: boolean }
     const timer = setTimeout(() => setSlow(true), 8000);
     return () => clearTimeout(timer);
   }, []);
-  return <main aria-busy="true">
+  return <main id="main-content" aria-busy="true">
     <header>
       <p className="eyebrow"><BrandMark /> <span aria-hidden="true">·</span> {t.brandSubtitle}</p>
       <h1>{t.loadingTitle}</h1>

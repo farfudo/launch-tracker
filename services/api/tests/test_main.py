@@ -38,7 +38,10 @@ def test_mission_details_are_persisted_and_updated(client, db_session) -> None:
     assert detail["window_start"].startswith("2099-01-01T12:00:00")
     assert detail["window_end"].startswith("2099-01-01T13:00:00")
     assert "mission_description" not in client.get("/api/v1/launches").json()[0]
-    assert "image_url" not in client.get("/api/v1/launches").json()[0]
+    thumbnail = client.get("/api/v1/launches").json()[0]
+    assert thumbnail["image_url"] == detail["image_url"]
+    assert thumbnail["image_credit"] == "Example photographer"
+    assert thumbnail["image_license_url"] == detail["image_license_url"]
     assert client.get("/api/v1/launches").json()[0]["launch_timezone"] == "America/Los_Angeles"
 
     summary.mission_description = "Updated description."

@@ -3,13 +3,15 @@
 import Link from "next/link";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { parseFavorites, readFavorites, subscribeFavorites, toggleFavorite } from "../lib/favorites";
-import type { Launch, LaunchDetail } from "../lib/api";
+import type { Launch } from "../lib/api";
 import { VehicleVisual } from "./vehicle-visual";
 import { Countdown } from "./countdown";
-import { formatLaunchDate } from "../lib/date";
+import { LocalLaunchDate } from "./local-launch-date";
+import { dashboardCopy } from "../lib/dashboard-i18n";
 import { formatLaunchStatus } from "../lib/launch";
 import { useLocale } from "./locale-provider";
 import { LaunchTimes } from "./launch-times";
+import { useMissionSelection } from "./mission-selection";
 
 const serverSnapshot = (): null => null;
 export function useFavorites() {
@@ -32,29 +34,40 @@ export function FavoriteButton({ id, name }: { id: string; name: string }) {
   </div>;
 }
 
-export function FavoriteLaunchList({ launches, previews = [], favoritesOnly, emptyCache }: {
-  launches: Launch[]; previews?: LaunchDetail[]; favoritesOnly: boolean; emptyCache: boolean;
+export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache }: {
+  launches: Launch[]; favoritesOnly: boolean; emptyCache: boolean;
 }) {
   const { locale, messages: t } = useLocale();
   const { ids, ready } = useFavorites();
+  const [limit, setLimit] = useState(6);
+  const d = dashboardCopy[locale];
+  const selection = useMissionSelection();
   const visible = favoritesOnly ? launches.filter(launch => ids.includes(launch.id)) : launches;
   if (favoritesOnly && !ready) return <p role="status">{t.loadingFavorites}</p>;
   return <>
-    <p className="launch-meta">{t.favoritePrivacy}</p>
-    {visible.length ? <div className="launch-list">{visible.map(launch => <article className="launch-card favorite-launch-card" key={launch.id}>
-      {previews.find(preview => preview.id === launch.id) ? <div className="launch-thumbnail"><VehicleVisual launch={previews.find(preview => preview.id === launch.id)!} /></div> : <div className="launch-thumbnail launch-thumbnail-placeholder" aria-hidden="true">↗</div>}
-      <Link className="launch-card-link" href={`/launches/${launch.id}`}>
+    {visible.length ? <div className="launch-list">{visible.slice(0, limit).map(launch => <article className="launch-card favorite-launch-card" data-selected={selection?.selected?.id === launch.id || undefined} key={launch.id}>
+      <div className="launch-thumbnail"><VehicleVisual launch={launch} priority={false} /></div>
+      <Link className="launch-card-link" href={`/launches/${launch.id}`} prefetch={false}
+        aria-controls={selection ? "selected-mission" : undefined}
+        onClick={event => {
+          if (!selection || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !window.matchMedia("(min-width: 801px)").matches) return;
+          event.preventDefault();
+          selection.select(launch);
+        }}>
         <p className="launch-agency">{launch.agency ?? t.agencyPending} · {launch.vehicle ?? t.vehiclePending}</p>
         <h3>{launch.name}</h3>
-        <p className="launch-date">{formatLaunchDate(launch.net, locale)}</p>
+        <p className="launch-date"><LocalLaunchDate date={launch.net} /></p>
         <span className="launch-status-tag">{formatLaunchStatus(launch.status, locale)}</span>
-        <span className="row-detail-link">View details →</span>
+        <span className="row-detail-link">{d.viewDetails} →</span>
+        {selection?.selected?.id === launch.id ? <span className="mission-selected-label">{d.selectedMission}</span> : null}
       </Link>
       <div className="launch-row-actions"><Countdown date={launch.net} status={launch.status} /><FavoriteButton id={launch.id} name={launch.name} /></div>
-      <details className="launch-row-times"><summary>Time zones</summary><LaunchTimes isoDate={launch.net} launchTimeZone={launch.launch_timezone} /></details>
+      <details className="launch-row-times"><summary>{d.zones}</summary><LaunchTimes isoDate={launch.net} launchTimeZone={launch.launch_timezone} /></details>
     </article>)}</div> : <article className="launch-card">
       <h3>{favoritesOnly ? ids.length ? t.noFavoriteMatches : t.noFavorites : emptyCache ? t.emptyTitle : t.noResults}</h3>
       <p>{favoritesOnly ? t.favoriteEmptyBody : emptyCache ? t.emptyBody : t.noResultsBody}</p>
     </article>}
+    {visible.length > limit ? <button className="load-more" type="button" onClick={() => setLimit(value => value + 6)}>{d.loadMore} ({visible.length - limit})</button> : null}
+    <details className="favorites-privacy"><summary>{d.privacy}</summary><p className="launch-meta">{t.favoritePrivacy}</p></details>
   </>;
 }

@@ -25,8 +25,7 @@ export default async function LaunchDetail({ params, searchParams }: {
   const preview = process.env.DESIGN_PREVIEW === "true";
   const design = preview ? resolveDesign((await searchParams).design) : "mission-control";
 
-  try {
-    const launch = await getLaunch(id);
+    const launch = await getLaunch(id).catch(() => notFound());
     const cards: { label: string; value: string; icon: MissionIconName }[] = [
       { label: t.agency, value: launch.agency || t.pending, icon: "agency" },
       { label: t.vehicle, value: launch.vehicle || t.pending, icon: "rocket" },
@@ -37,7 +36,7 @@ export default async function LaunchDetail({ params, searchParams }: {
     ];
 
     return (
-      <main className={`mission-detail-page design-${design}`}>
+      <main id="main-content" className={`mission-detail-page design-${design}`}>
         {preview ? <DesignReview launchId={id} selected={design} messages={t} /> : null}
         <div className="mission-navigation">
           <Link className="back-link" href="/">← {t.backToCalendar}</Link>
@@ -110,7 +109,4 @@ export default async function LaunchDetail({ params, searchParams }: {
         <footer className="mission-source-footer"><span><MissionIcon name="orbit" />{t.dataSource}</span>{launch.source_url ? <a href={launch.source_url} rel="noreferrer" target="_blank">{t.viewSource} ↗</a> : null}</footer>
       </main>
     );
-  } catch {
-    notFound();
-  }
 }

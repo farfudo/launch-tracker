@@ -6,7 +6,7 @@ import { BrandMark } from "../components/brand";
 
 export default function NotFound() {
   const { messages: t } = useLocale();
-  return <main>
+  return <main id="main-content">
     <header>
       <p className="eyebrow"><BrandMark /> <span aria-hidden="true">·</span> {t.brandSubtitle}</p>
       <h1>{t.notFoundTitle}</h1>
