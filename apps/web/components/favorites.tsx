@@ -12,7 +12,7 @@ import { formatLaunchStatus, launchStatusTone } from "../lib/launch";
 import { useLocale } from "./locale-provider";
 import { LaunchTimes } from "./launch-times";
 import { useMissionSelection } from "./mission-selection";
-import { LinkPending } from "./pending-feedback";
+import { LinkPending, Spinner } from "./pending-feedback";
 
 const serverSnapshot = (): null => null;
 export function useFavorites() {
@@ -29,7 +29,7 @@ export function FavoriteButton({ id, name }: { id: string; name: string }) {
     <button className="favorite-button" type="button" disabled={!ready} aria-pressed={selected}
       aria-label={`${selected ? t.removeFavorite : t.addFavorite}: ${name}`}
       onClick={() => setError(!toggleFavorite(id))}>
-      <span aria-hidden="true">{selected ? "★" : "☆"}</span> {selected ? t.savedFavorite : t.addFavorite}
+      {ready ? <span aria-hidden="true">{selected ? "★" : "☆"}</span> : <Spinner />} {selected ? t.savedFavorite : t.addFavorite}
     </button>
     {error ? <p role="alert">{t.favoriteError}</p> : null}
   </div>;
@@ -44,7 +44,7 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, histor
   const d = dashboardCopy[locale];
   const selection = useMissionSelection();
   const visible = favoritesOnly ? launches.filter(launch => ids.includes(launch.id)) : launches;
-  if (favoritesOnly && !ready) return <p role="status">{t.loadingFavorites}</p>;
+  if (favoritesOnly && !ready) return <p role="status"><Spinner /> {t.loadingFavorites}</p>;
   return <>
     {visible.length ? <div className="launch-list">{visible.slice(0, limit).map(launch => <article className="launch-card favorite-launch-card" data-selected={selection?.selected?.id === launch.id || undefined} key={launch.id}>
       <div className="launch-thumbnail"><VehicleVisual launch={launch} priority={false} /></div>

@@ -2,11 +2,22 @@
 import React, { act } from "react";
 import { createRoot } from "react-dom/client";
 import { expect, it, vi } from "vitest";
-import { SearchForm } from "../components/pending-feedback";
+import { SearchForm, Spinner } from "../components/pending-feedback";
+import { renderToStaticMarkup } from "react-dom/server";
 import { LocaleProvider } from "../components/locale-provider";
 
 const { push } = vi.hoisted(() => ({ push: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+
+it("uses an orbital indicator in controls and a rising rocket for page loading", () => {
+  const orbit = renderToStaticMarkup(<Spinner />);
+  const launch = renderToStaticMarkup(<Spinner variant="launch" />);
+  expect(orbit).toContain('rocket-orbit-traveller');
+  expect(orbit).toContain('rocket-orbit-track');
+  expect(orbit).toContain('aria-hidden="true"');
+  expect(launch).toContain('rocket-loader-launch');
+  expect(launch).not.toContain('rocket-orbit-traveller');
+});
 
 it("shows pending feedback, preserves filters and prevents repeat submit until navigation ends", async () => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;

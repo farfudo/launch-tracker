@@ -185,8 +185,8 @@ body { background: var(--surface); }
 @media (max-width: 800px) { .mission-selected-label { display: none; } }
 
 .hero-action-mobile { display: none; }
-.agency-chips a { position: relative; padding-right: 1.7rem; }
-.agency-filter-spinner { position: absolute; right: .4rem; top: 50%; transform: translateY(-50%); width: 1em; font-size: .85rem; opacity: 0; }
+.agency-chips a { position: relative; padding-right: 2rem; }
+.agency-filter-spinner { position: absolute; right: .4rem; top: 50%; transform: translateY(-50%); width: 1.5em; font-size: .85rem; opacity: 0; }
 .agency-chips a[data-pending] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); }
 .agency-chips a[data-pending] .agency-filter-spinner { opacity: 1; }
 .agency-filter-feedback { min-height: 1.2em; margin: -.5rem 0 .5rem; font-size: .75rem; color: var(--accent-strong); }
@@ -231,14 +231,32 @@ body { background: var(--surface); }
 /* Visual hierarchy review: navigation, filters and preferences have distinct roles. */
 .site-toolbar { align-items: center; }
 .action-spinner { display: inline-block; width: 1em; height: 1.15em; flex-shrink: 0; vertical-align: -.15em; }
+.rocket-loader-orbit { width: 1.5em; height: 1.5em; vertical-align: -.35em; }
+.rocket-orbit-track { opacity: .3; }
+.rocket-orbit-traveller { transform-origin: 20px 20px; animation: rocket-orbit 1.8s linear infinite; }
 .rocket-loader svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.photo-loading { position: absolute; z-index: 2; inset: 0; display: grid; place-items: center; pointer-events: none; font-size: 1.8rem; color: var(--text); }
+.photo-loading > .rocket-loader { box-sizing: content-box; padding: .45rem; border-radius: 50%; background: var(--surface); }
+.launch-thumbnail .photo-loading { font-size: 1rem; }
 .rocket-loader-body { animation: rocket-hover 1.6s ease-in-out infinite; }
 .rocket-loader-flame { transform-box: fill-box; transform-origin: center top; animation: rocket-flame .65s ease-in-out infinite alternate; }
 button .action-spinner { margin-right: .5rem; }
-.link-pending { display: inline-block; width: 1em; margin-left: .3rem; vertical-align: middle; }
+.link-pending { display: inline-block; width: 1.5em; margin-left: .3rem; vertical-align: middle; }
+@keyframes rocket-orbit { to { transform: rotate(360deg); } }
 @keyframes rocket-hover { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
 @keyframes rocket-flame { from { transform: scaleY(.72); opacity: .8; } to { transform: scaleY(1); opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .rocket-loader-body, .rocket-loader-flame { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .rocket-loader-body, .rocket-loader-flame, .rocket-orbit-traveller { animation: none; } }
+.loading-preview-examples { margin: 1.5rem 24px; padding: 1.25rem; }
+.loading-preview-examples h2 { margin-top: 0; font-size: 1.1rem; }
+.loading-preview-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+.loading-preview-controls button { font: inherit; display: inline-flex; align-items: center; padding: .6rem 1rem; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); }
+.mission-share { margin: 1rem 0; font-size: .85rem; }
+.mission-share-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.mission-share button { display: inline-flex; align-items: center; gap: .35rem; padding: .6rem .9rem; border: 1px solid var(--border); border-radius: 12px; color: var(--text); background: var(--surface); font: inherit; min-height: 44px; cursor: pointer; }
+.mission-share button:disabled { cursor: wait; }
+.mission-share-feedback { min-height: 1.2em; margin: .3rem 0 0; color: var(--accent-strong); }
+.mission-share input { display: block; width: 100%; max-width: 36rem; box-sizing: border-box; padding: .7rem; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.mission-share :is(button,input):focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .toolbar-controls .language-control { position: relative; }
 .language-short { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: .4rem; pointer-events: none; font-size: .8rem; font-weight: 650; }
 .toolbar-controls .language-control select { width: 66px; max-width: 66px; min-height: 44px; color: transparent; appearance: none; cursor: pointer; }

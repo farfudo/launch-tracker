@@ -12,6 +12,7 @@ import { FavoriteButton } from "./favorites";
 import { MissionStreams } from "./mission-streams";
 import { MissionCalendar } from "./mission-calendar";
 import { Spinner, LinkPending } from "./pending-feedback";
+import { MissionShare } from "./mission-share";
 
 type Selection = {
   selected: Launch | null;
@@ -102,6 +103,7 @@ export function MissionDetailPanel() {
       <details className="panel-time-zones"><summary>{d.zones}</summary><LaunchTimes isoDate={detail.net} launchTimeZone={detail.launch_timezone} /></details>
     </div> : null}
     <div className="selected-mission-actions"><Link className="pill-button" href={`/launches/${selected.id}`}>{d.fullDetails} →<LinkPending /></Link><FavoriteButton id={selected.id} name={selected.name} /></div>
+    <MissionShare key={selected.id} id={selected.id} name={selected.name} />
     </div>
   </section>;
 }

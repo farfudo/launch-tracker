@@ -5,8 +5,23 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useLocale } from "./locale-provider";
 
-export function Spinner() {
-  return <span className="action-spinner rocket-loader" aria-hidden="true">
+export function Spinner({ variant = "orbit" }: { variant?: "orbit" | "launch" }) {
+  if (variant === "orbit") return <span className="action-spinner rocket-loader rocket-loader-orbit" aria-hidden="true">
+    <svg viewBox="0 0 40 40" fill="none" focusable="false">
+      <circle className="rocket-orbit-track" cx="20" cy="20" r="12" stroke="currentColor" strokeWidth="1.5" />
+      <g className="rocket-orbit-traveller">
+        <g transform="translate(20 8) rotate(90)">
+          <path className="rocket-loader-flame" d="M-2 5Q-3 10 0 12Q3 10 2 5Z" fill="#ff7a2f" />
+          <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="var(--surface)">
+            <path d="M-4 1-7 5v4l4-3M4 1l3 4v4L3 6" />
+            <path d="M-4 6V-1Q-4-6 0-9Q4-6 4-1v7Z" />
+            <circle cx="0" cy="-1" r="1.5" />
+          </g>
+        </g>
+      </g>
+    </svg>
+  </span>;
+  return <span className="action-spinner rocket-loader rocket-loader-launch" aria-hidden="true">
     <svg viewBox="0 0 32 40" fill="none" focusable="false">
       <path className="rocket-loader-flame" d="M12 28Q11 34 16 38Q21 34 20 28Z" fill="#ff7a2f" />
       <g className="rocket-loader-body" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

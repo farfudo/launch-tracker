@@ -46,7 +46,20 @@ describe("vehicle visual", () => {
     await act(async () => container.querySelector("img")!.dispatchEvent(new Event("error")));
     expect(container.querySelector("img")).toBeNull();
     expect(container.querySelector(".rocket-art")).not.toBeNull();
+    expect(container.querySelector(".photo-loading")).toBeNull();
     expect(container.textContent).toContain("ilustração temática");
+  });
+
+  it("shows a rocket only until the photo finishes loading", async () => {
+    await act(async () => root.render(<LocaleProvider locale="en-GB"><VehicleVisual launch={launch} /></LocaleProvider>));
+    expect(container.querySelector(".photo-loading .rocket-loader")).not.toBeNull();
+    const img = container.querySelector("img")!;
+    Object.defineProperty(img, "naturalWidth", { value: 800, configurable: true });
+    Object.defineProperty(img, "naturalHeight", { value: 600, configurable: true });
+    Object.defineProperty(img, "decode", { value: () => Promise.resolve(), configurable: true });
+    await act(async () => img.dispatchEvent(new Event("load")));
+    expect(container.querySelector(".photo-loading")).toBeNull();
+    expect(container.querySelector("img")).not.toBeNull();
   });
 
   it("never renders unsafe image or attribution URLs", async () => {

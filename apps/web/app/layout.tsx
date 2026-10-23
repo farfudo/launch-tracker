@@ -8,6 +8,7 @@ import { ThemeScript, ThemeToggle } from "../components/theme-toggle";
 import { dictionaries } from "../lib/i18n";
 import { getLocale } from "../lib/locale-server";
 import { dashboardCopy } from "../lib/dashboard-i18n";
+import { LinkPending } from "../components/pending-feedback";
 import "./styles.css";
 import "./dashboard.css";
 
@@ -30,7 +31,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <LocaleProvider locale={locale}>
           <a className="skip-link" href="#main-content">{d.skip}</a>
           <div className="site-toolbar">
-            <Link href="/" className="home-brand" aria-label="NextRocketLaunch home"><BrandMark /></Link>
+            <Link href="/" className="home-brand" aria-label="NextRocketLaunch home"><BrandMark /><LinkPending /></Link>
             <div className="toolbar-controls"><ThemeToggle /><LanguageSelector /></div>
           </div>
           {children}

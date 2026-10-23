@@ -210,3 +210,21 @@ O utilizador pediu um indicador ligado ao tema espacial em vez da rodinha. O com
 Verificação do foguetão: 54 testes web e build passaram; preview observada no browser. E2E não repetidos nesta revisão visual. A primeira tentativa de reiniciar o servidor local foi bloqueada pela permissão de abertura de porta; o reinício autorizado na mesma porta 3300 resolveu o acesso, sem alterar os serviços públicos.
 
 O utilizador aprovou explicitamente o visual e autorizou commit e push em 23 de outubro de 2026. O incremento inclui o feedback de carregamento, os testes e os documentos de revisão/evolução/tarefas. O catálogo funcional e todas as exportações de partilha permanecem locais; foi retirada a ligação nova ao catálogo no README para não publicar uma ligação para um ficheiro ausente. Resultado do envio a confirmar no GitHub; aprovação não comprova deploy.
+
+### Rascunho posterior ao commit 747649f
+
+O commit `747649f` foi enviado com sucesso para `main` no GitHub. Depois, o utilizador pediu cobertura dos restantes estados de espera e uma variante mais reconhecível em tamanhos pequenos. A revisão local acrescenta feedback à preparação dos favoritos, deteção de fuso, carregamento de fotografias e navegação de regresso/início. Fotografias retiram o indicador ao carregar ou ao falhar; ações locais instantâneas continuam sem esperas artificiais.
+
+Dificuldade: o foguetão com movimento vertical subtil podia parecer um simples ícone num botão. Solução em preview: foguetão percorre uma órbita circular nos controlos, enquanto a página conserva a subida suave. A órbita completa uma volta em 1,8 segundos; movimento reduzido desativa as animações. A página de preview mostra exemplos explícitos, não pedidos reais. Esta variante e a cobertura adicional permanecem sem aprovação e sem novo commit/push. As exportações Word anteriores não foram regeneradas nesta revisão da aplicação.
+
+Verificação desta proposta: 56 testes web e compilação de produção passaram; comparação visual aberta no browser. Testes novos confirmam as variantes e remoção do indicador após load/error da fotografia. E2E não repetidos nesta ronda.
+
+### Rascunho de partilha de missão
+
+Antes do próximo push, o utilizador aceitou acrescentar Partilhar missão. Implementados dois controlos no painel e no detalhe: menu nativo quando suportado e cópia explícita da ligação. PT/EN/ES, feedback de cópia/erro, seleção manual em falha e foguetão durante espera real. Não exige contas, base de dados ou serviços externos novos; a ligação usa a origem atual e o identificador da missão, sem filtros da visita. Em preview a ligação é local, não um endereço público para terceiros.
+
+Dificuldade: cancelamento nativo foi inicialmente classificado como erro porque `DOMException` pode vir de outro contexto e não satisfazer `instanceof Error`. O teste detetou o problema; a solução verifica `AbortError` pelo nome com validação do objeto. Cancelar não copia nada nem inicia outra partilha. A seleção da missão usa uma chave para reiniciar as confirmações e impedir feedback referente à missão anterior. Preview e autorização separada de commit/push continuam pendentes. Ver `docs/SHARING_REVIEW.md`.
+
+Verificação da partilha: 63 testes web passaram, incluindo sete novos testes com APIs simuladas; build e quatro percursos E2E de regressão desktop/móvel passaram. Cópia manual na preview apresentou confirmação no browser. Não foram enviadas mensagens reais nem testado o menu nativo num dispositivo físico. A preview usa missões fictícias e deixa claro que o site público permanece inalterado.
+
+Após a revisão da preview, o utilizador aprovou a partilha e os indicadores orbitais e autorizou explicitamente o commit e push deste conjunto. As referências a rascunho acima descrevem a preparação, não o estado de aprovação atual. O envio inclui código, testes e revisões de carregamento/partilha; exclui `FEATURES_ROADMAP` e todas as exportações em `docs/partilha/`. O resultado do push e dos deploys deve ser confirmado separadamente, sem o deduzir da aprovação.

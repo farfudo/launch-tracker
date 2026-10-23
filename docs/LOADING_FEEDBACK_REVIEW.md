@@ -1,5 +1,11 @@
 # Rascunho — feedback de carregamento
 
+A variante orbital e a cobertura adicional abaixo foram aprovadas na revisão conjunta com a partilha de missão; commit/push autorizados explicitamente depois da aprovação. Resultado do envio e publicação a confirmar.
+
+Revisão posterior a `747649f`, ainda local: variante orbital para indicadores pequenos, subida para página inteira e exemplos na preview. Cobertura adicional em favoritos a preparar, fuso a detetar, imagem em carregamento e ligações de início/regresso. Imagem remove indicador em load/error; não se acrescentam esperas a operações instantâneas. Redução de movimento desativa também a órbita. Esta ronda exige nova aprovação visual e autorização separada de push.
+
+Verificação da variante orbital: 56 testes web e build passaram, incluindo imagem em load/error e variantes orbit/launch. Comparação observada no browser em `/preview/loading`. Não foram repetidos E2E nesta ronda; o comportamento com redução de movimento foi revisto no CSS. Os exemplos da preview são deliberadamente permanentes para comparação, não representam operações em execução.
+
 Estado: visual do foguetão aprovado e commit/push autorizados explicitamente pelo utilizador em 23 de outubro de 2026. As menções a rascunho abaixo registam a preparação local; a publicação pelos alojamentos é uma etapa posterior a verificar.
 
 Revisão visual posterior: a pedido do utilizador, a rodinha foi substituída por um foguetão SVG com chama laranja e oscilação vertical suave. O mesmo elemento é usado nos filtros de agência e restantes estados de espera. O SVG é decorativo, sem leitura duplicada por tecnologias de apoio; o texto de carregamento mantém-se. `prefers-reduced-motion` desativa as duas animações. Sem imagens externas, bibliotecas novas ou espera artificial. Preview e aprovação permanecem separadas de commit/push.

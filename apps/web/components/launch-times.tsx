@@ -2,6 +2,7 @@
 
 import { formatLaunchDate, isValidTimeZone } from "../lib/date";
 import { useLocale } from "./locale-provider";
+import { Spinner } from "./pending-feedback";
 
 export function LaunchTimes({ isoDate, launchTimeZone }: {
   isoDate: string;
@@ -22,7 +23,7 @@ export function LaunchTimes({ isoDate, launchTimeZone }: {
       </div>
       <div>
         <dt>{t.yourTime} {viewerTimeZone ? <span className="zone-name">{viewerTimeZone}</span> : null}</dt>
-        <dd>{viewerTimeZone ? <time dateTime={isoDate}>{formatLaunchDate(isoDate, locale, viewerTimeZone)}</time> : t.detectingZone}</dd>
+        <dd>{viewerTimeZone ? <time dateTime={isoDate}>{formatLaunchDate(isoDate, locale, viewerTimeZone)}</time> : <span role="status"><Spinner /> {t.detectingZone}</span>}</dd>
       </div>
     </dl>
   );

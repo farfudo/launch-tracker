@@ -14,6 +14,8 @@ import { DesignReview, resolveDesign } from "../../../components/design-review";
 import { BrandMark } from "../../../components/brand";
 import { MissionStreams } from "../../../components/mission-streams";
 import { MissionCalendar } from "../../../components/mission-calendar";
+import { LinkPending } from "../../../components/pending-feedback";
+import { MissionShare } from "../../../components/mission-share";
 
 type RouteParams = Promise<{ id: string }>;
 
@@ -44,7 +46,7 @@ export default async function LaunchDetail({ params, searchParams }: {
       <main id="main-content" className={`mission-detail-page design-${design}`}>
         {preview ? <DesignReview launchId={id} selected={design} messages={t} /> : null}
         <div className="mission-navigation">
-          <Link className="back-link" href="/">← {t.backToCalendar}</Link>
+          <Link className="back-link" href="/">← {t.backToCalendar}<LinkPending /></Link>
           <BrandMark className="mission-wordmark" />
         </div>
 
@@ -55,6 +57,7 @@ export default async function LaunchDetail({ params, searchParams }: {
             <span className="mission-status" data-tone={launchStatusTone(launch.status)}><span aria-hidden="true" />{formatLaunchStatus(launch.status, locale)}</span>
             <FavoriteButton id={launch.id} name={launch.name} />
             <MissionCalendar launch={launch} />
+            <MissionShare key={launch.id} id={launch.id} name={launch.name} />
             <div className="mission-target">
               <span className="mission-target-icon"><MissionIcon name="clock" /></span>
               <div><p>{t.expectedDate}</p><time dateTime={launch.net}>{formatLaunchDate(launch.net, locale)}</time></div>
