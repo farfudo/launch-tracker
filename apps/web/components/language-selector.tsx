@@ -15,9 +15,11 @@ export function LanguageSelector() {
   return (
     <div className="language-control">
       <label htmlFor="site-language">{t.language}</label>
+      <span className="language-short" aria-hidden="true">{locale.slice(0, 2).toUpperCase()}⌄</span>
       <select
         id="site-language"
         name="language"
+        title={languageNames[locale]}
         value={locale}
         disabled={pending}
         aria-busy={pending}

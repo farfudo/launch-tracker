@@ -229,3 +229,36 @@ body { background: var(--surface); }
 .mission-calendar-options { display: flex; flex-wrap: wrap; gap: .75rem; }
 .mission-calendar-options a { text-decoration: none; overflow-wrap: anywhere; }
 .mission-calendar :is(summary, a):focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* Visual hierarchy review: navigation, filters and preferences have distinct roles. */
+.site-toolbar { align-items: center; }
+.toolbar-controls .language-control { position: relative; }
+.language-short { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: .4rem; pointer-events: none; font-size: .8rem; font-weight: 650; }
+.toolbar-controls .language-control select { width: 66px; max-width: 66px; min-height: 44px; color: transparent; appearance: none; cursor: pointer; }
+.toolbar-controls .language-control select option { color: var(--text); background: var(--surface-raised); }
+.toolbar-controls .theme-toggle { min-height: 44px; }
+.dashboard-benefits { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 1rem 1.2rem; }
+.period-tabs { display: flex; gap: 1.25rem; border-bottom: 1px solid var(--border); margin-top: 1rem; }
+.period-tabs a { color: var(--text-soft); font-size: .9rem; font-weight: 650; text-decoration: none; padding: .8rem .15rem; border-bottom: 3px solid transparent; min-height: 44px; }
+.period-tabs a[aria-current="page"] { color: var(--accent-strong); border-bottom-color: var(--accent); }
+.period-tabs a:focus-visible, .data-explanation summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.data-explanation { margin: .8rem 0 1rem; font-size: .75rem; color: var(--text-soft); }
+.data-explanation summary { cursor: pointer; padding-block: .4rem; width: fit-content; }
+.dashboard-footer a { color: var(--accent-strong); text-underline-offset: 3px; }
+.dashboard-footer p { line-height: 1.7; }
+@media (max-width: 800px) {
+  .site-toolbar { flex-wrap: nowrap; gap: .6rem; }
+  .dashboard-hero { min-height: 0; }
+  .dashboard-hero-copy { max-width: 100%; padding: 1.5rem; }
+  .dashboard-hero h1 { font-size: clamp(2.15rem, 6vw, 3rem); margin: .8rem 0; }
+  .dashboard-hero-copy > p:not(.eyebrow) { margin-bottom: 1rem; }
+  .next-launch-panel { margin-top: 0; }
+}
+@media (max-width: 480px) {
+  .site-toolbar { padding: .7rem .8rem; }
+  .home-brand { font-size: 1rem; }
+  .toolbar-controls { gap: .3rem; }
+  .toolbar-controls .language-control select { width: 54px; max-width: 54px; }
+  .period-tabs { gap: .8rem; }
+  .period-tabs a { font-size: .82rem; }
+}

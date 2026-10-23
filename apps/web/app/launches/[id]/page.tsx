@@ -52,7 +52,6 @@ export default async function LaunchDetail({ params, searchParams }: {
           <div className="mission-hero-copy">
             <p className="eyebrow"><span className="mission-signal" aria-hidden="true" />{t.launchDetail}</p>
             <h1 id="mission-title">{launch.mission_name || launch.name}</h1>
-            <p className="mission-vehicle"><MissionIcon name="rocket" />{launch.vehicle || t.vehiclePending}<span aria-hidden="true">/</span>{launch.agency || t.agencyPending}</p>
             <span className="mission-status" data-tone={launchStatusTone(launch.status)}><span aria-hidden="true" />{formatLaunchStatus(launch.status, locale)}</span>
             <FavoriteButton id={launch.id} name={launch.name} />
             <MissionCalendar launch={launch} />
@@ -60,7 +59,6 @@ export default async function LaunchDetail({ params, searchParams }: {
               <span className="mission-target-icon"><MissionIcon name="clock" /></span>
               <div><p>{t.expectedDate}</p><time dateTime={launch.net}>{formatLaunchDate(launch.net, locale)}</time></div>
             </div>
-            <div className="mission-coordinate"><MissionIcon name="location" />{launch.location_name || t.pending}</div>
           </div>
           <VehicleVisual key={launch.image_url || launch.id} launch={launch} />
         </section>

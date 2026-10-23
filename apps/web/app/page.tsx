@@ -57,8 +57,6 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         <div className="dashboard-benefits" aria-label={d.overview}>
           <div><MissionIcon name="rocket" /><span><strong>{hasLaunchData ? launches.length : "—"}</strong><small>{d.inView}</small></span></div>
           <div><MissionIcon name="orbit" /><span><strong>{hasLaunchData ? agencies.size : "—"}</strong><small>{d.agencies}</small></span></div>
-          <div><MissionIcon name="clock" /><span><strong>{d.local}</strong><small>{d.schedule}</small></span></div>
-          <div><MissionIcon name="location" /><span><strong>{d.worldwide}</strong><small>{d.coverage}</small></span></div>
         </div>
         <MissionDetailPanel />
       </div>
@@ -77,11 +75,11 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             {" "}{dataStatus.stale ? t.staleNotice : t.datesNotice}
           </p>
         ) : null}
-        <nav className="favorite-views" aria-label={t.launchPeriod}>
+        <nav className="period-tabs" aria-label={t.launchPeriod}>
           <Link href={upcomingHref} aria-current={period === "upcoming" ? "page" : undefined}>{t.upcoming}</Link>
           <Link href={historyHref} aria-current={period === "past" ? "page" : undefined}>{t.history}</Link>
         </nav>
-        <p className="launch-meta">{period === "past" ? t.historyNotice : t.upcomingNotice}</p>
+        <details className="data-explanation"><summary>{t.aboutData}</summary><p className="launch-meta">{period === "past" ? t.historyNotice : t.upcomingNotice}</p></details>
         {!hasFilterOptions ? <p role="status" className="launch-meta">{t.filtersUnavailable}</p> : null}
         <AgencyFilters agencies={filterOptions.agencies} filters={filters} />
         <form className="filters" action="/#launch-calendar" method="get">
@@ -129,7 +127,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       </section>
       {featured ? <FeaturedLaunch launch={featured} locale={locale} /> : null}
       {nextLaunch?.image_url ? <p className="dashboard-image-credit">{d.imagery}: {nextLaunch.image_credit || "Launch Library 2"} · {nextLaunch.image_license || t.imageLicenseUnknown}. {d.reference} <Link href={`/launches/${nextLaunch.id}`}>{d.imageInfo} ↗</Link></p> : null}
-      <footer className="dashboard-footer"><p>NextRocketLaunch <span>· {d.tagline}</span></p><p>{t.dataSource} {t.datesNotice}</p></footer>
+      <footer className="dashboard-footer"><div><p>NextRocketLaunch <span>· {d.tagline}</span></p><p>{t.developedBy} <a href="https://github.com/farfudo" target="_blank" rel="noopener noreferrer">farfudo ↗</a> · <a href="https://github.com/farfudo/launch-tracker" target="_blank" rel="noopener noreferrer">{t.sourceCode} ↗</a></p></div><p>{t.dataSource} {t.datesNotice}</p></footer>
     </main>
     </MissionSelectionProvider>
   );
