@@ -185,14 +185,12 @@ body { background: var(--surface); }
 @media (max-width: 800px) { .mission-selected-label { display: none; } }
 
 .hero-action-mobile { display: none; }
-.agency-chips a { position: relative; padding-right: 1.35rem; }
-.agency-filter-spinner { position: absolute; right: .4rem; top: calc(50% - 4px); width: 8px; height: 8px; border: 1px solid currentColor; border-right-color: transparent; border-radius: 50%; opacity: 0; }
+.agency-chips a { position: relative; padding-right: 1.7rem; }
+.agency-filter-spinner { position: absolute; right: .4rem; top: 50%; transform: translateY(-50%); width: 1em; font-size: .85rem; opacity: 0; }
 .agency-chips a[data-pending] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); }
-.agency-chips a[data-pending] .agency-filter-spinner { opacity: 1; animation: agency-filter-spin .7s linear infinite; }
+.agency-chips a[data-pending] .agency-filter-spinner { opacity: 1; }
 .agency-filter-feedback { min-height: 1.2em; margin: -.5rem 0 .5rem; font-size: .75rem; color: var(--accent-strong); }
 .calendar-panel:has(.agency-filter-navigation[aria-busy="true"]) .launch-list { opacity: .5; }
-@keyframes agency-filter-spin { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .agency-chips a[data-pending] .agency-filter-spinner { animation: none; } }
 @media (max-width: 800px) {
   .hero-action-mobile { display: inline-flex; }
   .hero-action-desktop { display: none; }
@@ -232,6 +230,15 @@ body { background: var(--surface); }
 
 /* Visual hierarchy review: navigation, filters and preferences have distinct roles. */
 .site-toolbar { align-items: center; }
+.action-spinner { display: inline-block; width: 1em; height: 1.15em; flex-shrink: 0; vertical-align: -.15em; }
+.rocket-loader svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.rocket-loader-body { animation: rocket-hover 1.6s ease-in-out infinite; }
+.rocket-loader-flame { transform-box: fill-box; transform-origin: center top; animation: rocket-flame .65s ease-in-out infinite alternate; }
+button .action-spinner { margin-right: .5rem; }
+.link-pending { display: inline-block; width: 1em; margin-left: .3rem; vertical-align: middle; }
+@keyframes rocket-hover { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes rocket-flame { from { transform: scaleY(.72); opacity: .8; } to { transform: scaleY(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .rocket-loader-body, .rocket-loader-flame { animation: none; } }
 .toolbar-controls .language-control { position: relative; }
 .language-short { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: .4rem; pointer-events: none; font-size: .8rem; font-weight: 650; }
 .toolbar-controls .language-control select { width: 66px; max-width: 66px; min-height: 44px; color: transparent; appearance: none; cursor: pointer; }

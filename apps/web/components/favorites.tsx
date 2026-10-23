@@ -12,6 +12,7 @@ import { formatLaunchStatus, launchStatusTone } from "../lib/launch";
 import { useLocale } from "./locale-provider";
 import { LaunchTimes } from "./launch-times";
 import { useMissionSelection } from "./mission-selection";
+import { LinkPending } from "./pending-feedback";
 
 const serverSnapshot = (): null => null;
 export function useFavorites() {
@@ -58,7 +59,7 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, histor
         <h3>{launch.name}</h3>
         <p className="launch-date"><LocalLaunchDate date={launch.net} /></p>
         <span className="launch-status-tag" data-tone={launchStatusTone(launch.status)}>{formatLaunchStatus(launch.status, locale)}</span>
-        <span className="row-detail-link">{d.viewDetails} →</span>
+        <span className="row-detail-link">{d.viewDetails} →<LinkPending /></span>
         {selection?.selected?.id === launch.id ? <span className="mission-selected-label">{d.selectedMission}</span> : null}
       </Link>
       <div className="launch-row-actions">{historical ? null : <Countdown date={launch.net} status={launch.status} />}<FavoriteButton id={launch.id} name={launch.name} /></div>

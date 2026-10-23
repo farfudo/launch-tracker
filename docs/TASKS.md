@@ -1,5 +1,12 @@
 # Próximas tarefas
 
+## Tarefa recorrente — documentação da evolução
+
+- [ ] Em cada incremento, atualizar `docs/PROJECT_EVOLUTION.md` com o que mudou, a decisão e o motivo, as verificações realizadas e as limitações ainda existentes.
+- [ ] Registar as dificuldades encontradas, como foram investigadas, a solução aplicada e a evidência de resolução; manter explícito quando a causa ou solução ainda não foi confirmada.
+- [ ] Acrescentar os commits e ligações conhecidos; distinguir commit, push, deploy, migração e sincronização, sem declarar sucesso antes da confirmação.
+- [ ] Rever esta documentação antes de pedir aprovação de commit/push. A tarefa mantém-se recorrente, não fica concluída definitivamente após uma atualização.
+
 ## Incremento 1 — Fundamentos
 
 - [x] Criar estrutura do repositório e especificação do MVP.

@@ -8,6 +8,7 @@ import { Countdown } from "./countdown";
 import { VehicleVisual } from "./vehicle-visual";
 import { MissionIcon } from "./mission-icon";
 import { HeroAction } from "./hero-action";
+import { LinkPending } from "./pending-feedback";
 
 export function LaunchHero({ launch, locale }: { launch: LaunchDetail | null; locale: Locale }) {
   const d = dashboardCopy[locale];
@@ -26,7 +27,7 @@ export function LaunchHero({ launch, locale }: { launch: LaunchDetail | null; lo
       <p>{launch.agency}</p>
       {launch.location_name ? <p className="icon-line"><MissionIcon name="location" />{launch.location_name}</p> : null}
       <p className="icon-line"><MissionIcon name="clock" /><LocalLaunchDate date={launch.net} /></p>
-      <span className="hero-detail-link">{d.explore} <span aria-hidden="true">↗</span></span>
+      <span className="hero-detail-link">{d.explore} <span aria-hidden="true">↗</span><LinkPending /></span>
     </Link> : <div className="hero-orbit" aria-hidden="true"><MissionIcon name="rocket" /></div>}
   </section>;
 }
@@ -37,7 +38,7 @@ export function FeaturedLaunch({ launch, locale }: { launch: Launch; locale: Loc
     <VehicleVisual launch={launch} priority={false} />
     <div className="featured-copy"><p className="eyebrow">{d.featured}</p><h2 id="featured-heading">{launch.name}</h2>
       <p>{launch.agency} · {launch.vehicle}</p><p><LocalLaunchDate date={launch.net} /></p>
-      <p>{d.featuredNote}</p><Link className="pill-button" href={`/launches/${launch.id}`}>{d.fullDetails} →</Link>
+      <p>{d.featuredNote}</p><Link className="pill-button" href={`/launches/${launch.id}`}>{d.fullDetails} →<LinkPending /></Link>
     </div>
     <Countdown date={launch.net} status={launch.status} />
   </section>{launch.image_url ? <p className="dashboard-image-credit">{d.imagery}: {launch.image_credit || "Launch Library 2"} · {launch.image_license || dictionaries[locale].imageLicenseUnknown}. {d.reference} <Link href={`/launches/${launch.id}`}>{d.imageInfo} ↗</Link></p> : null}</>;

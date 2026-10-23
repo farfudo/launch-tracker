@@ -179,6 +179,34 @@ Documentos complementares: [especificação](../SPEC.md), [diário de aprendizag
 
 ## 8. Proposta de autoria e GitHub na interface
 
+## Incremento local — feedback de carregamento e catálogo funcional
+
+Rascunho posterior a `606005e`, sem commit/push nesta etapa. Criado `FEATURES_ROADMAP.md` com etapas, funcionalidades existentes, limitações, ideias do utilizador e sugestões adicionais, prioridades e critérios de conclusão. A autoria GitHub inicialmente proposta já foi implementada em `77dac29`; o texto histórico abaixo documenta a proposta original.
+
+Na interface, spinner reutilizável para pesquisa, idioma, pedidos de detalhe, nova tentativa e ligações de navegação; carregamento de página mantém explicação de demora após oito segundos. Ações locais instantâneas não ganham atrasos artificiais. Movimento reduzido desativa rotação. Pesquisa passa a navegação Next.js com preservação de parâmetros e bloqueio de submissão repetida; HTML GET continua como ação base. Verificação concluída: 54 testes web, build e quatro percursos E2E passaram; preview local observada no browser. Ver [revisão de carregamento](LOADING_FEEDBACK_REVIEW.md).
+
+Dificuldade: uma animação global por clique daria falsas esperas em operações instantâneas ou ligações externas. Solução: usar o estado real de transição e `useLinkStatus` dentro de Link, conservando espaço para o indicador. O painel de missão conserva cancelamento e proteção contra respostas fora de ordem. Verificações finais deste incremento são registadas no documento de revisão próprio; não assumir resultado por este texto.
+
 Recomendação ainda não implementada: acrescentar ao rodapé «Desenvolvido por farfudo», ligado a https://github.com/farfudo, e uma ligação separada «Código-fonte», para https://github.com/farfudo/launch-tracker. O perfil apresenta o autor; o repositório permite inspecionar este projeto. Preferir texto discreto e acessível, traduzido nos três idiomas, sem competir com “Watch here” ou com a navegação de missões.
 
 Não é necessário mostrar email, carregar widgets externos ou acrescentar rastreio para criar estas ligações. A identidade visual e a publicação da alteração ficam sujeitas à preview e aprovação.
+
+## Incremento local — documentos para partilha em texto simples
+
+A pedido do utilizador, os documentos Markdown mantêm-se como originais e passam a ter cópias `.txt` em `docs/partilha/`, incluindo README, SPEC, documentação funcional e técnica e README do Worker. Os ficheiros de instruções `AGENTS.md` não fazem parte da exportação. As cópias preservam integralmente o conteúdo (incluindo a notação Markdown), com estrutura de pastas igual à origem, para evitar colisões de nomes. São uma fotografia da documentação local, que inclui rascunhos ainda não publicados; não constituem prova de commit, push ou publicação.
+
+Dificuldade: duplicar documentação pode gerar versões desatualizadas. Solução: manter `.md` como fonte de referência e regenerar as cópias ao preparar nova partilha, em vez de editar os `.txt` separadamente. Verificação: comparação byte a byte de cada cópia com o original. Sem alterações à aplicação ou à versão pública nesta etapa.
+
+### Versões Word para partilha
+
+O utilizador considerou insuficiente a apresentação das cópias de texto e pediu versões Word geradas apenas a partir dos originais `.md`. Foram preparadas 22 versões `.docx` em `docs/partilha/word/`, preservando os originais. Títulos, listas, tabelas e hiperligações são convertidos para elementos editáveis do Word, em vez de mostrar a notação Markdown. Os estados e limitações dos documentos históricos são preservados; a conversão não representa atualização funcional ou publicação da aplicação.
+
+Dificuldade: a cópia literal conservava os símbolos de Markdown e o estilo base do Word acrescentava uma linha decorativa ao título. Solução: conversão estrutural e remoção dessa linha, com renderização para revisão visual. O catálogo `FEATURES_ROADMAP` e as respetivas cópias mantêm-se locais e excluídos do próximo envio para GitHub, conforme pedido. Não foi feito commit ou push nesta etapa.
+
+### Preview local do carregamento com foguetão
+
+O utilizador pediu um indicador ligado ao tema espacial em vez da rodinha. O componente reutilizável passa a desenhar um foguetão SVG, com movimento vertical suave e chama laranja animada. Pesquisa, idioma, navegação, página, detalhe, nova tentativa e filtros de agência partilham o desenho. Mantêm-se os textos acessíveis, o controlo real de espera e a desativação de animações quando o visitante prefere movimento reduzido. Dificuldade: manter o ícone legível em botões pequenos sem alargar excessivamente os controlos; solução: dimensões relativas ao texto e espaço reservado. Alteração apenas local, sujeita a revisão da preview e autorização separada de push. As cópias Word anteriores são uma fotografia anterior a este incremento.
+
+Verificação do foguetão: 54 testes web e build passaram; preview observada no browser. E2E não repetidos nesta revisão visual. A primeira tentativa de reiniciar o servidor local foi bloqueada pela permissão de abertura de porta; o reinício autorizado na mesma porta 3300 resolveu o acesso, sem alterar os serviços públicos.
+
+O utilizador aprovou explicitamente o visual e autorizou commit e push em 23 de outubro de 2026. O incremento inclui o feedback de carregamento, os testes e os documentos de revisão/evolução/tarefas. O catálogo funcional e todas as exportações de partilha permanecem locais; foi retirada a ligação nova ao catálogo no README para não publicar uma ligação para um ficheiro ausente. Resultado do envio a confirmar no GitHub; aprovação não comprova deploy.

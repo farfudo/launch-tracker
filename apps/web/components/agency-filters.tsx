@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useLocale } from "./locale-provider";
 import { dashboardCopy } from "../lib/dashboard-i18n";
+import { Spinner } from "./pending-feedback";
 
 export function AgencyFilters({ agencies, filters }: { agencies: string[]; filters: { q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string } }) {
   const router = useRouter();
@@ -28,7 +29,7 @@ export function AgencyFilters({ agencies, filters }: { agencies: string[]; filte
         event.preventDefault();
         setTarget(agency);
         startTransition(() => router.push(href, { scroll: false }));
-      }}>{agency || d.all}<span className="agency-filter-spinner" aria-hidden="true" /></Link>;
+      }}>{agency || d.all}<span className="agency-filter-spinner" aria-hidden="true">{pending && target === agency ? <Spinner /> : null}</span></Link>;
     })}</nav>
     <p className="agency-filter-feedback" role="status" aria-live="polite">{pending ? d.loadingLaunches : ""}</p>
   </div>;

@@ -10,6 +10,7 @@ import { MissionSelectionProvider, MissionDetailPanel } from "../components/miss
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { MissionIcon } from "../components/mission-icon";
 import { AgencyFilters } from "../components/agency-filters";
+import { LinkPending, SearchForm } from "../components/pending-feedback";
 
 type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string }>;
 
@@ -76,13 +77,13 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           </p>
         ) : null}
         <nav className="period-tabs" aria-label={t.launchPeriod}>
-          <Link href={upcomingHref} aria-current={period === "upcoming" ? "page" : undefined}>{t.upcoming}</Link>
-          <Link href={historyHref} aria-current={period === "past" ? "page" : undefined}>{t.history}</Link>
+          <Link href={upcomingHref} aria-current={period === "upcoming" ? "page" : undefined}>{t.upcoming}<LinkPending /></Link>
+          <Link href={historyHref} aria-current={period === "past" ? "page" : undefined}>{t.history}<LinkPending /></Link>
         </nav>
         <details className="data-explanation"><summary>{t.aboutData}</summary><p className="launch-meta">{period === "past" ? t.historyNotice : t.upcomingNotice}</p></details>
         {!hasFilterOptions ? <p role="status" className="launch-meta">{t.filtersUnavailable}</p> : null}
         <AgencyFilters agencies={filterOptions.agencies} filters={filters} />
-        <form className="filters" action="/#launch-calendar" method="get">
+        <SearchForm>
           <input type="hidden" name="period" value={period} />
           {favoritesOnly ? <input type="hidden" name="favorites" value="1" /> : null}
           <label>
@@ -108,12 +109,11 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             </select>
           </label>
           </div></details>
-          <button type="submit">{t.applyFilters}</button>
-          <Link className="clear-filters" href={`/?period=${period}#launch-calendar`}>{t.clear}</Link>
-        </form>
+          <Link className="clear-filters" href={`/?period=${period}#launch-calendar`}>{t.clear}<LinkPending /></Link>
+        </SearchForm>
         <nav className="favorite-views" aria-label={t.calendarView}>
-          <Link href={allHref} aria-current={!favoritesOnly ? "page" : undefined}>{t.allLaunches}</Link>
-          <Link href={favoritesHref} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}</Link>
+          <Link href={allHref} aria-current={!favoritesOnly ? "page" : undefined}>{t.allLaunches}<LinkPending /></Link>
+          <Link href={favoritesHref} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}<LinkPending /></Link>
         </nav>
         {hasLaunchData ? (
           <FavoriteLaunchList key={JSON.stringify(filters)} launches={launches} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} historical={period === "past"} />

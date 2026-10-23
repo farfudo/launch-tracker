@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "./locale-provider";
 import { BrandMark } from "./brand";
+import { Spinner } from "./pending-feedback";
 
 export function LoadingNotice({ previewSlow = false }: { previewSlow?: boolean }) {
   const { messages: t } = useLocale();
@@ -14,7 +15,7 @@ export function LoadingNotice({ previewSlow = false }: { previewSlow?: boolean }
   return <main id="main-content" aria-busy="true">
     <header>
       <p className="eyebrow"><BrandMark /> <span aria-hidden="true">·</span> {t.brandSubtitle}</p>
-      <h1>{t.loadingTitle}</h1>
+      <h1><Spinner /> {t.loadingTitle}</h1>
       <p className="intro">{t.loadingBody}</p>
       <div role="status" aria-live="polite">{slow ? <p className="launch-card">{t.loadingSlow}</p> : null}</div>
     </header>

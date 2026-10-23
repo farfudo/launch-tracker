@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 
 import { languageNames, locales } from "../lib/i18n";
 import { useLocale } from "./locale-provider";
+import { Spinner } from "./pending-feedback";
 
 export function LanguageSelector() {
   const { locale, messages: t } = useLocale();
@@ -15,7 +16,7 @@ export function LanguageSelector() {
   return (
     <div className="language-control">
       <label htmlFor="site-language">{t.language}</label>
-      <span className="language-short" aria-hidden="true">{locale.slice(0, 2).toUpperCase()}⌄</span>
+      <span className="language-short" aria-hidden="true">{pending ? <Spinner /> : `${locale.slice(0, 2).toUpperCase()}⌄`}</span>
       <select
         id="site-language"
         name="language"

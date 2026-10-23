@@ -11,6 +11,7 @@ import { LaunchTimes } from "./launch-times";
 import { FavoriteButton } from "./favorites";
 import { MissionStreams } from "./mission-streams";
 import { MissionCalendar } from "./mission-calendar";
+import { Spinner, LinkPending } from "./pending-feedback";
 
 type Selection = {
   selected: Launch | null;
@@ -86,7 +87,7 @@ export function MissionDetailPanel() {
     <span className="launch-status-tag" data-tone={launchStatusTone(selected.status)}>{formatLaunchStatus(selected.status, locale)}</span>
     <p className="selected-mission-date"><LocalLaunchDate date={selected.net} /></p>
     <p className="visually-hidden" role="status">{loading ? d.loadingMission : `${d.selectedMission}: ${selected.name}`}</p>
-    {loading ? <p className="panel-feedback">{d.loadingMission}</p> : null}
+    {loading ? <p className="panel-feedback"><Spinner /> {d.loadingMission}</p> : null}
     {error ? <div className="panel-feedback" role="alert"><p>{d.missionError}</p><button type="button" onClick={() => select(selected)}>{t.retry}</button></div> : null}
     {detail ? <div className={revision > 0 ? "mission-detail-enter" : undefined}>
       <MissionCalendar key={detail.id} launch={detail} />
@@ -100,7 +101,7 @@ export function MissionDetailPanel() {
       <p className="launch-meta">{t.windowNotice}</p>
       <details className="panel-time-zones"><summary>{d.zones}</summary><LaunchTimes isoDate={detail.net} launchTimeZone={detail.launch_timezone} /></details>
     </div> : null}
-    <div className="selected-mission-actions"><Link className="pill-button" href={`/launches/${selected.id}`}>{d.fullDetails} →</Link><FavoriteButton id={selected.id} name={selected.name} /></div>
+    <div className="selected-mission-actions"><Link className="pill-button" href={`/launches/${selected.id}`}>{d.fullDetails} →<LinkPending /></Link><FavoriteButton id={selected.id} name={selected.name} /></div>
     </div>
   </section>;
 }
