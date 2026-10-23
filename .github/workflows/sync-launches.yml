@@ -19,6 +19,8 @@ jobs:
     timeout-minutes: 5
     env:
       DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+      # Fallback only: defer to a successful primary update within 90 minutes.
+      SYNC_MIN_INTERVAL_SECONDS: '5400'
     defaults:
       run:
         working-directory: services/api

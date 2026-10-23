@@ -6,6 +6,15 @@ from sqlalchemy.orm import Mapped, mapped_column
 from app.db import Base
 
 
+class SyncControl(Base):
+    __tablename__ = "sync_control"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    last_attempt_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    next_attempt_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    outcome: Mapped[str] = mapped_column(String(32))
+
+
 class Launch(Base):
     __tablename__ = "launches"
 

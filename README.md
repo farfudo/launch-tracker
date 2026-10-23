@@ -4,6 +4,8 @@ Aplicação web de portefólio para descobrir e acompanhar lançamentos espaciai
 
 [Demonstração pública](https://launch-tracker-beryl.vercel.app/) · [Documentação da API](https://launch-tracker-ie09.onrender.com/docs)
 
+Para acompanhar os commits, decisões, dificuldades encontradas e soluções, consultar a [evolução técnica e histórico explicado](docs/PROJECT_EVOLUTION.md), preparada como apoio à apresentação do projeto.
+
 ## Funcionalidades
 
 - Calendário global, pesquisa e filtros por agência/veículo; contagem decrescente para a data prevista, não telemetria.
