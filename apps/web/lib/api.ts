@@ -73,6 +73,7 @@ export type LaunchFilters = {
   q?: string;
   agency?: string;
   vehicle?: string;
+  period?: "upcoming" | "past";
 };
 
 export class LaunchNotFoundError extends Error {

@@ -1,4 +1,5 @@
 from datetime import UTC, datetime
+from typing import Literal
 
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
@@ -26,8 +27,15 @@ def list_launches(
     query: str | None = None,
     agency: str | None = None,
     vehicle: str | None = None,
+    period: Literal["all", "upcoming", "past"] = "all",
+    now: datetime | None = None,
 ) -> list[Launch]:
     statement = select(Launch)
+    reference = now or datetime.now(UTC)
+    if period == "upcoming":
+        statement = statement.where(Launch.net >= reference)
+    elif period == "past":
+        statement = statement.where(Launch.net < reference)
 
     if query:
         search = f"%{query.strip()}%"
@@ -43,7 +51,8 @@ def list_launches(
     if vehicle:
         statement = statement.where(Launch.vehicle == vehicle)
 
-    statement = statement.order_by(Launch.net).limit(limit)
+    ordering = Launch.net.desc() if period == "past" else Launch.net.asc()
+    statement = statement.order_by(ordering, Launch.id).limit(limit)
     return list(db.scalars(statement))
 
 

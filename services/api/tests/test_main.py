@@ -2,7 +2,24 @@ from datetime import UTC, datetime, timedelta
 
 from app.clients.launch_library import LaunchSummary
 from app.models import Launch
-from app.repositories import upsert_launches
+from app.repositories import list_launches, upsert_launches
+
+
+def test_period_boundary_order_filters_and_validation(client, db_session):
+    reference = datetime(2026, 10, 23, 12, tzinfo=UTC)
+    upsert_launches(db_session, [
+        LaunchSummary(id="old", name="Old mission", status="Go", net=reference - timedelta(days=2), agency="NASA"),
+        LaunchSummary(id="recent", name="Recent mission", status="Go", net=reference - timedelta(seconds=1), agency="SpaceX"),
+        LaunchSummary(id="boundary", name="Boundary mission", status="Go", net=reference, agency="SpaceX"),
+        LaunchSummary(id="future", name="Future mission", status="Go", net=reference + timedelta(days=1), agency="NASA"),
+    ])
+    assert [x.id for x in list_launches(db_session, 100, period="upcoming", now=reference)] == ["boundary", "future"]
+    assert [x.id for x in list_launches(db_session, 100, period="past", now=reference)] == ["recent", "old"]
+    assert [x.id for x in list_launches(db_session, 1, period="past", now=reference)] == ["recent"]
+    assert [x.id for x in list_launches(db_session, 100, query="mission", agency="NASA", period="past", now=reference)] == ["old"]
+    assert len(client.get("/api/v1/launches").json()) == 4  # Existing contract unchanged.
+    assert client.get("/api/v1/launches?period=invalid").status_code == 422
+    assert client.get("/api/v1/launches/recent").status_code == 200
 
 
 def test_health_returns_ok(client) -> None:

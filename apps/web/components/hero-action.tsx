@@ -11,7 +11,7 @@ export function HeroAction({ launch }: { launch: LaunchDetail | null }) {
   const d = dashboardCopy[locale];
   const selection = useMissionSelection();
   return <>
-    <a className={`pill-button ${launch ? "hero-action-mobile" : ""}`} href="#launch-calendar">{d.upcoming} <span aria-hidden="true">→</span></a>
+    <Link className={`pill-button ${launch ? "hero-action-mobile" : ""}`} href="/?period=upcoming#launch-calendar">{d.upcoming} <span aria-hidden="true">→</span></Link>
     {launch ? <Link className="pill-button hero-action-desktop" href={`/launches/${launch.id}`} aria-controls="selected-mission" onClick={event => {
       if (!selection || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();

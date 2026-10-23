@@ -4,6 +4,12 @@ import { API_TIMEOUT_MS, getCalendarData, LaunchNotFoundError, getDataStatus, ge
 afterEach(() => vi.restoreAllMocks());
 
 describe("bounded API requests", () => {
+  it("sends the period with search and agency filters", async () => {
+    const request = vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json([]));
+    await getUpcomingLaunches(100, { period: "past", q: "mission", agency: "NASA" });
+    const url = new URL(String(request.mock.calls[0][0]));
+    expect(Object.fromEntries(url.searchParams)).toEqual({ limit: "100", period: "past", q: "mission", agency: "NASA" });
+  });
   it("preserves launches when filter options fail", async () => {
     vi.spyOn(globalThis, "fetch").mockImplementation(async url =>
       String(url).includes("filter-options") ? new Response("", { status: 503 }) : Response.json([{ id: "mission" }]));

@@ -6,7 +6,7 @@ import { useState, useTransition } from "react";
 import { useLocale } from "./locale-provider";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 
-export function AgencyFilters({ agencies, filters }: { agencies: string[]; filters: { q?: string; agency?: string; vehicle?: string; favorites?: string } }) {
+export function AgencyFilters({ agencies, filters }: { agencies: string[]; filters: { q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string } }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [target, setTarget] = useState<string | null>(null);
@@ -17,6 +17,7 @@ export function AgencyFilters({ agencies, filters }: { agencies: string[]; filte
   return <div className="agency-filter-navigation" aria-busy={pending}>
     <nav className="agency-chips" aria-label={d.filterAgency}>{options.map(agency => {
       const params = new URLSearchParams();
+      params.set("period", filters.period === "past" ? "past" : "upcoming");
       if (filters.q) params.set("q", filters.q);
       if (filters.vehicle) params.set("vehicle", filters.vehicle);
       if (filters.favorites === "1") params.set("favorites", "1");

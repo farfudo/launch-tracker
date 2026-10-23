@@ -14,6 +14,7 @@ const base = {
 const launches = [
   { ...base, id: 'e2e-falcon', name: 'Falcon 9 | Test Starlink', mission_name: 'Test Starlink' },
   { ...base, id: 'e2e-electron', name: 'Electron | Test mission', mission_name: 'Test mission', agency: 'Rocket Lab', vehicle: 'Electron', status: 'To Be Confirmed' }
+  ,{ ...base, id: 'e2e-history', name: 'Falcon 9 | Archived test mission', mission_name: 'Archived test mission', net: '2020-01-01T12:00:00Z', status: 'Launch Successful' }
 ];
 
 createServer((req, res) => {
@@ -30,9 +31,14 @@ createServer((req, res) => {
   else if (url.pathname === '/api/v1/data-status') result = { source: 'E2E fixtures', cached_launches: 2, last_updated_at: base.source_updated_at, stale: false };
   else if (url.pathname === '/api/v1/launches/filter-options') result = { agencies: ['SpaceX', 'Rocket Lab'], vehicles: ['Falcon 9', 'Electron'] };
   else if (url.pathname === '/api/v1/launches') {
-    result = launches.filter(l => (!url.searchParams.get('agency') || l.agency === url.searchParams.get('agency'))
+    const period = url.searchParams.get('period');
+    const now = Date.now();
+    result = launches.filter(l => (period !== 'upcoming' || Date.parse(l.net) >= now)
+      && (period !== 'past' || Date.parse(l.net) < now)
+      && (!url.searchParams.get('agency') || l.agency === url.searchParams.get('agency'))
       && (!url.searchParams.get('vehicle') || l.vehicle === url.searchParams.get('vehicle'))
       && (!url.searchParams.get('q') || `${l.name} ${l.agency} ${l.vehicle}`.toLowerCase().includes(url.searchParams.get('q').toLowerCase())))
+      .sort((a, b) => (Date.parse(a.net) - Date.parse(b.net)) * (period === 'past' ? -1 : 1))
       .slice(0, Number(url.searchParams.get('limit') || 100));
   } else result = launches.find(l => url.pathname === `/api/v1/launches/${l.id}`);
   res.writeHead(result === undefined ? 404 : 200, { 'Content-Type': 'application/json' });

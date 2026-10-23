@@ -34,8 +34,8 @@ export function FavoriteButton({ id, name }: { id: string; name: string }) {
   </div>;
 }
 
-export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache }: {
-  launches: Launch[]; favoritesOnly: boolean; emptyCache: boolean;
+export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, historical = false }: {
+  launches: Launch[]; favoritesOnly: boolean; emptyCache: boolean; historical?: boolean;
 }) {
   const { locale, messages: t } = useLocale();
   const { ids, ready } = useFavorites();
@@ -61,7 +61,7 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache }: {
         <span className="row-detail-link">{d.viewDetails} →</span>
         {selection?.selected?.id === launch.id ? <span className="mission-selected-label">{d.selectedMission}</span> : null}
       </Link>
-      <div className="launch-row-actions"><Countdown date={launch.net} status={launch.status} /><FavoriteButton id={launch.id} name={launch.name} /></div>
+      <div className="launch-row-actions">{historical ? null : <Countdown date={launch.net} status={launch.status} />}<FavoriteButton id={launch.id} name={launch.name} /></div>
       <details className="launch-row-times"><summary>{d.zones}</summary><LaunchTimes isoDate={launch.net} launchTimeZone={launch.launch_timezone} /></details>
     </article>)}</div> : <article className="launch-card">
       <h3>{favoritesOnly ? ids.length ? t.noFavoriteMatches : t.noFavorites : emptyCache ? t.emptyTitle : t.noResults}</h3>

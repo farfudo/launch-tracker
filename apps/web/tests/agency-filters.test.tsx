@@ -21,7 +21,7 @@ it("shows loading immediately and preserves the other filters until navigation c
     expect(container.querySelector('[aria-busy="true"]')).not.toBeNull();
     expect(container.querySelector('[role="status"]')!.textContent).toBe("Updating launches…");
     const href = new URL(push.mock.calls[0][0], "http://localhost");
-    expect(Object.fromEntries(href.searchParams)).toEqual({q:"Starlink",vehicle:"Falcon",favorites:"1",agency:"SpaceX"});
+    expect(Object.fromEntries(href.searchParams)).toEqual({period:"upcoming",q:"Starlink",vehicle:"Falcon",favorites:"1",agency:"SpaceX"});
     await act(async () => complete());
     expect(container.querySelector('[aria-busy="true"]')).toBeNull();
     expect(container.querySelector('[role="status"]')!.textContent).toBe("");

@@ -8,7 +8,6 @@ import { Countdown } from "./countdown";
 import { VehicleVisual } from "./vehicle-visual";
 import { MissionIcon } from "./mission-icon";
 import { HeroAction } from "./hero-action";
-import { MissionStreams } from "./mission-streams";
 
 export function LaunchHero({ launch, locale }: { launch: LaunchDetail | null; locale: Locale }) {
   const d = dashboardCopy[locale];
@@ -19,7 +18,6 @@ export function LaunchHero({ launch, locale }: { launch: LaunchDetail | null; lo
       <h1 id="hero-title">{d.gateway}<br />{d.next}<br /><span>{d.rocket}</span></h1>
       <p>{d.intro}</p>
       <HeroAction launch={launch} />
-      {launch ? <MissionStreams launch={launch} compact /> : null}
     </div>
     {launch ? <Link href={`/launches/${launch.id}`} className="next-launch-panel">
       <span className="eyebrow">{d.nextLaunch}</span>

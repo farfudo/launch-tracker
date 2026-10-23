@@ -11,12 +11,22 @@ import { dashboardCopy } from "../lib/dashboard-i18n";
 import { MissionIcon } from "../components/mission-icon";
 import { AgencyFilters } from "../components/agency-filters";
 
-type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string; favorites?: string }>;
+type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string }>;
 
 export default async function Home({ searchParams }: { searchParams: SearchParams }) {
   const filters = await searchParams;
   const favoritesOnly = filters.favorites === "1";
+  const period = filters.period === "past" ? "past" : "upcoming";
+  const periodParams = new URLSearchParams();
+  for (const key of ["q", "agency", "vehicle", "favorites"] as const) {
+    if (filters[key]) periodParams.set(key, filters[key]);
+  }
+  periodParams.set("period", "upcoming");
+  const upcomingHref = `/?${periodParams}#launch-calendar`;
+  periodParams.set("period", "past");
+  const historyHref = `/?${periodParams}#launch-calendar`;
   const viewParams = new URLSearchParams();
+  viewParams.set("period", period);
   for (const key of ["q", "agency", "vehicle"] as const) {
     if (filters[key]) viewParams.set(key, filters[key]);
   }
@@ -27,9 +37,9 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const t = dictionaries[locale];
   const d = dashboardCopy[locale];
   const dataStatusPromise = getDataStatus().catch(() => null);
-  const nextCandidatesPromise = filters.q || filters.agency || filters.vehicle ? getUpcomingLaunches(2).catch(() => []) : null;
+  const nextCandidatesPromise = period === "past" || filters.q || filters.agency || filters.vehicle ? getUpcomingLaunches(2, { period: "upcoming" }).catch(() => []) : null;
   const { launches, filterOptions, hasLaunchData, hasFilterOptions } = await getCalendarData(
-    { q: filters.q, agency: filters.agency, vehicle: filters.vehicle }
+    { q: filters.q, agency: filters.agency, vehicle: filters.vehicle, period }
   );
   const nextCandidates = nextCandidatesPromise ? await nextCandidatesPromise : launches;
   const [dataStatus, nextLaunch]: [Awaited<ReturnType<typeof getDataStatus>> | null, LaunchDetail | null] = await Promise.all([
@@ -55,7 +65,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       <section className="calendar-panel" id="launch-calendar" aria-labelledby="next-launch-heading">
         <div className="section-heading">
           <div>
-            <h2 id="next-launch-heading">{t.upcoming}</h2>
+            <h2 id="next-launch-heading">{period === "past" ? t.history : t.upcoming}</h2>
           </div>
           <span className="status">
             {!hasLaunchData ? t.dataUnavailable : dataStatus?.cached_launches === 0 ? t.awaitingData : dataStatus?.stale ? t.staleData : t.launchCalendar}
@@ -67,9 +77,15 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             {" "}{dataStatus.stale ? t.staleNotice : t.datesNotice}
           </p>
         ) : null}
+        <nav className="favorite-views" aria-label={t.launchPeriod}>
+          <Link href={upcomingHref} aria-current={period === "upcoming" ? "page" : undefined}>{t.upcoming}</Link>
+          <Link href={historyHref} aria-current={period === "past" ? "page" : undefined}>{t.history}</Link>
+        </nav>
+        <p className="launch-meta">{period === "past" ? t.historyNotice : t.upcomingNotice}</p>
         {!hasFilterOptions ? <p role="status" className="launch-meta">{t.filtersUnavailable}</p> : null}
         <AgencyFilters agencies={filterOptions.agencies} filters={filters} />
         <form className="filters" action="/#launch-calendar" method="get">
+          <input type="hidden" name="period" value={period} />
           {favoritesOnly ? <input type="hidden" name="favorites" value="1" /> : null}
           <label>
             <span>{t.search}</span>
@@ -95,14 +111,14 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           </label>
           </div></details>
           <button type="submit">{t.applyFilters}</button>
-          <Link className="clear-filters" href="/">{t.clear}</Link>
+          <Link className="clear-filters" href={`/?period=${period}#launch-calendar`}>{t.clear}</Link>
         </form>
         <nav className="favorite-views" aria-label={t.calendarView}>
           <Link href={allHref} aria-current={!favoritesOnly ? "page" : undefined}>{t.allLaunches}</Link>
           <Link href={favoritesHref} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}</Link>
         </nav>
         {hasLaunchData ? (
-          <FavoriteLaunchList key={JSON.stringify(filters)} launches={launches} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} />
+          <FavoriteLaunchList key={JSON.stringify(filters)} launches={launches} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} historical={period === "past"} />
         ) : (
           <article className="launch-card">
             <h3>{t.unavailableTitle}</h3>
