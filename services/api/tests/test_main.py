@@ -133,6 +133,7 @@ def test_launches_can_be_searched_filtered_and_opened(client, db_session) -> Non
 
 
 def test_sync_populates_the_cache(client, db_session, monkeypatch) -> None:
+    monkeypatch.setattr("app.sync_service.acquire_sync_lock", lambda db: True)
     monkeypatch.setenv("SYNC_TOKEN", "test-only-token")
     monkeypatch.setattr(
         "app.main.get_upcoming_launches",
@@ -149,7 +150,7 @@ def test_sync_populates_the_cache(client, db_session, monkeypatch) -> None:
     response = client.post("/api/v1/launches/sync", headers={"X-Sync-Token": "test-only-token"})
 
     assert response.status_code == 200
-    assert response.json() == {"imported": 1}
+    assert response.json() == {"imported": 1, "skipped": False, "reason": None}
     assert db_session.get(Launch, "example-launch-2") is not None
 
 

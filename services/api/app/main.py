@@ -11,7 +11,7 @@ from app.clients.launch_library import (
     get_upcoming_launches,
 )
 from app.db import get_db
-from app.repositories import get_data_status, get_filter_options, get_launch, upsert_launches
+from app.repositories import get_data_status, get_filter_options, get_launch
 from app.repositories import list_launches as list_cached_launches
 from app.schemas import (
     DataStatusResponse,
@@ -20,6 +20,7 @@ from app.schemas import (
     LaunchResponse,
     SyncResponse,
 )
+from app.sync_service import sync_cache
 
 app = FastAPI(title="LaunchSkyline API", version="0.1.0")
 
@@ -81,8 +82,8 @@ def sync_launches(
     if x_sync_token is None or not secrets.compare_digest(x_sync_token, sync_token):
         raise HTTPException(status_code=401, detail="Invalid sync credentials.")
     try:
-        launches = get_upcoming_launches(limit=100)
-    except LaunchLibraryError as error:
+        result = sync_cache(db, fetch_launches=get_upcoming_launches)
+    except (LaunchLibraryError, ValueError) as error:
         raise HTTPException(status_code=503, detail="Launch data is temporarily unavailable.") from error
 
-    return SyncResponse(imported=upsert_launches(db, launches))
+    return result

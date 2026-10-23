@@ -4,20 +4,22 @@ import sys
 
 from app.clients.launch_library import LaunchLibraryError, get_upcoming_launches
 from app.db import SessionLocal
-from app.repositories import upsert_launches
+from app.sync_service import sync_cache
 
 
 def main() -> None:
     try:
-        launches = get_upcoming_launches(limit=100)
+        with SessionLocal() as db:
+            result = sync_cache(db, fetch_launches=get_upcoming_launches)
     except LaunchLibraryError as error:
         print(f"Sync failed: {error}", file=sys.stderr)
         if error.retry_after:
             print(f"Retry-After: {error.retry_after}", file=sys.stderr)
         raise SystemExit(1) from None
-    with SessionLocal() as db:
-        imported = upsert_launches(db, launches)
-    print(f"Imported {imported} launches.")
+    if result.skipped:
+        print(f"Sync skipped: {result.reason}.")
+    else:
+        print(f"Imported {result.imported} launches.")
 
 
 if __name__ == "__main__":

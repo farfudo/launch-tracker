@@ -47,6 +47,8 @@ class LaunchDetailResponse(LaunchResponse):
 
 class SyncResponse(BaseModel):
     imported: int
+    skipped: bool = False
+    reason: str | None = None
 
 
 class FilterOptionsResponse(BaseModel):
