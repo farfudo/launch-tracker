@@ -20,6 +20,12 @@ createServer((req, res) => {
   const url = new URL(req.url, 'http://127.0.0.1:3301');
   let result;
   if (req.method !== 'GET') { res.writeHead(405).end(); return; }
+  if (url.pathname === '/api/v1/launches/e2e-unavailable'
+    || (process.env.FIXTURE_FILTER_FAILURE === 'true' && url.pathname === '/api/v1/launches/filter-options')) {
+    res.writeHead(503, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ detail: 'Simulated outage; local fixture only' }));
+    return;
+  }
   if (url.pathname === '/health') result = { status: 'ok' };
   else if (url.pathname === '/api/v1/data-status') result = { source: 'E2E fixtures', cached_launches: 2, last_updated_at: base.source_updated_at, stale: false };
   else if (url.pathname === '/api/v1/launches/filter-options') result = { agencies: ['SpaceX', 'Rocket Lab'], vehicles: ['Falcon 9', 'Electron'] };

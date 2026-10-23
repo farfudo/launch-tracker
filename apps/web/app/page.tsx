@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { RetryButton } from "../components/retry-button";
 import { FavoriteLaunchList } from "../components/favorites";
-import { getDataStatus, getFilterOptions, getUpcomingLaunches, getLaunch, type FilterOptions, type Launch, type LaunchDetail } from "../lib/api";
+import { getDataStatus, getCalendarData, getUpcomingLaunches, getLaunch, type LaunchDetail } from "../lib/api";
 import { formatLaunchDate } from "../lib/date";
 import { dictionaries } from "../lib/i18n";
 import { getLocale } from "../lib/locale-server";
@@ -28,20 +28,9 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const d = dashboardCopy[locale];
   const dataStatusPromise = getDataStatus().catch(() => null);
   const nextCandidatesPromise = filters.q || filters.agency || filters.vehicle ? getUpcomingLaunches(2).catch(() => []) : null;
-  let launches: Launch[];
-  let filterOptions: FilterOptions;
-  let hasLaunchData = true;
-
-  try {
-    [launches, filterOptions] = await Promise.all([
-      getUpcomingLaunches(100, { q: filters.q, agency: filters.agency, vehicle: filters.vehicle }),
-      getFilterOptions()
-    ]);
-  } catch {
-    launches = [];
-    filterOptions = { agencies: [], vehicles: [] };
-    hasLaunchData = false;
-  }
+  const { launches, filterOptions, hasLaunchData, hasFilterOptions } = await getCalendarData(
+    { q: filters.q, agency: filters.agency, vehicle: filters.vehicle }
+  );
   const nextCandidates = nextCandidatesPromise ? await nextCandidatesPromise : launches;
   const [dataStatus, nextLaunch]: [Awaited<ReturnType<typeof getDataStatus>> | null, LaunchDetail | null] = await Promise.all([
     dataStatusPromise,
@@ -78,6 +67,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             {" "}{dataStatus.stale ? t.staleNotice : t.datesNotice}
           </p>
         ) : null}
+        {!hasFilterOptions ? <p role="status" className="launch-meta">{t.filtersUnavailable}</p> : null}
         <AgencyFilters agencies={filterOptions.agencies} filters={filters} />
         <form className="filters" action="/#launch-calendar" method="get">
           {favoritesOnly ? <input type="hidden" name="favorites" value="1" /> : null}
@@ -91,6 +81,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <span>{t.agency}</span>
             <select defaultValue={filters.agency ?? ""} name="agency">
               <option value="">{t.allAgencies}</option>
+              {filters.agency && !filterOptions.agencies.includes(filters.agency) ? <option value={filters.agency}>{filters.agency}</option> : null}
               {filterOptions.agencies.map((agency) => <option key={agency} value={agency}>{agency}</option>)}
             </select>
           </label>
@@ -98,6 +89,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <span>{t.vehicle}</span>
             <select defaultValue={filters.vehicle ?? ""} name="vehicle">
               <option value="">{t.allVehicles}</option>
+              {filters.vehicle && !filterOptions.vehicles.includes(filters.vehicle) ? <option value={filters.vehicle}>{filters.vehicle}</option> : null}
               {filterOptions.vehicles.map((vehicle) => <option key={vehicle} value={vehicle}>{vehicle}</option>)}
             </select>
           </label>

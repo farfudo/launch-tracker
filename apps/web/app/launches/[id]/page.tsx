@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FavoriteButton } from "../../../components/favorites";
 import { notFound } from "next/navigation";
 
-import { getLaunch } from "../../../lib/api";
+import { getLaunch, LaunchNotFoundError } from "../../../lib/api";
 import { formatLaunchDate } from "../../../lib/date";
 import { formatLaunchStatus, launchStatusTone } from "../../../lib/launch";
 import { dictionaries } from "../../../lib/i18n";
@@ -27,7 +27,10 @@ export default async function LaunchDetail({ params, searchParams }: {
   const preview = process.env.DESIGN_PREVIEW === "true";
   const design = preview ? resolveDesign((await searchParams).design) : "mission-control";
 
-    const launch = await getLaunch(id).catch(() => notFound());
+    const launch = await getLaunch(id).catch((error: unknown) => {
+      if (error instanceof LaunchNotFoundError) notFound();
+      throw error;
+    });
     const cards: { label: string; value: string; icon: MissionIconName }[] = [
       { label: t.agency, value: launch.agency || t.pending, icon: "agency" },
       { label: t.vehicle, value: launch.vehicle || t.pending, icon: "rocket" },

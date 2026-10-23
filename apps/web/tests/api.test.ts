@@ -1,9 +1,31 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { API_TIMEOUT_MS, getDataStatus, getFilterOptions, getLaunch, getUpcomingLaunches } from "../lib/api";
+import { API_TIMEOUT_MS, getCalendarData, LaunchNotFoundError, getDataStatus, getFilterOptions, getLaunch, getUpcomingLaunches } from "../lib/api";
 
 afterEach(() => vi.restoreAllMocks());
 
 describe("bounded API requests", () => {
+  it("preserves launches when filter options fail", async () => {
+    vi.spyOn(globalThis, "fetch").mockImplementation(async url =>
+      String(url).includes("filter-options") ? new Response("", { status: 503 }) : Response.json([{ id: "mission" }]));
+    const data = await getCalendarData();
+    expect(data.launches).toEqual([{ id: "mission" }]);
+    expect(data.hasLaunchData).toBe(true);
+    expect(data.hasFilterOptions).toBe(false);
+  });
+  it("preserves filter options when launches fail", async () => {
+    vi.spyOn(globalThis, "fetch").mockImplementation(async url =>
+      String(url).includes("filter-options") ? Response.json({ agencies: ["SpaceX"], vehicles: [] }) : new Response("", { status: 503 }));
+    const data = await getCalendarData();
+    expect(data.hasLaunchData).toBe(false);
+    expect(data.filterOptions.agencies).toEqual(["SpaceX"]);
+  });
+  it("distinguishes a missing mission from an unavailable service", async () => {
+    const request = vi.spyOn(globalThis, "fetch");
+    request.mockResolvedValueOnce(new Response("", { status: 404 }));
+    await expect(getLaunch("missing")).rejects.toBeInstanceOf(LaunchNotFoundError);
+    request.mockResolvedValueOnce(new Response("", { status: 503 }));
+    await expect(getLaunch("unavailable")).rejects.not.toBeInstanceOf(LaunchNotFoundError);
+  });
   it("applies a timeout and no-store to every endpoint", async () => {
     const timeout = vi.spyOn(AbortSignal, "timeout");
     const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("{}"));

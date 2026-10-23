@@ -75,6 +75,22 @@ export type LaunchFilters = {
   vehicle?: string;
 };
 
+export class LaunchNotFoundError extends Error {
+  constructor() { super("Launch not found."); }
+}
+
+export async function getCalendarData(filters: LaunchFilters = {}) {
+  const [launches, options] = await Promise.allSettled([
+    getUpcomingLaunches(100, filters), getFilterOptions()
+  ]);
+  return {
+    launches: launches.status === "fulfilled" ? launches.value : [],
+    filterOptions: options.status === "fulfilled" ? options.value : { agencies: [], vehicles: [] },
+    hasLaunchData: launches.status === "fulfilled",
+    hasFilterOptions: options.status === "fulfilled"
+  };
+}
+
 export async function getUpcomingLaunches(limit = 20, filters: LaunchFilters = {}): Promise<Launch[]> {
   const params = new URLSearchParams({ limit: String(limit) });
   for (const [key, value] of Object.entries(filters)) {
@@ -97,6 +113,7 @@ export async function getFilterOptions(): Promise<FilterOptions> {
 
 export async function getLaunch(launchId: string): Promise<LaunchDetail> {
   const response = await fetchApi(`${apiBaseUrl}/api/v1/launches/${launchId}`);
+  if (response.status === 404) throw new LaunchNotFoundError();
   if (!response.ok) throw new Error("Unable to retrieve launch.");
   return response.json() as Promise<LaunchDetail>;
 }
