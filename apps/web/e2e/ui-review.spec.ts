@@ -31,6 +31,8 @@ test('development label and informative detail without empty stream actions', as
 test('calendar and sharing use an explicit expanded state', async ({ page, context }) => {
   await context.route('**/*', route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.abort());
   await page.goto('/launches/e2e-falcon');
+  await expect(page.locator('.mission-countdown [role="timer"]')).toBeVisible();
+  await expect(page.locator('.mission-countdown .countdown > div')).toHaveCount(4);
   const calendar = page.locator('details.mission-calendar');
   await expect(calendar).not.toHaveAttribute('open');
   await calendar.locator('summary').press('Enter');

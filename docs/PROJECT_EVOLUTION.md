@@ -362,3 +362,11 @@ Dificuldade: manter consistência sem tornar todos os controlos igualmente chama
 Verificação concluída: 92 testes web, build e oito percursos E2E desktop/móvel passaram. Expansão de calendário/partilha por teclado e filtros verificados; revisão manual a 1280×900 e 390×844, claro/escuro, com tema claro e viewport original repostos. Não foi realizada auditoria formal de contraste/acessibilidade nem repetidos testes backend. Preview local com dados fictícios, sem mensagens enviadas ou alterações públicas. Aguardam-se aprovação visual e autorização separada para eventual push.
 
 O utilizador aprovou as expansões/superfícies e autorizou commit local, sem push. Pediu depois um novo rascunho para destacar a contagem decrescente na página completa do lançamento.
+
+### Contagem destacada na página do lançamento — rascunho
+
+Lote anterior guardado em `dc9eef7`, sem push. Acrescentado o componente existente de contagem à página completa, junto à data prevista, com painel verde-acinzentado e quatro blocos maiores. Mantém traduções, atualização por segundo, sem anúncios contínuos ao leitor de ecrã, e mensagens existentes para hora incerta/instante passado. Dificuldade: dar destaque sem sugerir telemetria ou confirmação do horário; solução: manter indicação de previsão e reutilizar as regras de elegibilidade, sem nova lógica de estado.
+
+Passaram 92 testes web, build e quatro percursos E2E desktop/móvel da revisão UI, incluindo presença dos quatro blocos. Primeira tentativa E2E encontrou a porta da API fictícia ocupada; foi parado apenas esse servidor local e repetido o ensaio com sucesso. Preview manual desktop com dados fictícios, viewport reposto; captura `/tmp/mission-countdown-preview.png`. Backend e produção não alterados. Novo rascunho sem commit, aprovação visual pendente; nenhum push realizado.
+
+O utilizador aprovou a preview do countdown e autorizou commit e push deste lote, incluindo os commits locais anteriores `01ed45b` e `dc9eef7`. Exportações e `FEATURES_ROADMAP.md` mantêm-se locais. A autorização/envio não substitui a confirmação posterior de CI e publicação.

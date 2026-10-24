@@ -21,6 +21,7 @@ import { LinkPending } from "../../../components/pending-feedback";
 import { MissionShare } from "../../../components/mission-share";
 import { missionTitle } from "../../../lib/mission-title";
 import { LocalLaunchDate } from "../../../components/local-launch-date";
+import { Countdown } from "../../../components/countdown";
 export const maxDuration = 60;
 
 type RouteParams = Promise<{ id: string }>;
@@ -66,6 +67,7 @@ export default async function LaunchDetail({ params, searchParams }: {
               <span className="mission-target-icon"><MissionIcon name="clock" /></span>
               <div><p>{t.expectedDate}</p><LocalLaunchDate date={launch.net} /></div>
             </div>
+            <div className="mission-countdown"><Countdown date={launch.net} status={launch.status} /></div>
             <FavoriteButton id={launch.id} name={launch.name} />
             <MissionCalendar launch={launch} />
             <MissionShare key={launch.id} id={launch.id} name={launch.name} />

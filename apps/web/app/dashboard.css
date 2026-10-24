@@ -328,6 +328,13 @@ html[data-theme="dark"] .development-badge { background: #3d321e; color: #f5d595
   .agency-chips a { flex: 0 0 auto; display: inline-flex; align-items: center; min-height: 40px; box-sizing: border-box; }
   .calendar-panel .filters { padding: .8rem; gap: .6rem; margin-block: .8rem; }
 }
+.mission-countdown { margin: 1rem 0; padding: 1rem; border: 1px solid var(--disclosure-border); border-radius: 16px; background: var(--disclosure-surface); }
+.mission-countdown .countdown { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; margin: .75rem 0 0; color: var(--accent-strong); }
+.mission-countdown .countdown > div { padding: .65rem .25rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-raised); }
+.mission-countdown .countdown strong { font-size: clamp(1.5rem, 3vw, 2.4rem); }
+.mission-countdown .countdown span { font-size: .7rem; opacity: 1; color: var(--text-soft); }
+.mission-countdown .countdown-estimate { font-size: .8rem; color: var(--text-soft); }
+.mission-countdown .countdown-note { margin: 0; font-size: .9rem; }
 .countdown-compact { display: grid; gap: .3rem; margin: .6rem 0; color: var(--text-soft); font-size: .7rem; }
 .countdown-compact strong { color: var(--accent-strong); font-size: .85rem; font-weight: 650; }
 .calendar-panel .launch-agency { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
