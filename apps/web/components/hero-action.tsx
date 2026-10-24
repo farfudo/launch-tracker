@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import type { LaunchDetail } from "../lib/api";
+import type { Launch } from "../lib/api";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { useLocale } from "./locale-provider";
 import { useMissionSelection } from "./mission-selection";
 import { LinkPending } from "./pending-feedback";
 
-export function HeroAction({ launch }: { launch: LaunchDetail | null }) {
+export function HeroAction({ launch }: { launch: Launch | null }) {
   const { locale } = useLocale();
   const d = dashboardCopy[locale];
   const selection = useMissionSelection();

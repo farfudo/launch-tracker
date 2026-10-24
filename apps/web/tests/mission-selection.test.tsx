@@ -63,3 +63,15 @@ it("ignores an older response when selections change quickly", async () => {
   expect(container.textContent).toContain("Third description");
   expect(container.textContent).not.toContain("Second description");
 });
+
+it("does not reset a selected mission when the initial summary is refreshed", async () => {
+  const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify(initial)));
+  const tree = () => <LocaleProvider locale="en-GB"><MissionSelectionProvider initial={null} initialSummary={{ ...initial }}><Controls /><MissionDetailPanel /></MissionSelectionProvider></LocaleProvider>;
+  await act(async () => root.render(tree()));
+  fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(second)));
+  await act(async () => click("Second"));
+  const count = fetchMock.mock.calls.length;
+  await act(async () => root.render(tree()));
+  expect(fetchMock).toHaveBeenCalledTimes(count);
+  expect(container.textContent).toContain("Second description");
+});

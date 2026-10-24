@@ -1,5 +1,6 @@
 // Local, read-only fixture server. Never reads production credentials or calls LL2.
 import { createServer } from 'node:http';
+import { setTimeout as delay } from 'node:timers/promises';
 
 const base = {
   status: 'Go for Launch', net: '2099-01-01T12:00:00Z', agency: 'SpaceX', vehicle: 'Falcon 9',
@@ -17,7 +18,11 @@ const launches = [
   ,{ ...base, id: 'e2e-history', name: 'Falcon 9 | Archived test mission', mission_name: 'Archived test mission', net: '2020-01-01T12:00:00Z', status: 'Launch Successful' }
 ];
 
-createServer((req, res) => {
+createServer(async (req, res) => {
+  // Optional slow-start proof; affects only this read-only loopback fixture.
+  const delayMs = Math.min(35000, Math.max(0, Number(process.env.FIXTURE_DELAY_MS) || 0));
+  if (delayMs) await delay(delayMs);
+  if (res.destroyed) return;
   const url = new URL(req.url, 'http://127.0.0.1:3301');
   let result;
   if (req.method !== 'GET') { res.writeHead(405).end(); return; }

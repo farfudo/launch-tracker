@@ -10,7 +10,7 @@ import { MissionIcon } from "./mission-icon";
 import { HeroAction } from "./hero-action";
 import { LinkPending } from "./pending-feedback";
 
-export function LaunchHero({ launch, locale }: { launch: LaunchDetail | null; locale: Locale }) {
+export function LaunchHero({ launch, locale }: { launch: (Launch & Partial<LaunchDetail>) | null; locale: Locale }) {
   const d = dashboardCopy[locale];
   return <section className={`dashboard-hero ${launch?.image_url ? "hero-with-photo" : ""}`} aria-labelledby="hero-title">
     {launch ? <VehicleVisual launch={launch} /> : null}

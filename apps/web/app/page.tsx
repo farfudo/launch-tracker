@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { RetryButton } from "../components/retry-button";
 import { FavoriteLaunchList } from "../components/favorites";
-import { getDataStatus, getCalendarData, getUpcomingLaunches, getLaunch, type LaunchDetail } from "../lib/api";
+import { getCachedCalendarData, getCachedLaunches, getCachedStatus } from "../lib/cached-api";
+import { CacheNotice } from "../components/cache-notice";
 import { formatLaunchDate } from "../lib/date";
 import { dictionaries } from "../lib/i18n";
 import { getLocale } from "../lib/locale-server";
@@ -37,21 +38,22 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const locale = await getLocale();
   const t = dictionaries[locale];
   const d = dashboardCopy[locale];
-  const dataStatusPromise = getDataStatus().catch(() => null);
-  const nextCandidatesPromise = period === "past" || filters.q || filters.agency || filters.vehicle ? getUpcomingLaunches(2, { period: "upcoming" }).catch(() => []) : null;
-  const { launches, filterOptions, hasLaunchData, hasFilterOptions } = await getCalendarData(
+  const dataStatusPromise = getCachedStatus().catch(() => null);
+  const nextCandidatesPromise = period === "past" || filters.q || filters.agency || filters.vehicle ? getCachedLaunches(2, { period: "upcoming" }).catch(() => null) : null;
+  const { launches, filterOptions, hasLaunchData, hasFilterOptions, cache } = await getCachedCalendarData(
     { q: filters.q, agency: filters.agency, vehicle: filters.vehicle, period }
   );
-  const nextCandidates = nextCandidatesPromise ? await nextCandidatesPromise : launches;
-  const [dataStatus, nextLaunch]: [Awaited<ReturnType<typeof getDataStatus>> | null, LaunchDetail | null] = await Promise.all([
-    dataStatusPromise,
-    nextCandidates[0] ? getLaunch(nextCandidates[0].id).catch(() => null) : Promise.resolve(null)
-  ]);
+  const nextResult = nextCandidatesPromise ? await nextCandidatesPromise : null;
+  const nextCandidates = nextCandidatesPromise ? nextResult?.value ?? [] : launches;
+  const statusResult = await dataStatusPromise;
+  const dataStatus = statusResult?.value ?? null;
+  const nextLaunch = nextCandidates[0] ?? null;
+  const cacheEntries = [...cache, ...(nextResult ? [nextResult.cache] : []), ...(statusResult ? [statusResult.cache] : [])];
   const agencies = new Set(launches.map(launch => launch.agency).filter(Boolean));
   const featured = nextCandidates.find(launch => launch.id !== nextCandidates[0]?.id);
 
   return (
-    <MissionSelectionProvider key={JSON.stringify(filters)} initial={nextLaunch}>
+    <MissionSelectionProvider key={JSON.stringify(filters)} initial={null} initialSummary={nextLaunch}>
     <main className="launch-dashboard" id="main-content">
       <div className="dashboard-introduction">
         <LaunchHero launch={nextLaunch} locale={locale} />
@@ -76,6 +78,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             {" "}{dataStatus.stale ? t.staleNotice : t.datesNotice}
           </p>
         ) : null}
+        <CacheNotice entries={cacheEntries} />
         <nav className="period-tabs" aria-label={t.launchPeriod}>
           <Link href={upcomingHref} aria-current={period === "upcoming" ? "page" : undefined}>{t.upcoming}<LinkPending /></Link>
           <Link href={historyHref} aria-current={period === "past" ? "page" : undefined}>{t.history}<LinkPending /></Link>

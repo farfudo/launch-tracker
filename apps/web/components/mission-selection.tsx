@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { Launch, LaunchDetail } from "../lib/api";
 import { formatLaunchStatus, launchStatusTone } from "../lib/launch";
 import { dashboardCopy } from "../lib/dashboard-i18n";
@@ -13,6 +13,7 @@ import { MissionStreams } from "./mission-streams";
 import { MissionCalendar } from "./mission-calendar";
 import { Spinner, LinkPending } from "./pending-feedback";
 import { MissionShare } from "./mission-share";
+import { CacheNotice } from "./cache-notice";
 
 type Selection = {
   selected: Launch | null;
@@ -25,21 +26,22 @@ type Selection = {
 const MissionSelection = createContext<Selection | null>(null);
 export const useMissionSelection = () => useContext(MissionSelection);
 
-export function MissionSelectionProvider({ initial, children }: { initial: LaunchDetail | null; children: React.ReactNode }) {
-  const [selected, setSelected] = useState<Launch | null>(initial);
+export function MissionSelectionProvider({ initial, initialSummary = null, children }: { initial: LaunchDetail | null; initialSummary?: Launch | null; children: React.ReactNode }) {
+  const [selected, setSelected] = useState<Launch | null>(initial ?? initialSummary);
   const [detail, setDetail] = useState(initial);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [revision, setRevision] = useState(0);
   const request = useRef<AbortController | null>(null);
   const generation = useRef(0);
+  const initializedSummary = useRef(false);
   useEffect(() => () => request.current?.abort(), []);
 
-  async function select(launch: Launch) {
+  const select = useCallback(async (launch: Launch, reveal = true) => {
     const current = ++generation.current;
     request.current?.abort();
     setSelected(launch);
-    setRevision(value => value + 1);
+    if (reveal) setRevision(value => value + 1);
     setError(false);
     if (launch.id === initial?.id) { setDetail(initial); setLoading(false); return; }
     setDetail(null);
@@ -58,7 +60,13 @@ export function MissionSelectionProvider({ initial, children }: { initial: Launc
       window.clearTimeout(timeout);
       if (current === generation.current) setLoading(false);
     }
-  }
+  }, [initial]);
+  useEffect(() => {
+    if (!initial && initialSummary && !initializedSummary.current) {
+      initializedSummary.current = true;
+      void select(initialSummary, false);
+    }
+  }, [initial, initialSummary, select]);
   return <MissionSelection.Provider value={{ selected, detail, loading, error, revision, select }}>{children}</MissionSelection.Provider>;
 }
 
@@ -91,6 +99,7 @@ export function MissionDetailPanel() {
     {loading ? <p className="panel-feedback"><Spinner /> {d.loadingMission}</p> : null}
     {error ? <div className="panel-feedback" role="alert"><p>{d.missionError}</p><button type="button" onClick={() => select(selected)}>{t.retry}</button></div> : null}
     {detail ? <div className={revision > 0 ? "mission-detail-enter" : undefined}>
+      {detail.frontend_cache ? <CacheNotice entries={[detail.frontend_cache]} autoRefresh={false} onRetry={() => select(selected)} /> : null}
       <MissionCalendar key={detail.id} launch={detail} />
       <MissionStreams launch={detail} />
       <h3>{t.aboutMission}</h3>

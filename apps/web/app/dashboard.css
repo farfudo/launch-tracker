@@ -257,6 +257,10 @@ button .action-spinner { margin-right: .5rem; }
 .mission-share-feedback { min-height: 1.2em; margin: .3rem 0 0; color: var(--accent-strong); }
 .mission-share input { display: block; width: 100%; max-width: 36rem; box-sizing: border-box; padding: .7rem; font: inherit; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
 .mission-share :is(button,input):focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.frontend-cache-notice { margin: .8rem 0; color: var(--text-soft); font-size: .75rem; line-height: 1.5; }
+.frontend-cache-notice p { margin: .2rem 0; }
+.frontend-cache-notice [role="status"]:not(:empty) { color: var(--accent-strong); }
+.frontend-cache-notice button { font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; min-height: 44px; padding: .5rem .8rem; }
 .toolbar-controls .language-control { position: relative; }
 .language-short { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: .4rem; pointer-events: none; font-size: .8rem; font-weight: 650; }
 .toolbar-controls .language-control select { width: 66px; max-width: 66px; min-height: 44px; color: transparent; appearance: none; cursor: pointer; }

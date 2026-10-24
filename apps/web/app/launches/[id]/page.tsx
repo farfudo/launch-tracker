@@ -2,7 +2,9 @@ import Link from "next/link";
 import { FavoriteButton } from "../../../components/favorites";
 import { notFound } from "next/navigation";
 
-import { getLaunch, LaunchNotFoundError } from "../../../lib/api";
+import { LaunchNotFoundError } from "../../../lib/api";
+import { getCachedLaunch } from "../../../lib/cached-api";
+import { CacheNotice } from "../../../components/cache-notice";
 import { formatLaunchDate } from "../../../lib/date";
 import { formatLaunchStatus, launchStatusTone } from "../../../lib/launch";
 import { dictionaries } from "../../../lib/i18n";
@@ -29,10 +31,11 @@ export default async function LaunchDetail({ params, searchParams }: {
   const preview = process.env.DESIGN_PREVIEW === "true";
   const design = preview ? resolveDesign((await searchParams).design) : "mission-control";
 
-    const launch = await getLaunch(id).catch((error: unknown) => {
+    const result = await getCachedLaunch(id).catch((error: unknown) => {
       if (error instanceof LaunchNotFoundError) notFound();
       throw error;
     });
+    const launch = result.value;
     const cards: { label: string; value: string; icon: MissionIconName }[] = [
       { label: t.agency, value: launch.agency || t.pending, icon: "agency" },
       { label: t.vehicle, value: launch.vehicle || t.pending, icon: "rocket" },
@@ -67,6 +70,7 @@ export default async function LaunchDetail({ params, searchParams }: {
         </section>
 
         <section className="mission-facts" aria-labelledby="mission-facts-heading">
+          <CacheNotice entries={[result.cache]} />
           <h2 id="mission-facts-heading" className="visually-hidden">{t.availableInfo}</h2>
           <dl className="mission-fact-grid">
             {cards.map((card) => <div className="mission-fact-card" key={card.label}>

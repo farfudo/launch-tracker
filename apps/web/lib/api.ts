@@ -1,4 +1,5 @@
 export type Launch = {
+  frontend_cache?: { checkedAt: string; revalidateSeconds: number };
   id: string;
   name: string;
   status: string;
