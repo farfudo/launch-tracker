@@ -26,10 +26,15 @@ test('search, filters, mission, persistent favorite, streams, language and theme
   // Desktop selects an in-page panel; mobile opens the full detail directly.
   await rows.locator('.launch-card-link').click();
   if (!isMobile) {
+    await expect(page.locator('#selected-mission')).toContainText('Mission at a glance');
+    await expect(page.locator('#selected-mission .mission-sources')).toHaveCount(0);
+    await expect(page.locator('#selected-mission')).not.toContainText('Controlled mission for browser tests.');
+    await page.locator('#selected-mission').screenshot({ path: test.info().outputPath('mission-summary.png') });
     await page.locator('#selected-mission').getByRole('link', { name: /View full details/ }).click();
   }
   await expect(page).toHaveURL(/\/launches\/e2e-falcon$/);
   await expect(page.getByRole('heading', { name: 'Test Starlink', exact: true, level: 1 })).toBeVisible();
+  await expect(page.locator('.mission-description')).toContainText('Controlled mission for browser tests.');
   const sources = page.getByRole('region', { name: 'Explore sources' });
   await expect(sources.getByRole('link', { name: /Example agency website/ })).toHaveAttribute('href', 'https://example.com/agency');
   await expect(sources.getByRole('link', { name: /Example rocket website/ })).toHaveAttribute('target', '_blank');

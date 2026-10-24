@@ -299,3 +299,5 @@ button .action-spinner { margin-right: .5rem; }
 .mission-source-card li + li { margin-top: .75rem; }
 .mission-source-card a { color: var(--accent, #008a83); overflow-wrap: anywhere; }
 .mission-source-card small { display: block; margin-top: .3rem; overflow-wrap: anywhere; }
+.mission-summary-hint { margin: 1rem 0 0; padding-top: 1rem; border-top: 1px solid var(--border); font-size: .8rem; line-height: 1.6; color: var(--text-soft); }
+.selected-mission-panel .selected-mission-facts { grid-template-columns: 1fr; }

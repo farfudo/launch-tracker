@@ -7,13 +7,9 @@ import { formatLaunchStatus, launchStatusTone } from "../lib/launch";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { useLocale } from "./locale-provider";
 import { LocalLaunchDate } from "./local-launch-date";
-import { LaunchTimes } from "./launch-times";
 import { FavoriteButton } from "./favorites";
 import { MissionStreams } from "./mission-streams";
-import { MissionSources } from "./mission-sources";
-import { MissionCalendar } from "./mission-calendar";
 import { Spinner, LinkPending } from "./pending-feedback";
-import { MissionShare } from "./mission-share";
 import { CacheNotice } from "./cache-notice";
 
 type Selection = {
@@ -75,6 +71,11 @@ export function MissionDetailPanel() {
   const selection = useMissionSelection();
   const { locale, messages: t } = useLocale();
   const d = dashboardCopy[locale];
+  const summaryCopy = {
+    "pt-PT": { title: "Resumo da missão", hint: "Descrição, janela de lançamento, fusos horários e fontes estão na página completa." },
+    "en-GB": { title: "Mission at a glance", hint: "Description, launch window, time zones and sources are on the full mission page." },
+    "es-ES": { title: "Resumen de la misión", hint: "La descripción, ventana de lanzamiento, zonas horarias y fuentes están en la página completa." },
+  }[locale];
   const panel = useRef<HTMLElement>(null);
   const revision = selection?.revision ?? 0;
   useEffect(() => {
@@ -91,7 +92,7 @@ export function MissionDetailPanel() {
   return <section ref={panel} className="selected-mission-panel" id="selected-mission" aria-labelledby="selected-mission-heading" aria-busy={loading}>
     {revision > 0 ? <span key={`highlight-${revision}`} className="mission-panel-highlight" aria-hidden="true" /> : null}
     <div key={revision} className={revision > 0 ? "mission-selection-enter" : undefined}>
-    <p className="eyebrow">{d.selectedMission}</p>
+    <p className="eyebrow">{summaryCopy.title}</p>
     <h2 id="selected-mission-heading">{detail?.mission_name || selected.name}</h2>
     <p className="selected-mission-agency">{selected.agency || t.agencyPending} · {selected.vehicle || t.vehiclePending}</p>
     <span className="launch-status-tag" data-tone={launchStatusTone(selected.status)}>{formatLaunchStatus(selected.status, locale)}</span>
@@ -101,20 +102,11 @@ export function MissionDetailPanel() {
     {error ? <div className="panel-feedback" role="alert"><p>{d.missionError}</p><button type="button" onClick={() => select(selected)}>{t.retry}</button></div> : null}
     {detail ? <div className={revision > 0 ? "mission-detail-enter" : undefined}>
       {detail.frontend_cache ? <CacheNotice entries={[detail.frontend_cache]} autoRefresh={false} onRetry={() => select(selected)} /> : null}
-      <MissionCalendar key={detail.id} launch={detail} />
-      <MissionStreams launch={detail} />
-      <h3>{t.aboutMission}</h3>
-      <p className="selected-mission-description">{detail.mission_description || t.descriptionPending}</p>
-      {detail.mission_description ? <p className="launch-meta">{t.originalDescription}</p> : null}
-      <dl className="selected-mission-facts"><div><dt>{t.launchSite}</dt><dd>{detail.location_name || t.pending}</dd></div><div><dt>{t.launchPad}</dt><dd>{detail.pad_name || t.pending}</dd></div></dl>
-      <MissionSources launch={detail} />
-      <h3>{t.launchWindow}</h3>
-      <dl className="selected-mission-facts">{[{label:t.windowStart,date:detail.window_start},{label:t.windowEnd,date:detail.window_end}].map(point => <div key={point.label}><dt>{point.label}</dt><dd>{point.date ? <LocalLaunchDate date={point.date} /> : t.pending}</dd></div>)}</dl>
-      <p className="launch-meta">{t.windowNotice}</p>
-      <details className="panel-time-zones"><summary>{d.zones}</summary><LaunchTimes isoDate={detail.net} launchTimeZone={detail.launch_timezone} /></details>
+      <dl className="selected-mission-facts"><div><dt>{t.launchSite}</dt><dd>{detail.location_name || t.pending}</dd></div></dl>
+      <MissionStreams launch={detail} compact />
     </div> : null}
     <div className="selected-mission-actions"><Link className="pill-button" href={`/launches/${selected.id}`}>{d.fullDetails} →<LinkPending /></Link><FavoriteButton id={selected.id} name={selected.name} /></div>
-    <MissionShare key={selected.id} id={selected.id} name={selected.name} />
+    <p className="mission-summary-hint">{summaryCopy.hint}</p>
     </div>
   </section>;
 }

@@ -45,9 +45,12 @@
 
 ## Depois do MVP
 
+- [x] Rever e aprovar resumo lateral simplificado, distinto da página completa; autorizado apenas commit local (`docs/MISSION_SUMMARY_REVIEW.md`).
+- [ ] Obter autorização de push do resumo lateral simplificado.
+
 - [x] Corrigir localmente I001/TRY004 e reproduzir análise/testes com Python 3.12.15 e Ruff 0.17.2: 54 testes passaram.
 - [x] Obter autorização de commit/push da correção de CI.
-- [ ] Confirmar execução remota da CI após envio da correção.
+- [x] Confirmar CI da correção `1672e87`: execução `40125277157` passou API, Worker e Web/build/E2E.
 
 - [x] Rever e aprovar preview de websites/fontes por entidade; commit/push autorizados (`docs/MISSION_SOURCES_REVIEW.md`).
 - [ ] Confirmar publicação das fontes e da repetição limitada após envio.

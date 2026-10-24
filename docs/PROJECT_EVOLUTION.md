@@ -275,3 +275,16 @@ Dificuldade: a validação local anterior usava Ruff 0.12.0, enquanto a dependê
 Preparado ambiente temporário isolado com Python 3.12.15 e Ruff 0.17.2, versões observadas na CI. Análise de estilo e 54 testes da API passaram com SQLite em memória; sem chamadas à fonte ou base de produção. O aviso já conhecido de descontinuação do TestClient permanece. Web/E2E não repetidos nesta correção sem alteração visual. Não comprova aprovação remota: é necessário novo commit/push autorizado e conclusão da CI. Sem commit, push, nova execução remota ou alteração da app pública nesta etapa.
 
 Após apresentação dos resultados locais, o utilizador autorizou commit e push da correção. O envio inclui README, configuração, correções e registo de evolução; exclui roadmap e exportações locais. A confirmação da CI será feita após o envio, sem deduzir sucesso remoto dos testes locais.
+
+Confirmação posterior: commit `1672e87` enviado para `main`; execução CI `40125277157` terminou com sucesso. Passaram API quality and tests, Worker synchronization tests e Web tests and build, incluindo os percursos de navegação. Permanecem avisos não bloqueantes sobre versões de actions/Node e imagem Ubuntu. Sucesso da CI não comprova deploy ou sincronização real. Esta confirmação foi registada localmente após o envio, para incluir no próximo commit autorizado.
+### Distinção entre resumo lateral e página completa — rascunho local
+
+A pedido do utilizador, o painel de seleção do calendário foi reduzido ao essencial: nome, agência/veículo, estado, hora local, local, transmissão colapsada quando disponível, favorito e ligação aos detalhes completos. Descrição, plataforma, janela, fusos horários, fontes, calendário e partilha ficam na página completa. O painel recebe título e explicação de resumo em PT/EN/ES, preservando carregamento/erro e aviso da idade dos dados.
+
+Dificuldade: simplificar sem perder o caminho de recuperação nem esconder dados antigos. Solução: manter estados de falha, nova tentativa e cache, e destacar a ligação para a página completa. Não se alterou o contrato de dados: o painel ainda consulta o detalhe para local/transmissões, pelo que isto não comprova redução de tráfego. Em móvel, os cartões continuam a abrir diretamente o detalhe. Testes de seleção foram atualizados para verificar a missão pelo título e não pela descrição retirada; acrescentada regressão que exige informação avançada ausente do painel e presente no detalhe completo. Ver `docs/MISSION_SUMMARY_REVIEW.md`.
+
+Sem commit, push, deploy ou sincronização real; preview e aprovação pendentes. Exportações de partilha anteriores não regeneradas.
+
+Verificação do resumo: 78 testes web, build e quatro percursos E2E desktop/móvel passaram. Captura desktop revista visualmente; preview local reaberta com dados fictícios. API não alterada/testes backend não repetidos nesta ronda.
+
+Após revisão, o utilizador aprovou a separação entre resumo e detalhe e autorizou apenas commit local. Incluem-se os testes, revisão e confirmação anterior da CI `40125277157` já registada localmente. Sem autorização de push deste incremento; a versão pública permanece inalterada.

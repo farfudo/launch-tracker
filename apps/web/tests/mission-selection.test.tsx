@@ -36,11 +36,11 @@ it("reveals an offscreen heading immediately when reduced motion is requested", 
   expect(scroll).toHaveBeenCalledWith({behavior:"auto",block:"start"});
 });
 it("initially shows the next mission and replaces it with the selected detail", async () => {
-  expect(container.textContent).toContain("First description");
+  expect(container.querySelector("h2")?.textContent).toBe("First mission");
   const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response(JSON.stringify(second)));
   await act(async () => click("Second"));
   expect(fetchMock.mock.calls[0][0]).toBe("/api/missions/second");
-  expect(container.textContent).toContain("Second description");
+  expect(container.querySelector("h2")?.textContent).toBe("Second mission");
   expect(container.querySelector(".pill-button")!.getAttribute("href")).toBe("/launches/second");
 });
 it("provides a full-page fallback and retries a failed detail request", async () => {
@@ -50,7 +50,7 @@ it("provides a full-page fallback and retries a failed detail request", async ()
   expect(container.querySelector(".pill-button")!.getAttribute("href")).toBe("/launches/second");
   fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(second)));
   await act(async () => click("Try again"));
-  expect(container.textContent).toContain("Second description");
+  expect(container.querySelector("h2")?.textContent).toBe("Second mission");
 });
 it("ignores an older response when selections change quickly", async () => {
   let resolveSecond!: (response: Response) => void;
@@ -60,7 +60,7 @@ it("ignores an older response when selections change quickly", async () => {
   await act(async () => click("Third"));
   await act(async () => resolveThird(new Response(JSON.stringify(third))));
   await act(async () => resolveSecond(new Response(JSON.stringify(second))));
-  expect(container.textContent).toContain("Third description");
+  expect(container.querySelector("h2")?.textContent).toBe("Third mission");
   expect(container.textContent).not.toContain("Second description");
 });
 
@@ -73,5 +73,18 @@ it("does not reset a selected mission when the initial summary is refreshed", as
   const count = fetchMock.mock.calls.length;
   await act(async () => root.render(tree()));
   expect(fetchMock).toHaveBeenCalledTimes(count);
-  expect(container.textContent).toContain("Second description");
+  expect(container.querySelector("h2")?.textContent).toBe("Second mission");
+});
+
+it("keeps only the summary and directs advanced information to the full page", () => {
+  const panel = container.querySelector("#selected-mission")!;
+  expect(panel.textContent).toContain("Mission at a glance");
+  expect(panel.textContent).toContain("Agency · Rocket");
+  expect(panel.textContent).not.toContain("First description");
+  expect(panel.querySelector(".mission-sources")).toBeNull();
+  expect(panel.querySelector(".mission-calendar")).toBeNull();
+  expect(panel.querySelector(".panel-time-zones")).toBeNull();
+  expect(panel.textContent).not.toContain("Share mission");
+  expect(panel.querySelector(".mission-summary-hint")?.textContent).toContain("full mission page");
+  expect(panel.querySelector(".pill-button")?.getAttribute("href")).toBe("/launches/first");
 });
