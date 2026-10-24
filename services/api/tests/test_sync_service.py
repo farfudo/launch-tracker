@@ -109,3 +109,31 @@ def test_empty_result_preserves_cache(db_session, lock):
     with pytest.raises(ValueError, match="Empty"):
         sync_cache(db_session, Mock(return_value=[]))
     assert db_session.get(Launch, "existing") is not None
+
+
+def test_exhausted_provider_retry_preserves_data_and_shared_budget(db_session, lock, monkeypatch):
+    import httpx
+    from app.clients.launch_library import get_upcoming_launches
+
+    upsert_launches(db_session, [LaunchSummary(
+        id="kept", name="Saved mission", status="Go", net="2099-01-01T12:00:00Z"
+    )])
+    old_update = datetime.now(UTC) - timedelta(hours=2)
+    db_session.get(Launch, "kept").source_updated_at = old_update
+    db_session.commit()
+    attempts = []
+
+    def get(url, **kwargs):
+        attempts.append(url)
+        raise httpx.ReadTimeout("must not leak")
+
+    monkeypatch.setattr("app.clients.launch_library.httpx.get", get)
+    monkeypatch.setattr("app.clients.launch_library.time.sleep", lambda _: None)
+    with pytest.raises(LaunchLibraryError):
+        sync_cache(db_session, get_upcoming_launches)
+    assert len(attempts) == 2
+    assert db_session.get(Launch, "kept").name == "Saved mission"
+    assert db_session.get(Launch, "kept").source_updated_at.replace(tzinfo=UTC) == old_update
+    assert db_session.get(SyncControl, 1).outcome == "failed"
+    assert sync_cache(db_session, get_upcoming_launches).reason == "retry_wait"
+    assert len(attempts) == 2

@@ -143,3 +143,88 @@ def test_sync_requests_detailed_mode_once(monkeypatch):
     assert get_upcoming_launches() == []
     assert len(calls) == 1
     assert calls[0]["params"]["mode"] == "detailed"
+
+
+@pytest.mark.parametrize("failure", ["timeout", "network", 500, 502, 503, 504])
+def test_transient_failure_retries_once_then_recovers(monkeypatch, caplog, failure):
+    calls, sleeps = [], []
+
+    def get(url, **kwargs):
+        calls.append(kwargs)
+        request = httpx.Request("GET", url)
+        if len(calls) == 1:
+            if failure == "timeout":
+                raise httpx.ReadTimeout("secret body must not be logged", request=request)
+            if failure == "network":
+                raise httpx.ConnectError("secret", request=request)
+            return httpx.Response(failure, request=request)
+        return httpx.Response(200, json={"results": []}, request=request)
+
+    monkeypatch.setattr("app.clients.launch_library.httpx.get", get)
+    monkeypatch.setattr("app.clients.launch_library.time.sleep", sleeps.append)
+    assert get_upcoming_launches() == []
+    assert len(calls) == 2
+    assert sleeps == [5]
+    assert "secret" not in caplog.text
+    assert "retry=True" in caplog.text
+
+
+@pytest.mark.parametrize("status", [400, 401, 403, 404, 429, 501])
+def test_non_transient_http_errors_never_retry(monkeypatch, status):
+    calls = []
+
+    def get(url, **kwargs):
+        calls.append(url)
+        return httpx.Response(status, request=httpx.Request("GET", url))
+
+    monkeypatch.setattr("app.clients.launch_library.httpx.get", get)
+    with pytest.raises(LaunchLibraryError) as error:
+        get_upcoming_launches()
+    assert error.value.http_status == status
+    assert len(calls) == 1
+
+
+def test_repeated_timeout_stops_after_two_attempts(monkeypatch):
+    calls = []
+
+    def get(url, **kwargs):
+        calls.append(url)
+        raise httpx.ReadTimeout("private")
+
+    monkeypatch.setattr("app.clients.launch_library.httpx.get", get)
+    monkeypatch.setattr("app.clients.launch_library.time.sleep", lambda _: None)
+    with pytest.raises(LaunchLibraryError) as error:
+        get_upcoming_launches()
+    assert error.value.category == "timeout"
+    assert len(calls) == 2
+
+
+@pytest.mark.parametrize("payload", [{}, {"results": {}}, {"results": [None]},
+                                    {"results": [{"id": "incomplete"}]}])
+def test_invalid_payload_is_classified_without_retry(monkeypatch, payload):
+    calls = []
+
+    def get(url, **kwargs):
+        calls.append(url)
+        return httpx.Response(200, json=payload, request=httpx.Request("GET", url))
+
+    monkeypatch.setattr("app.clients.launch_library.httpx.get", get)
+    with pytest.raises(LaunchLibraryError) as error:
+        get_upcoming_launches()
+    assert error.value.category == "invalid_payload"
+    assert len(calls) == 1
+
+
+def test_service_retry_after_is_deferred_to_shared_cooldown(monkeypatch):
+    calls = []
+
+    def get(url, **kwargs):
+        calls.append(url)
+        return httpx.Response(503, headers={"Retry-After": "3600"},
+                              request=httpx.Request("GET", url))
+
+    monkeypatch.setattr("app.clients.launch_library.httpx.get", get)
+    with pytest.raises(LaunchLibraryError) as error:
+        get_upcoming_launches()
+    assert error.value.retry_after == "3600"
+    assert len(calls) == 1

@@ -1,4 +1,6 @@
 from datetime import datetime
+import logging
+import time
 from typing import Any
 from urllib.parse import urlsplit
 
@@ -6,14 +8,18 @@ import httpx
 from pydantic import BaseModel, Field
 
 UPCOMING_LAUNCHES_URL = "https://ll.thespacedevs.com/2.3.0/launches/upcoming/"
+logger = logging.getLogger(__name__)
 
 
 class LaunchLibraryError(Exception):
     """Raised when Launch Library cannot provide a usable response."""
 
-    def __init__(self, message: str, retry_after: str | None = None):
+    def __init__(self, message: str, retry_after: str | None = None,
+                 category: str = "unknown", http_status: int | None = None):
         super().__init__(message)
         self.retry_after = retry_after
+        self.category = category
+        self.http_status = http_status
 
 
 class LaunchSummary(BaseModel):
@@ -134,7 +140,7 @@ def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
     )
 
 
-def get_upcoming_launches(limit: int = 20) -> list[LaunchSummary]:
+def _get_upcoming_launches_once(limit: int) -> list[LaunchSummary]:
     try:
         response = httpx.get(
             UPCOMING_LAUNCHES_URL,
@@ -145,9 +151,50 @@ def get_upcoming_launches(limit: int = 20) -> list[LaunchSummary]:
             raise LaunchLibraryError(
                 "Launch Library rate limit reached. Retry later.",
                 retry_after=response.headers.get("Retry-After"),
+                category="rate_limited", http_status=429,
             )
         response.raise_for_status()
         payload = response.json()
+        if not isinstance(payload, dict) or not isinstance(payload.get("results"), list):
+            raise ValueError("Invalid result shape")
         return [parse_launch(launch) for launch in payload["results"]]
-    except (httpx.HTTPError, KeyError, TypeError, ValueError) as error:
-        raise LaunchLibraryError("Unable to retrieve upcoming launches.") from error
+    except httpx.TimeoutException as error:
+        raise LaunchLibraryError("Provider request timed out.", category="timeout") from error
+    except httpx.HTTPStatusError as error:
+        raise LaunchLibraryError(
+            "Provider returned an unsuccessful HTTP status.", category="http_error",
+            http_status=error.response.status_code,
+            retry_after=error.response.headers.get("Retry-After"),
+        ) from error
+    except httpx.RequestError as error:
+        raise LaunchLibraryError("Provider network request failed.", category="network") from error
+    except (KeyError, TypeError, ValueError, AttributeError) as error:
+        raise LaunchLibraryError("Provider returned invalid launch data.",
+                                 category="invalid_payload") from error
+
+
+def get_upcoming_launches(limit: int = 20) -> list[LaunchSummary]:
+    """One bounded retry inside the existing shared synchronization reservation."""
+    for attempt in (1, 2):
+        started = time.monotonic()
+        try:
+            result = _get_upcoming_launches_once(limit)
+        except LaunchLibraryError as error:
+            # Never log raw exceptions, response bodies, URLs or credentials.
+            retryable = error.category in {"timeout", "network"} or (
+                error.category == "http_error" and error.http_status in {500, 502, 503, 504}
+            )
+            # A server-directed delay is handled by the persisted cooldown, not a short retry.
+            retry = attempt == 1 and retryable and error.retry_after is None
+            logger.warning(
+                "launch_provider attempt=%s category=%s http_status=%s elapsed_ms=%s retry=%s",
+                attempt, error.category, error.http_status,
+                round((time.monotonic() - started) * 1000), retry,
+            )
+            if not retry:
+                raise
+            time.sleep(5)
+        else:
+            logger.info("launch_provider attempt=%s outcome=success count=%s", attempt, len(result))
+            return result
+    raise AssertionError("Unreachable retry state")

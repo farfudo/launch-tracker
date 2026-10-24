@@ -12,9 +12,8 @@ def main() -> None:
         with SessionLocal() as db:
             result = sync_cache(db, fetch_launches=get_upcoming_launches)
     except LaunchLibraryError as error:
-        print(f"Sync failed: {error}", file=sys.stderr)
-        if error.retry_after:
-            print(f"Retry-After: {error.retry_after}", file=sys.stderr)
+        print(f"Sync failed: category={error.category} http_status={error.http_status}",
+              file=sys.stderr)
         raise SystemExit(1) from None
     if result.skipped:
         print(f"Sync skipped: {result.reason}.")
