@@ -113,6 +113,7 @@ def test_empty_result_preserves_cache(db_session, lock):
 
 def test_exhausted_provider_retry_preserves_data_and_shared_budget(db_session, lock, monkeypatch):
     import httpx
+
     from app.clients.launch_library import get_upcoming_launches
 
     upsert_launches(db_session, [LaunchSummary(

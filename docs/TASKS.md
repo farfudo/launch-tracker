@@ -45,6 +45,10 @@
 
 ## Depois do MVP
 
+- [x] Corrigir localmente I001/TRY004 e reproduzir análise/testes com Python 3.12.15 e Ruff 0.17.2: 54 testes passaram.
+- [x] Obter autorização de commit/push da correção de CI.
+- [ ] Confirmar execução remota da CI após envio da correção.
+
 - [x] Rever e aprovar preview de websites/fontes por entidade; commit/push autorizados (`docs/MISSION_SOURCES_REVIEW.md`).
 - [ ] Confirmar publicação das fontes e da repetição limitada após envio.
 

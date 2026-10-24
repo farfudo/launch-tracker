@@ -1,6 +1,6 @@
-from datetime import datetime
 import logging
 import time
+from datetime import datetime
 from typing import Any
 from urllib.parse import urlsplit
 
@@ -170,7 +170,7 @@ def _get_upcoming_launches_once(limit: int) -> list[LaunchSummary]:
         response.raise_for_status()
         payload = response.json()
         if not isinstance(payload, dict) or not isinstance(payload.get("results"), list):
-            raise ValueError("Invalid result shape")
+            raise TypeError("Invalid result shape")
         return [parse_launch(launch) for launch in payload["results"]]
     except httpx.TimeoutException as error:
         raise LaunchLibraryError("Provider request timed out.", category="timeout") from error

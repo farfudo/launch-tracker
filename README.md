@@ -69,9 +69,13 @@ Interface: `http://localhost:3000`. API: `http://localhost:8000/docs`. PostgreSQ
 API, em `services/api`, com o ambiente virtual ativo:
 
 ```sh
-ruff check app tests
-pytest
+python -m pip install -e '.[dev]'
+python -m ruff --version
+python -m ruff check app tests
+DATABASE_URL=sqlite:// python -m pytest
 ```
+
+Usar Python 3.12, como na CI. Ruff está fixado em 0.17.2 e as regras estão explícitas no `pyproject.toml`; reinstalar as dependências de desenvolvimento ao atualizar o projeto evita usar uma versão global diferente. Os testes acima usam SQLite em memória, sem sincronizar a fonte ou aceder à base de produção; não substituem ensaios de concorrência PostgreSQL.
 
 Interface, em `apps/web`:
 
