@@ -45,8 +45,11 @@
 
 ## Depois do MVP
 
+- [x] Rever prioridades UI e preparar lote local dos pontos 1–4, com indicação de desenvolvimento; 90 testes/build/seis E2E passaram (`docs/UI_POLISH_REVIEW.md`).
+- [ ] Aprovar preview das melhorias UI e etiqueta de desenvolvimento; obter autorização separada antes de commit/push.
+
 - [x] Aprovar correção local de revalidação e autorizar push, incluindo o visual laranja `38d8569` (`docs/CACHE_REVALIDATION_REVIEW.md`).
-- [ ] Confirmar CI, publicação e renovação pública da cache após envio da correção.
+- [x] Confirmar CI `40130910748`, publicação Vercel de `a91dc50` e renovação pública da cache após cinco minutos reais, sem invalidar dados.
 
 - [x] Rever e aprovar fundo laranja claro das transmissões expandidas; autorizado apenas commit local.
 - [x] Obter autorização de push do fundo laranja, incluído no envio da correção de revalidação.
@@ -71,7 +74,8 @@
 - [x] Preparar e validar localmente cache de dados públicos para arranque lento da API; 75 testes, build, quatro E2E e ensaio compilado de falha/recuperação passaram. Ver `docs/COLD_START_REVIEW.md`.
 - [x] Rever preview da cache e obter aprovação; autorizado apenas commit local, sem push.
 - [x] Autorizar e enviar cache da interface em `d0d8a98`; CI posteriormente confirmada.
-- [ ] Investigar falhas públicas de revalidação: resposta guardada rápida observada, mas checkedAt não avança e Vercel regista timeouts (`docs/PUBLIC_DEPLOY_REVIEW.md`). Arranque a frio/recuperação ainda não comprovados.
+- [x] Tratar falha de revalidação e confirmar checkedAt a avançar num ciclo público após `a91dc50` (`docs/CACHE_REVALIDATION_REVIEW.md`).
+- [ ] Validar futuramente arranque a frio público controlado, sem confundir o ciclo de revalidação já observado com prova de todas as condições de falha.
 
 - [ ] Alertas configuráveis.
 - [ ] Transmissões e ligações oficiais.

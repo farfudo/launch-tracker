@@ -11,6 +11,7 @@ function render(launch: LaunchDetail, compact = false) { return renderToStaticMa
 it("does not invent a stream or live status when no video link was supplied", () => {
   expect(render(base, true)).toBe("");
   expect(render(base)).toContain("No video link supplied");
+  expect(render(base)).not.toContain("<summary");
 });
 it("starts collapsed and offers every stream in compact mode rather than opening the first", () => {
   const html = render({...base, id: "example", streams: [{url:"https://example.com/one"}, {url:"https://example.com/two"}]}, true);

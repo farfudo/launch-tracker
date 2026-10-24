@@ -35,3 +35,11 @@ Sem alteração visual nova, migração, sincronização manual, commit ou push 
 80 testes web, build e quatro percursos E2E desktop/móvel passaram. Ensaio real Next compilado: calendário/detail guardados em 24/20 ms durante atraso de 35 segundos; resposta nova confirmada depois desse atraso. Com API simulada a 65 segundos, leitura de cache limitada a 55 segundos, resposta guardada manteve-se disponível; 503 e payload inválido não a apagaram, e recuperação posterior foi confirmada. Exemplos de leituras durante 503: 44/19 ms. São tempos locais, não uma medição de Vercel.
 
 Testes unitários usam um substituto de `after` para verificar registo e reutilização da promise; o ensaio compilado executa o `after` real do Next local. Nenhum deles reproduz integralmente o ciclo de vida Vercel. Resta observar a revalidação pública após autorização de envio. A preview foi reposta em 3300 com fonte fictícia normal e TTL de cinco segundos, apenas para revisão; o padrão público proposto continua 300 segundos. API backend não alterada/testes PostgreSQL não repetidos nesta ronda.
+
+## Confirmação pública após aprovação e envio
+
+Push `a91dc50` confirmado; CI `40130910748` passou integralmente e Vercel publicou o commit em produção. Revalidação observada sem mudar TTL: cópias verificadas às 20:41:40–41 UTC foram devolvidas rapidamente no pedido após cinco minutos (792 ms); leitura 57 segundos depois trouxe cópias verificadas às 20:46:47.538Z/679Z/938Z (669 ms). As três horas novas eram posteriores às antigas, confirmando renovação de lista, filtros e estado neste ciclo real.
+
+Não foi provocado cold start nem falha em produção. O resultado não garante todas as condições futuras nem isola qual das alterações eliminou os sintomas nesta execução. Este registo posterior ao push permanece local até ao próximo commit autorizado.
+
+Runtime Logs confirmaram o ciclo: list success em 949 ms, filters success em 695 ms e status success em 558 ms, às 21:46:47 WEST. No intervalo filtrado deste deployment havia 11 registos informativos, zero warnings e zero errors. Ausência de erros é limitada à janela consultada, não uma garantia permanente.

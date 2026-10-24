@@ -14,14 +14,17 @@ export function MissionSources({ launch }: { launch: LaunchDetail }) {
   const { locale } = useLocale();
   const t = copy[locale];
   const links = (launch.mission_links || []).map(safeMissionLink).filter(link => link !== null);
+  const kinds = ["agency", "vehicle", "pad", "mission"] as const;
+  const available = kinds.filter(kind => links.some(link => (link.kind || "mission") === kind));
   return <section className="mission-sources mission-panel" aria-label={t.heading}>
     <h2>{t.heading}</h2><p className="launch-meta">{t.notice}</p>
-    <div className="mission-source-grid">{(["agency", "vehicle", "pad", "mission"] as const).map(kind => {
+    <div className="mission-source-grid">{available.map(kind => {
       const seen = new Set<string>();
       const group = links.filter(link => (link.kind || "mission") === kind && !seen.has(link.url) && seen.add(link.url));
       return <div className="mission-source-card" key={kind}><h3>{t[kind]}</h3>
         {group.length ? <ul>{group.map(link => <li key={link.url}><a href={link.url} target="_blank" rel="noopener noreferrer">{link.title || t.visit} ↗</a><small>{link.host}</small></li>)}</ul> : <p className="launch-meta">{t.missing}</p>}
       </div>;
     })}</div>
+    {available.length < kinds.length ? <p className="launch-meta">{t.missing}: {kinds.filter(kind => !available.includes(kind)).map(kind => t[kind]).join(" · ")}.</p> : null}
   </section>;
 }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import type { Launch, LaunchDetail } from "../lib/api";
+import { missionTitle } from "../lib/mission-title";
 import { formatLaunchStatus, launchStatusTone } from "../lib/launch";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { useLocale } from "./locale-provider";
@@ -93,7 +94,7 @@ export function MissionDetailPanel() {
     {revision > 0 ? <span key={`highlight-${revision}`} className="mission-panel-highlight" aria-hidden="true" /> : null}
     <div key={revision} className={revision > 0 ? "mission-selection-enter" : undefined}>
     <p className="eyebrow">{summaryCopy.title}</p>
-    <h2 id="selected-mission-heading">{detail?.mission_name || selected.name}</h2>
+    <h2 id="selected-mission-heading">{missionTitle(detail || selected)}</h2>
     <p className="selected-mission-agency">{selected.agency || t.agencyPending} · {selected.vehicle || t.vehiclePending}</p>
     <span className="launch-status-tag" data-tone={launchStatusTone(selected.status)}>{formatLaunchStatus(selected.status, locale)}</span>
     <p className="selected-mission-date"><LocalLaunchDate date={selected.net} /></p>

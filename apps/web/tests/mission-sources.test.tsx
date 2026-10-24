@@ -16,6 +16,7 @@ it("groups safe links, keeps legacy mission links, deduplicates and explains mis
   const html = renderToStaticMarkup(<LocaleProvider locale="en-GB"><MissionSources launch={launch} /></LocaleProvider>);
   const container = document.createElement("div"); container.innerHTML = html;
   expect(container.querySelectorAll("a")).toHaveLength(2);
+  expect(container.querySelectorAll(".mission-source-card")).toHaveLength(2);
   expect(html).not.toContain("javascript:");
   expect(html).not.toContain("Duplicate");
   expect(html).toContain("Legacy mission");
@@ -29,4 +30,5 @@ it("renders missing source states in Portuguese without fabricating links", () =
   expect(html).toContain("Explorar fontes");
   expect(html).toContain("Ligação não disponibilizada");
   expect(html).not.toContain("href=");
+  expect(html).not.toContain('class="mission-source-card"');
 });

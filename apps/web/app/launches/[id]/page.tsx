@@ -19,6 +19,8 @@ import { MissionSources } from "../../../components/mission-sources";
 import { MissionCalendar } from "../../../components/mission-calendar";
 import { LinkPending } from "../../../components/pending-feedback";
 import { MissionShare } from "../../../components/mission-share";
+import { missionTitle } from "../../../lib/mission-title";
+import { LocalLaunchDate } from "../../../components/local-launch-date";
 export const maxDuration = 60;
 
 type RouteParams = Promise<{ id: string }>;
@@ -58,15 +60,15 @@ export default async function LaunchDetail({ params, searchParams }: {
         <section className="mission-hero" aria-labelledby="mission-title">
           <div className="mission-hero-copy">
             <p className="eyebrow"><span className="mission-signal" aria-hidden="true" />{t.launchDetail}</p>
-            <h1 id="mission-title">{launch.mission_name || launch.name}</h1>
+            <h1 id="mission-title">{missionTitle(launch)}</h1>
             <span className="mission-status" data-tone={launchStatusTone(launch.status)}><span aria-hidden="true" />{formatLaunchStatus(launch.status, locale)}</span>
+            <div className="mission-target">
+              <span className="mission-target-icon"><MissionIcon name="clock" /></span>
+              <div><p>{t.expectedDate}</p><LocalLaunchDate date={launch.net} /></div>
+            </div>
             <FavoriteButton id={launch.id} name={launch.name} />
             <MissionCalendar launch={launch} />
             <MissionShare key={launch.id} id={launch.id} name={launch.name} />
-            <div className="mission-target">
-              <span className="mission-target-icon"><MissionIcon name="clock" /></span>
-              <div><p>{t.expectedDate}</p><time dateTime={launch.net}>{formatLaunchDate(launch.net, locale)}</time></div>
-            </div>
           </div>
           <VehicleVisual key={launch.image_url || launch.id} launch={launch} />
         </section>

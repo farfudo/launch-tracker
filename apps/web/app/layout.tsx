@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@fontsource-variable/inter";
 import Link from "next/link";
 import { BrandMark } from "../components/brand";
+import { DevelopmentBadge } from "../components/development-badge";
 import { LocaleProvider } from "../components/locale-provider";
 import { LanguageSelector } from "../components/language-selector";
 import { ThemeScript, ThemeToggle } from "../components/theme-toggle";
@@ -32,6 +33,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <a className="skip-link" href="#main-content">{d.skip}</a>
           <div className="site-toolbar">
             <Link href="/" className="home-brand" aria-label="NextRocketLaunch home"><BrandMark /><LinkPending /></Link>
+            <DevelopmentBadge />
             <div className="toolbar-controls"><ThemeToggle /><LanguageSelector /></div>
           </div>
           {children}
