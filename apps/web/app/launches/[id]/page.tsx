@@ -19,6 +19,7 @@ import { MissionSources } from "../../../components/mission-sources";
 import { MissionCalendar } from "../../../components/mission-calendar";
 import { LinkPending } from "../../../components/pending-feedback";
 import { MissionShare } from "../../../components/mission-share";
+export const maxDuration = 60;
 
 type RouteParams = Promise<{ id: string }>;
 

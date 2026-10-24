@@ -1,10 +1,36 @@
 import { afterEach, expect, it, vi } from "vitest";
+import { after } from "next/server";
 vi.mock("next/cache", () => ({ unstable_cache: (fn: (...args: unknown[]) => unknown) => fn }));
-import { CACHE_MAX_AGE_SECONDS, usableResult, getCachedCalendarData, getCachedLaunch, getCachedLaunches, getCachedStatus, InvalidApiDataError, CacheExpiredError } from "../lib/cached-api";
+vi.mock("next/server", () => ({ after: vi.fn() }));
+import { CACHE_API_TIMEOUT_MS, CACHE_MAX_AGE_SECONDS, usableResult, getCachedCalendarData, getCachedLaunch, getCachedLaunches, getCachedStatus, InvalidApiDataError, CacheExpiredError } from "../lib/cached-api";
 import { LaunchNotFoundError } from "../lib/api";
 
 const item = { id: "mission", name: "Mission", status: "Go", net: "2099-01-01T12:00:00Z", source_updated_at: "2026-10-24T10:00:00Z", agency: null, vehicle: null, source_url: null, launch_timezone: null };
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => { vi.restoreAllMocks(); vi.clearAllMocks(); });
+
+it("registers the existing read with the server lifecycle without fetching twice", async () => {
+  let resolve!: (response: Response) => void;
+  const fetch = vi.spyOn(globalThis, "fetch").mockImplementation(() => new Promise(done => { resolve = done; }));
+  const timeout = vi.spyOn(AbortSignal, "timeout");
+  const pending = getCachedStatus();
+  expect(after).toHaveBeenCalledTimes(1);
+  expect(timeout).toHaveBeenCalledWith(CACHE_API_TIMEOUT_MS);
+  resolve(Response.json({source:"Fixture", cached_launches:1, last_updated_at:new Date().toISOString(), stale:false}));
+  await pending;
+  const callback = vi.mocked(after).mock.calls[0][0] as () => Promise<void>;
+  await callback();
+  expect(fetch).toHaveBeenCalledTimes(1);
+});
+
+it("settles the lifecycle task on failure without caching a success or logging raw data", async () => {
+  const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+  vi.spyOn(globalThis, "fetch").mockRejectedValue(new DOMException("private-body", "TimeoutError"));
+  await expect(getCachedStatus()).rejects.toMatchObject({name:"TimeoutError"});
+  const callback = vi.mocked(after).mock.calls[0][0] as () => Promise<void>;
+  await expect(callback()).resolves.toBeUndefined();
+  expect(warn.mock.calls.flat().join(" ")).toContain("category=timeout");
+  expect(warn.mock.calls.flat().join(" ")).not.toContain("private-body");
+});
 it("rejects an expired snapshot at the six-hour boundary", () => {
   const now = Date.now();
   expect(() => usableResult({ value: [], cache: { checkedAt: new Date(now - CACHE_MAX_AGE_SECONDS * 1000).toISOString(), revalidateSeconds: 300 } }, now)).toThrow(CacheExpiredError);

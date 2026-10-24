@@ -1,5 +1,6 @@
 import { LaunchNotFoundError } from "../../../../lib/api";
 import { getCachedLaunch } from "../../../../lib/cached-api";
+export const maxDuration = 60;
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

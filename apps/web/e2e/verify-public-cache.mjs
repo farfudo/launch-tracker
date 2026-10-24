@@ -22,15 +22,15 @@ const fixture = createServer((req, res) => {
       : path.endsWith('launches') ? [item] : item;
     res.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(value));
   };
-  if (mode === 'slow') {
-    const timer = setTimeout(() => { timers.delete(timer); action(); }, 35000);
+  if (mode === 'slow' || mode === 'timeout') {
+    const timer = setTimeout(() => { timers.delete(timer); action(); }, mode === 'slow' ? 35000 : 65000);
     timers.add(timer);
   } else action();
 });
 await new Promise(resolve => fixture.listen(0, '127.0.0.1', resolve));
 const fixtureOrigin = `http://127.0.0.1:${fixture.address().port}`;
 const next = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--hostname', '127.0.0.1', '--port', '3310'], {
-  env: { ...process.env, API_BASE_URL: fixtureOrigin, NEXT_PUBLIC_API_BASE_URL: fixtureOrigin, DESIGN_PREVIEW: 'true', PREVIEW_CACHE_SECONDS: '1', PREVIEW_CACHE_MAX_AGE_SECONDS: '60' },
+  env: { ...process.env, API_BASE_URL: fixtureOrigin, NEXT_PUBLIC_API_BASE_URL: fixtureOrigin, DESIGN_PREVIEW: 'true', PREVIEW_CACHE_SECONDS: '1', PREVIEW_CACHE_MAX_AGE_SECONDS: '120' },
   stdio: ['ignore', 'pipe', 'pipe']
 });
 let log = '';
@@ -56,27 +56,35 @@ try {
   await page('warm calendar', '/', 'Original cache mission');
   await page('warm detail', '/launches/cache-proof', 'Original cache mission');
   await delay(1200);
-  mode = 'slow';
+  mode = 'slow'; version = 'Delayed';
   await page('calendar with 35-second API delay', '/', 'Original cache mission');
   await page('detail with 35-second API delay', '/launches/cache-proof', 'Original cache mission');
-  await delay(21000); // Actual API timeout is 20 seconds. Let rejected revalidations finish.
+  await delay(36000); // A slow but successful origin must advance both data and checkedAt.
+  const refreshed = await page('calendar after slow refresh', '/', 'Delayed cache mission');
+  assert.ok(refreshed.includes('checkedAt'), 'refresh retains provenance metadata');
+  await page('detail after slow refresh', '/launches/cache-proof', 'Delayed cache mission');
+  mode = 'timeout';
+  await delay(1200);
+  await page('calendar with API beyond budget', '/', 'Delayed cache mission');
+  await page('detail with API beyond budget', '/launches/cache-proof', 'Delayed cache mission');
+  await delay(56000); // Bounded cached reads time out at 55 seconds, not indefinitely.
   mode = 'fail';
-  await page('calendar during 503', '/', 'Original cache mission');
+  await page('calendar during 503', '/', 'Delayed cache mission');
   await delay(500);
-  await page('detail during 503', '/launches/cache-proof', 'Original cache mission');
+  await page('detail during 503', '/launches/cache-proof', 'Delayed cache mission');
   await delay(1200);
   mode = 'invalid';
-  await page('calendar with malformed JSON payload', '/', 'Original cache mission');
+  await page('calendar with malformed JSON payload', '/', 'Delayed cache mission');
   await delay(500);
   mode = 'ok'; version = 'Recovered';
-  await page('start recovery', '/', 'Original cache mission');
+  await page('start recovery', '/', 'Delayed cache mission');
   await delay(1500);
   await page('recovered calendar', '/', 'Recovered cache mission');
-  await page('start detail recovery', '/launches/cache-proof', 'Original cache mission');
+  await page('start detail recovery', '/launches/cache-proof', 'Delayed cache mission');
   await delay(1500);
   await page('recovered detail', '/launches/cache-proof', 'Recovered cache mission');
   await mkdir('test-results/public-cache', { recursive: true });
-  await writeFile('test-results/public-cache/results.json', JSON.stringify({ results, requests, previewTTL: 1, previewMaxAge: 60, apiDelay: 35000 }, null, 2));
+  await writeFile('test-results/public-cache/results.json', JSON.stringify({ results, requests, previewTTL: 1, previewMaxAge: 120, apiDelay: 35000, timeoutDelay:65000, cachedReadBudget:55000 }, null, 2));
   console.log('PASS: compiled Next.js cache preserved data through delay, 503 and malformed payload, then recovered.');
 } catch (error) {
   console.error(log);

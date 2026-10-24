@@ -14,6 +14,7 @@ import { AgencyFilters } from "../components/agency-filters";
 import { LinkPending, SearchForm } from "../components/pending-feedback";
 
 type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string }>;
+export const maxDuration = 60;
 
 export default async function Home({ searchParams }: { searchParams: SearchParams }) {
   const filters = await searchParams;

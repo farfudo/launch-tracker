@@ -1,4 +1,5 @@
 import { unstable_cache } from "next/cache";
+import { after } from "next/server";
 import { getDataStatus, getFilterOptions, getLaunch, getUpcomingLaunches, LaunchNotFoundError, type Launch, type LaunchDetail, type LaunchFilters, type FilterOptions, type DataStatus } from "./api";
 
 // Only public API data is cached. Cookies, locale and browser favorites never enter this scope.
@@ -10,6 +11,8 @@ function previewSeconds(name: string, fallback: number) {
 }
 export const CACHE_REVALIDATE_SECONDS = previewSeconds("PREVIEW_CACHE_SECONDS", 300);
 export const CACHE_MAX_AGE_SECONDS = previewSeconds("PREVIEW_CACHE_MAX_AGE_SECONDS", 21600);
+// Only bounded reads of our persisted API; never triggers provider synchronization.
+export const CACHE_API_TIMEOUT_MS = 55_000;
 export type PublicCacheInfo = { checkedAt: string; revalidateSeconds: number };
 export type CachedResult<T> = { value: T; cache: PublicCacheInfo };
 export class CacheExpiredError extends Error {}
@@ -42,17 +45,31 @@ export function usableResult<T>(result: CachedResult<T>, now = Date.now()): Cach
 }
 function cached<T, A extends unknown[]>(kind: string, load: (...args: A) => Promise<T>, validate: (value: unknown) => void) {
   const read = unstable_cache(async (...args: A): Promise<CachedResult<T>> => {
-    const value = await load(...args);
-    validate(value); // Failed requests and malformed payloads never replace a valid snapshot.
-    return { value, cache: { checkedAt: new Date().toISOString(), revalidateSeconds: CACHE_REVALIDATE_SECONDS } };
+    const started = performance.now();
+    const task = (async () => {
+      try {
+        const value = await load(...args);
+        validate(value); // Failed requests and malformed payloads never replace a valid snapshot.
+        console.info(`cache_read kind=${kind} outcome=success duration_ms=${Math.round(performance.now() - started)}`);
+        return { value, cache: { checkedAt: new Date().toISOString(), revalidateSeconds: CACHE_REVALIDATE_SECONDS } };
+      } catch (error) {
+        const category = error instanceof InvalidApiDataError ? "invalid_payload" : error instanceof Error && error.name === "TimeoutError" ? "timeout" : "upstream_error";
+        console.warn(`cache_read kind=${kind} outcome=failed category=${category} duration_ms=${Math.round(performance.now() - started)}`);
+        throw error;
+      }
+    })();
+    // Explicitly keep the server invocation alive for a stale read's existing task.
+    // Reuses the same promise: no second fetch, cron or artificial keep-alive.
+    after(async () => { await task.catch(() => undefined); });
+    return task;
   }, ["public-api-v1", origin, kind, String(CACHE_REVALIDATE_SECONDS)], { revalidate: CACHE_REVALIDATE_SECONDS });
   return async (...args: A) => usableResult(await read(...args));
 }
-const readList = cached("list", (period: "upcoming" | "past") => getUpcomingLaunches(100, { period }), validateLaunches);
-const readOptions = cached("filters", getFilterOptions, validateOptions);
-const readStatus = cached("status", getDataStatus, validateStatus);
+const readList = cached("list", (period: "upcoming" | "past") => getUpcomingLaunches(100, { period }, CACHE_API_TIMEOUT_MS), validateLaunches);
+const readOptions = cached("filters", () => getFilterOptions(CACHE_API_TIMEOUT_MS), validateOptions);
+const readStatus = cached("status", () => getDataStatus(CACHE_API_TIMEOUT_MS), validateStatus);
 const readDetail = cached("detail", async (id: string): Promise<LaunchDetail | null> => {
-  try { return await getLaunch(id); }
+  try { return await getLaunch(id, CACHE_API_TIMEOUT_MS); }
   catch (error) { if (error instanceof LaunchNotFoundError) return null; throw error; }
 }, value => { if (value !== null) validateDetail(value); });
 

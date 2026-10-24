@@ -45,8 +45,11 @@
 
 ## Depois do MVP
 
+- [x] Aprovar correção local de revalidação e autorizar push, incluindo o visual laranja `38d8569` (`docs/CACHE_REVALIDATION_REVIEW.md`).
+- [ ] Confirmar CI, publicação e renovação pública da cache após envio da correção.
+
 - [x] Rever e aprovar fundo laranja claro das transmissões expandidas; autorizado apenas commit local.
-- [ ] Obter autorização de push do fundo laranja das transmissões expandidas.
+- [x] Obter autorização de push do fundo laranja, incluído no envio da correção de revalidação.
 
 - [x] Rever e aprovar job PostgreSQL isolado e testes reais de migrações/concorrência; push autorizado (`docs/POSTGRES_CI_REVIEW.md`).
 - [x] Confirmar execução remota do novo job PostgreSQL: CI `40128103871` passou em `ecb412b`, assim como API, Worker e Web.
@@ -60,7 +63,7 @@
 - [x] Confirmar CI da correção `1672e87`: execução `40125277157` passou API, Worker e Web/build/E2E.
 
 - [x] Rever e aprovar preview de websites/fontes por entidade; commit/push autorizados (`docs/MISSION_SOURCES_REVIEW.md`).
-- [ ] Confirmar publicação das fontes e da repetição limitada após envio.
+- [x] Confirmar Vercel/Render no commit `ecb412b`, incluindo código de fontes e repetição limitada; última sincronização agendada bem-sucedida observada.
 
 - [x] Rever e aprovar diagnóstico seguro e repetição limitada da sincronização (`docs/SYNC_RETRY_REVIEW.md`); autorizado apenas commit local.
 - [x] Obter autorização de push da repetição limitada, incluída no envio do incremento de fontes.
@@ -68,7 +71,7 @@
 - [x] Preparar e validar localmente cache de dados públicos para arranque lento da API; 75 testes, build, quatro E2E e ensaio compilado de falha/recuperação passaram. Ver `docs/COLD_START_REVIEW.md`.
 - [x] Rever preview da cache e obter aprovação; autorizado apenas commit local, sem push.
 - [x] Autorizar e enviar cache da interface em `d0d8a98`; CI posteriormente confirmada.
-- [ ] Confirmar comportamento real da cache no alojamento público após inatividade.
+- [ ] Investigar falhas públicas de revalidação: resposta guardada rápida observada, mas checkedAt não avança e Vercel regista timeouts (`docs/PUBLIC_DEPLOY_REVIEW.md`). Arranque a frio/recuperação ainda não comprovados.
 
 - [ ] Alertas configuráveis.
 - [ ] Transmissões e ligações oficiais.

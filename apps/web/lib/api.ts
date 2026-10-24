@@ -57,8 +57,8 @@ export type DataStatus = {
   stale: boolean;
 };
 
-export async function getDataStatus(): Promise<DataStatus> {
-  const response = await fetchApi(`${apiBaseUrl}/api/v1/data-status`);
+export async function getDataStatus(timeoutMs = API_TIMEOUT_MS): Promise<DataStatus> {
+  const response = await fetchApi(`${apiBaseUrl}/api/v1/data-status`, timeoutMs);
   if (!response.ok) throw new Error("Unable to retrieve data status.");
   return response.json() as Promise<DataStatus>;
 }
@@ -67,8 +67,8 @@ const apiBaseUrl = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_
 
 export const API_TIMEOUT_MS = 20_000;
 
-function fetchApi(url: string) {
-  return fetch(url, { cache: "no-store", signal: AbortSignal.timeout(API_TIMEOUT_MS) });
+function fetchApi(url: string, timeoutMs = API_TIMEOUT_MS) {
+  return fetch(url, { cache: "no-store", signal: AbortSignal.timeout(timeoutMs) });
 }
 
 export type LaunchFilters = {
@@ -94,12 +94,12 @@ export async function getCalendarData(filters: LaunchFilters = {}) {
   };
 }
 
-export async function getUpcomingLaunches(limit = 20, filters: LaunchFilters = {}): Promise<Launch[]> {
+export async function getUpcomingLaunches(limit = 20, filters: LaunchFilters = {}, timeoutMs = API_TIMEOUT_MS): Promise<Launch[]> {
   const params = new URLSearchParams({ limit: String(limit) });
   for (const [key, value] of Object.entries(filters)) {
     if (value) params.set(key, value);
   }
-  const response = await fetchApi(`${apiBaseUrl}/api/v1/launches?${params.toString()}`);
+  const response = await fetchApi(`${apiBaseUrl}/api/v1/launches?${params.toString()}`, timeoutMs);
 
   if (!response.ok) {
     throw new Error("Unable to retrieve launch data.");
@@ -108,14 +108,14 @@ export async function getUpcomingLaunches(limit = 20, filters: LaunchFilters = {
   return response.json() as Promise<Launch[]>;
 }
 
-export async function getFilterOptions(): Promise<FilterOptions> {
-  const response = await fetchApi(`${apiBaseUrl}/api/v1/launches/filter-options`);
+export async function getFilterOptions(timeoutMs = API_TIMEOUT_MS): Promise<FilterOptions> {
+  const response = await fetchApi(`${apiBaseUrl}/api/v1/launches/filter-options`, timeoutMs);
   if (!response.ok) throw new Error("Unable to retrieve filter options.");
   return response.json() as Promise<FilterOptions>;
 }
 
-export async function getLaunch(launchId: string): Promise<LaunchDetail> {
-  const response = await fetchApi(`${apiBaseUrl}/api/v1/launches/${launchId}`);
+export async function getLaunch(launchId: string, timeoutMs = API_TIMEOUT_MS): Promise<LaunchDetail> {
+  const response = await fetchApi(`${apiBaseUrl}/api/v1/launches/${launchId}`, timeoutMs);
   if (response.status === 404) throw new LaunchNotFoundError();
   if (!response.ok) throw new Error("Unable to retrieve launch.");
   return response.json() as Promise<LaunchDetail>;
