@@ -36,7 +36,7 @@
 
 ## Incremento 4 — Confiança e lançamento
 
-- [ ] Adicionar testes de interface e integração.
+- [x] Adicionar testes de interface e percursos de integração desktop/móvel; PostgreSQL real em revisão separada.
 - [x] Configurar CI no GitHub Actions.
 - [x] Preparar imagens Docker e ambiente isolado de demonstração.
 - [x] Publicar demonstração online com alojamento gratuito.
@@ -45,8 +45,12 @@
 
 ## Depois do MVP
 
+- [x] Rever e aprovar job PostgreSQL isolado e testes reais de migrações/concorrência; push autorizado (`docs/POSTGRES_CI_REVIEW.md`).
+- [ ] Confirmar execução remota do novo job PostgreSQL após envio.
+- [x] Atualizar estados antigos do catálogo local `FEATURES_ROADMAP`, mantendo-o excluído dos pushes.
+
 - [x] Rever e aprovar resumo lateral simplificado, distinto da página completa; autorizado apenas commit local (`docs/MISSION_SUMMARY_REVIEW.md`).
-- [ ] Obter autorização de push do resumo lateral simplificado.
+- [x] Obter autorização de push do resumo lateral simplificado, incluído no envio dos testes PostgreSQL.
 
 - [x] Corrigir localmente I001/TRY004 e reproduzir análise/testes com Python 3.12.15 e Ruff 0.17.2: 54 testes passaram.
 - [x] Obter autorização de commit/push da correção de CI.
@@ -60,7 +64,8 @@
 
 - [x] Preparar e validar localmente cache de dados públicos para arranque lento da API; 75 testes, build, quatro E2E e ensaio compilado de falha/recuperação passaram. Ver `docs/COLD_START_REVIEW.md`.
 - [x] Rever preview da cache e obter aprovação; autorizado apenas commit local, sem push.
-- [ ] Obter autorização separada de push da cache; depois confirmar o comportamento real no alojamento público.
+- [x] Autorizar e enviar cache da interface em `d0d8a98`; CI posteriormente confirmada.
+- [ ] Confirmar comportamento real da cache no alojamento público após inatividade.
 
 - [ ] Alertas configuráveis.
 - [ ] Transmissões e ligações oficiais.

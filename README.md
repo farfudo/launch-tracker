@@ -77,6 +77,8 @@ DATABASE_URL=sqlite:// python -m pytest
 
 Usar Python 3.12, como na CI. Ruff está fixado em 0.17.2 e as regras estão explícitas no `pyproject.toml`; reinstalar as dependências de desenvolvimento ao atualizar o projeto evita usar uma versão global diferente. Os testes acima usam SQLite em memória, sem sincronizar a fonte ou aceder à base de produção; não substituem ensaios de concorrência PostgreSQL.
 
+A bateria adicional `tests_postgres` usa exclusivamente uma base descartável local, com schemas isolados e migrações Alembic reais. O job dedicado da CI inicia PostgreSQL 17 sem segredos de produção. Para executar localmente, consultar [a revisão dos testes PostgreSQL](docs/POSTGRES_CI_REVIEW.md). Nunca apontar estes testes ao Neon: criam e removem apenas os schemas de ensaio na base dedicada.
+
 Interface, em `apps/web`:
 
 ```sh
