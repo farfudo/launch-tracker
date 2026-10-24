@@ -22,6 +22,18 @@ const click = async (index = 0) => act(async () => container.querySelectorAll("b
 it("builds a mission URL without filters or preview parameters", () => {
   expect(missionShareUrl("a/b?c", "https://example.com")).toBe("https://example.com/launches/a%2Fb%3Fc");
 });
+
+it("starts collapsed, opens by disclosure and closes with Escape restoring focus", async () => {
+  await render();
+  const disclosure = container.querySelector('details')!;
+  const toggle = container.querySelector('summary')!;
+  expect(disclosure.open).toBe(false);
+  await act(async () => toggle.click());
+  expect(disclosure.open).toBe(true);
+  await act(async () => toggle.dispatchEvent(new KeyboardEvent('keydown', {key:'Escape',bubbles:true})));
+  expect(disclosure.open).toBe(false);
+  expect(document.activeElement).toBe(toggle);
+});
 it("copies the mission URL when native sharing is unavailable", async () => {
   await render(); await click();
   expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/launches/mission-1`);

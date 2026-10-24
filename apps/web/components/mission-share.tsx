@@ -21,6 +21,7 @@ export function MissionShare({ id, name }: { id: string; name: string }) {
   const [pending, setPending] = useState(false);
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
   const [manualUrl, setManualUrl] = useState("");
+  const disclosure = useRef<HTMLDetailsElement>(null);
 
   async function handleShare(forceCopy: boolean) {
     if (busy.current) return;
@@ -46,12 +47,20 @@ export function MissionShare({ id, name }: { id: string; name: string }) {
     }
   }
 
-  return <div className="mission-share" aria-busy={pending}>
+  return <details className="mission-share" aria-busy={pending} ref={disclosure} onKeyDown={event => {
+    if (event.key === "Escape" && !pending && disclosure.current) {
+      disclosure.current.open = false;
+      disclosure.current.querySelector("summary")?.focus();
+    }
+  }}>
+    <summary className="mission-share-toggle"><span aria-hidden="true">↗</span> {t.share}</summary>
+    <div className="mission-share-content">
     <div className="mission-share-actions">
       <button type="button" disabled={pending} onClick={() => void handleShare(false)}>{pending ? <Spinner /> : <span aria-hidden="true">↗</span>} {t.share}</button>
       <button type="button" disabled={pending} onClick={() => void handleShare(true)}>{t.link}</button>
     </div>
     <p className="mission-share-feedback" role="status">{pending ? t.waiting : status === "copied" ? t.copied : ""}</p>
     {status === "error" ? <div><p role="alert">{t.error}</p><label>{t.manual}<input type="text" readOnly value={manualUrl} onFocus={event => event.currentTarget.select()} /></label></div> : null}
-  </div>;
+    </div>
+  </details>;
 }

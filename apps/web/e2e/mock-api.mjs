@@ -19,6 +19,7 @@ const base = {
 const launches = [
   { ...base, id: 'e2e-falcon', name: 'Falcon 9 | Test Starlink', mission_name: 'Test Starlink' },
   { ...base, id: 'e2e-electron', name: 'Electron | Test mission', mission_name: 'Unknown Payload', agency: 'Rocket Lab', vehicle: 'Electron', status: 'To Be Confirmed', streams: [], mission_links: [] }
+  ,{ ...base, id: 'e2e-science', name: 'Electron | Test science mission', mission_name: 'Science mission', agency: 'Rocket Lab', vehicle: 'Electron', net: '2099-01-03T12:00:00Z', streams: [], mission_links: [] }
   ,{ ...base, id: 'e2e-history', name: 'Falcon 9 | Archived test mission', mission_name: 'Archived test mission', net: '2020-01-01T12:00:00Z', status: 'Launch Successful' }
 ];
 

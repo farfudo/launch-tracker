@@ -45,8 +45,11 @@
 
 ## Depois do MVP
 
+- [ ] Rever uniformização de expansões e contraste entre cartões/background, junto com rascunho 5–6, antes de commit/push (`docs/DISCLOSURE_SURFACES_REVIEW.md`).
+
 - [x] Rever prioridades UI e preparar lote local dos pontos 1–4, com indicação de desenvolvimento; 90 testes/build/seis E2E passaram (`docs/UI_POLISH_REVIEW.md`).
-- [ ] Aprovar preview das melhorias UI e etiqueta de desenvolvimento; obter autorização separada antes de commit/push.
+- [x] Aprovar lote UI 1–4 e etiqueta; commit local `01ed45b`, sem push.
+- [ ] Rever preview dos pontos 5–6 (cartões/contagens/controlos/partilha), aprovar e autorizar envio separadamente (`docs/UI_CONTROLS_REVIEW.md`).
 
 - [x] Aprovar correção local de revalidação e autorizar push, incluindo o visual laranja `38d8569` (`docs/CACHE_REVALIDATION_REVIEW.md`).
 - [x] Confirmar CI `40130910748`, publicação Vercel de `a91dc50` e renovação pública da cache após cinco minutos reais, sem invalidar dados.

@@ -46,7 +46,7 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, histor
   const visible = favoritesOnly ? launches.filter(launch => ids.includes(launch.id)) : launches;
   if (favoritesOnly && !ready) return <p role="status"><Spinner /> {t.loadingFavorites}</p>;
   return <>
-    {visible.length ? <div className="launch-list">{visible.slice(0, limit).map(launch => <article className="launch-card favorite-launch-card" data-selected={selection?.selected?.id === launch.id || undefined} key={launch.id}>
+    {visible.length ? <div className="launch-list">{visible.slice(0, limit).map((launch, index) => <article className="launch-card favorite-launch-card" data-selected={selection?.selected?.id === launch.id || undefined} key={launch.id}>
       <div className="launch-thumbnail"><VehicleVisual launch={launch} priority={false} /></div>
       <Link className="launch-card-link" href={`/launches/${launch.id}`} prefetch={false}
         aria-controls={selection ? "selected-mission" : undefined}
@@ -55,14 +55,14 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, histor
           event.preventDefault();
           selection.select(launch);
         }}>
-        <p className="launch-agency">{launch.agency ?? t.agencyPending} · {launch.vehicle ?? t.vehiclePending}</p>
-        <h3>{launch.name}</h3>
+        <p className="launch-agency" title={`${launch.agency ?? t.agencyPending} · ${launch.vehicle ?? t.vehiclePending}`}>{launch.agency ?? t.agencyPending} · {launch.vehicle ?? t.vehiclePending}</p>
+        <h3 title={launch.name}>{launch.name}</h3>
         <p className="launch-date"><LocalLaunchDate date={launch.net} /></p>
         <span className="launch-status-tag" data-tone={launchStatusTone(launch.status)}>{formatLaunchStatus(launch.status, locale)}</span>
         <span className="row-detail-link">{d.viewDetails} →<LinkPending /></span>
         {selection?.selected?.id === launch.id ? <span className="mission-selected-label">{d.selectedMission}</span> : null}
       </Link>
-      <div className="launch-row-actions">{historical ? null : <Countdown date={launch.net} status={launch.status} />}<FavoriteButton id={launch.id} name={launch.name} /></div>
+      <div className="launch-row-actions">{historical ? null : <Countdown date={launch.net} status={launch.status} compact={index !== 0 && selection?.selected?.id !== launch.id} />}<FavoriteButton id={launch.id} name={launch.name} /></div>
       <details className="launch-row-times"><summary>{d.zones}</summary><LaunchTimes isoDate={launch.net} launchTimeZone={launch.launch_timezone} /></details>
     </article>)}</div> : <article className="launch-card">
       <h3>{favoritesOnly ? ids.length ? t.noFavoriteMatches : t.noFavorites : emptyCache ? t.emptyTitle : t.noResults}</h3>
