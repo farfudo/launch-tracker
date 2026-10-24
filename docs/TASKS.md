@@ -45,8 +45,11 @@
 
 ## Depois do MVP
 
+- [x] Rever e aprovar preview de websites/fontes por entidade; commit/push autorizados (`docs/MISSION_SOURCES_REVIEW.md`).
+- [ ] Confirmar publicação das fontes e da repetição limitada após envio.
+
 - [x] Rever e aprovar diagnóstico seguro e repetição limitada da sincronização (`docs/SYNC_RETRY_REVIEW.md`); autorizado apenas commit local.
-- [ ] Obter autorização separada de push/publicação da repetição limitada da sincronização.
+- [x] Obter autorização de push da repetição limitada, incluída no envio do incremento de fontes.
 
 - [x] Preparar e validar localmente cache de dados públicos para arranque lento da API; 75 testes, build, quatro E2E e ensaio compilado de falha/recuperação passaram. Ver `docs/COLD_START_REVIEW.md`.
 - [x] Rever preview da cache e obter aprovação; autorizado apenas commit local, sem push.

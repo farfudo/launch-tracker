@@ -10,7 +10,11 @@ const base = {
   window_end: '2099-01-01T13:00:00Z', image_url: null, image_credit: null,
   image_license: null, image_license_url: null, image_kind: null, image_title: null,
   streams: [{ url: 'https://example.com/stream', title: 'Fixture broadcast', publisher: 'Test channel', live: false }],
-  mission_links: []
+  mission_links: [
+    { kind: 'agency', url: 'https://example.com/agency', title: 'Example agency website' },
+    { kind: 'vehicle', url: 'https://example.com/rocket', title: 'Example rocket website' },
+    { kind: 'mission', url: 'https://example.com/mission', title: 'Example mission website' }
+  ]
 };
 const launches = [
   { ...base, id: 'e2e-falcon', name: 'Falcon 9 | Test Starlink', mission_name: 'Test Starlink' },

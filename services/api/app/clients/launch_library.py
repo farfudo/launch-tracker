@@ -135,9 +135,23 @@ def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
         window_start=payload.get("window_start"),
         window_end=payload.get("window_end"),
         streams=parse_links(payload.get("vid_urls"), video=True),
-        mission_links=parse_links(payload.get("info_urls")),
+        mission_links=parse_entity_links(provider, configuration, pad, mission, payload),
         **parse_image(configuration, payload),
     )
+
+
+def parse_entity_links(provider, configuration, pad, mission, payload) -> list[dict[str, Any]]:
+    """Keep source-provided websites, without inferring official status or fetching more APIs."""
+    links = []
+    for kind, entity in (("agency", provider), ("vehicle", configuration), ("pad", pad)):
+        url = safe_image_url(entity.get("info_url"))
+        if url:
+            links.append({"url": url, "title": entity.get("name"), "kind": kind,
+                          "source": "Launch Library 2"})
+    for entity in (mission, payload):
+        for link in parse_links(entity.get("info_urls")):
+            links.append({**link, "kind": "mission"})
+    return links
 
 
 def _get_upcoming_launches_once(limit: int) -> list[LaunchSummary]:

@@ -10,6 +10,7 @@ import { LocalLaunchDate } from "./local-launch-date";
 import { LaunchTimes } from "./launch-times";
 import { FavoriteButton } from "./favorites";
 import { MissionStreams } from "./mission-streams";
+import { MissionSources } from "./mission-sources";
 import { MissionCalendar } from "./mission-calendar";
 import { Spinner, LinkPending } from "./pending-feedback";
 import { MissionShare } from "./mission-share";
@@ -106,6 +107,7 @@ export function MissionDetailPanel() {
       <p className="selected-mission-description">{detail.mission_description || t.descriptionPending}</p>
       {detail.mission_description ? <p className="launch-meta">{t.originalDescription}</p> : null}
       <dl className="selected-mission-facts"><div><dt>{t.launchSite}</dt><dd>{detail.location_name || t.pending}</dd></div><div><dt>{t.launchPad}</dt><dd>{detail.pad_name || t.pending}</dd></div></dl>
+      <MissionSources launch={detail} />
       <h3>{t.launchWindow}</h3>
       <dl className="selected-mission-facts">{[{label:t.windowStart,date:detail.window_start},{label:t.windowEnd,date:detail.window_end}].map(point => <div key={point.label}><dt>{point.label}</dt><dd>{point.date ? <LocalLaunchDate date={point.date} /> : t.pending}</dd></div>)}</dl>
       <p className="launch-meta">{t.windowNotice}</p>

@@ -5,6 +5,20 @@ from app.models import Launch
 from app.repositories import list_launches, upsert_launches
 
 
+def test_entity_source_categories_survive_storage_and_detail_response(client, db_session):
+    links = [{"kind": "agency", "url": "https://example.com/agency", "title": "Agency"},
+             {"url": "https://example.com/legacy"}]
+    upsert_launches(db_session, [LaunchSummary(
+        id="entity-links", name="Test", status="Go", net="2099-01-01T12:00:00Z",
+        mission_links=links,
+    )])
+    db_session.expire_all()
+    response = client.get("/api/v1/launches/entity-links")
+    assert response.status_code == 200
+    assert response.json()["mission_links"][0]["kind"] == "agency"
+    assert response.json()["mission_links"][1]["kind"] is None
+
+
 def test_period_boundary_order_filters_and_validation(client, db_session):
     reference = datetime(2026, 10, 23, 12, tzinfo=UTC)
     upsert_launches(db_session, [

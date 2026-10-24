@@ -30,6 +30,10 @@ test('search, filters, mission, persistent favorite, streams, language and theme
   }
   await expect(page).toHaveURL(/\/launches\/e2e-falcon$/);
   await expect(page.getByRole('heading', { name: 'Test Starlink', exact: true, level: 1 })).toBeVisible();
+  const sources = page.getByRole('region', { name: 'Explore sources' });
+  await expect(sources.getByRole('link', { name: /Example agency website/ })).toHaveAttribute('href', 'https://example.com/agency');
+  await expect(sources.getByRole('link', { name: /Example rocket website/ })).toHaveAttribute('target', '_blank');
+  await expect(sources).toContainText('No link supplied by the source');
   const disclosure = page.locator('details').filter({ has: page.locator('summary').filter({ hasText: 'Watch here' }) });
   const stream = disclosure.getByRole('link', { name: /Fixture broadcast/ });
   await expect(stream).toBeHidden();

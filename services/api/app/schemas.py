@@ -1,9 +1,11 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
 class MissionLinkResponse(BaseModel):
+    kind: Literal["agency", "vehicle", "pad", "mission"] | None = None
     url: str
     title: str | None = None
     source: str | None = None

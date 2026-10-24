@@ -40,6 +40,7 @@ export type LaunchDetail = Launch & {
 };
 
 export type MissionLink = {
+  kind?: "agency" | "vehicle" | "pad" | "mission" | null;
   url: string;
   title?: string | null;
   source?: string | null;

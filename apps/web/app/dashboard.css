@@ -291,3 +291,11 @@ button .action-spinner { margin-right: .5rem; }
   .period-tabs { gap: .8rem; }
   .period-tabs a { font-size: .82rem; }
 }
+.mission-sources { margin-block: 1.5rem; }
+.mission-source-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 1rem; margin-top: 1rem; }
+.mission-source-card { border: 1px solid var(--border, #c9dadd); border-radius: 16px; padding: 1rem; min-width: 0; }
+.mission-source-card h3 { font-size: 1rem; margin: 0 0 .75rem; }
+.mission-source-card ul { list-style: none; padding: 0; margin: 0; }
+.mission-source-card li + li { margin-top: .75rem; }
+.mission-source-card a { color: var(--accent, #008a83); overflow-wrap: anywhere; }
+.mission-source-card small { display: block; margin-top: .3rem; overflow-wrap: anywhere; }

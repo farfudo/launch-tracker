@@ -145,6 +145,20 @@ def test_sync_requests_detailed_mode_once(monkeypatch):
     assert calls[0]["params"]["mode"] == "detailed"
 
 
+def test_entity_websites_use_explicit_fields_without_inventing_official_status():
+    launch = parse_launch({
+        "id": "links", "name": "Test", "net": "2099-01-01T12:00:00Z",
+        "launch_service_provider": {"name": "Agency", "info_url": "https://example.com/agency"},
+        "rocket": {"configuration": {"name": "Rocket", "info_url": "https://example.com/rocket"}},
+        "pad": {"info_url": "javascript:bad", "wiki_url": "https://en.wikipedia.org/wiki/Pad"},
+        "mission": {"info_urls": [{"url": "https://example.com/payload"}]},
+        "info_urls": [{"url": "https://example.com/launch"}],
+    })
+    assert [link["kind"] for link in launch.mission_links] == ["agency", "vehicle", "mission", "mission"]
+    assert all("official" not in link for link in launch.mission_links)
+    assert not any("wikipedia" in link["url"] for link in launch.mission_links)
+
+
 @pytest.mark.parametrize("failure", ["timeout", "network", 500, 502, 503, 504])
 def test_transient_failure_retries_once_then_recovers(monkeypatch, caplog, failure):
     calls, sleeps = [], []

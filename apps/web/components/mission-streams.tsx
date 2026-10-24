@@ -17,7 +17,6 @@ export function MissionStreams({ launch, compact = false }: { launch: LaunchDeta
   const { locale } = useLocale();
   const d = dashboardCopy[locale];
   const streams = (launch.streams || []).map(safeMissionLink).filter(link => link !== null);
-  const sources = (launch.mission_links || []).map(safeMissionLink).filter(link => link !== null);
   if (compact && !streams.length) return null;
   const snapshot = Date.parse(launch.source_updated_at);
   return <details key={launch.id} className={`mission-streams stream-disclosure${compact ? " stream-disclosure-compact" : ""}`}>
@@ -38,7 +37,6 @@ export function MissionStreams({ launch, compact = false }: { launch: LaunchDeta
       </li>;
     })}</ul> : <p className="stream-empty">{d.streamMissing}</p>}
     <p className="stream-updated">{d.streamSnapshot}: {formatLaunchDate(launch.source_updated_at, locale)} · Launch Library 2</p>
-    {sources.length ? <><h3>{d.missionSources}</h3><ul>{sources.map(link => <li key={link.url}><a href={link.url} target="_blank" rel="noopener noreferrer">{link.title || link.host} ↗<span className="visually-hidden"> ({d.newTab})</span></a><p>{link.source || link.host} · {link.host}</p></li>)}</ul></> : null}
     </div>
   </details>;
 }
