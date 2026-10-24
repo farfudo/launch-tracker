@@ -299,3 +299,14 @@ Verificação local: Python 3.12.15, Ruff 0.17.2 e PostgreSQL 17, 65 testes pass
 Atualizados README, tarefas e catálogo funcional local, retirando estados desatualizados sobre cache, partilha, fontes e carregamento. `FEATURES_ROADMAP` e exportações mantêm-se excluídos de futuros envios conforme pedido. O resumo lateral `c7774bc` continua apenas local. Ver `docs/POSTGRES_CI_REVIEW.md`; aprovação e autorização separada de commit/push pendentes.
 
 Após revisão, o utilizador aprovou a estrutura e autorizou o push, informado de que inclui o resumo lateral `c7774bc`. A autorização abrange o commit deste incremento e envio do conjunto. Resultado remoto e CI serão confirmados separadamente; não foi feita migração/sincronização de produção. Catálogo e exportações continuam excluídos.
+
+Confirmação posterior: commit `ecb412b` enviado para `main`, incluindo o resumo `c7774bc`. CI `40128103871` terminou com sucesso: novo job PostgreSQL migrations and synchronization, API, Worker e Web/build/percursos passaram. Os contentores de integração foram encerrados pela CI. Isto valida os ensaios isolados, não o deploy público ou uma sincronização real. Resultado registado localmente após o envio, para o próximo commit autorizado.
+### Continuidade laranja nas transmissões expandidas — rascunho local
+
+A pedido do utilizador, a área expandida de «Watch here» passa a fundo laranja claro/pêssego e cartões num tom laranja ligeiramente mais forte, preservando o botão e dimensões existentes. Texto e links usam castanho escuro, com sublinhado, para não depender só da cor. O modo escuro usa tons quentes escurecidos com texto claro, evitando uma grande superfície muito luminosa. Aplica-se ao resumo e à página completa, sem alterar o comportamento colapsado, os destinos ou o estado live.
+
+Alteração apenas de apresentação, sem operação de produção. Preview e aprovação pendentes; sem commit/push. O resultado confirmado da CI PostgreSQL `40128103871`, já registado localmente, permanece para o próximo commit autorizado.
+
+Verificação: 78 testes web e build passaram; área expandida revista visualmente nos temas claro e escuro com dados fictícios. E2E não repetidos nesta alteração exclusivamente CSS; testes não constituem auditoria completa de contraste. A preview permanece local, com botão e conteúdo sem alteração funcional.
+
+O utilizador aprovou o tom apresentado e autorizou apenas commit local. O envio para GitHub permanece sem autorização; a aplicação pública não foi alterada por este incremento.

@@ -218,7 +218,13 @@ body { background: var(--surface); }
 .stream-disclosure > summary:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 4px; }
 .stream-disclosure > summary .stream-count { border-radius: 99px; padding: .25rem .55rem; background: #ffffff20; font-size: .8rem; }
 .stream-disclosure[open] .stream-chevron { transform: rotate(180deg); }
-.stream-disclosure-content { margin-top: .75rem; padding: 1rem; border: 1px solid var(--border); border-radius: 15px; background: var(--surface-raised); }
+.stream-disclosure-content { --stream-ink: #572d19; --stream-muted: #70452e; --stream-link: #84350d; --stream-card: #ffe2c9; --stream-border: #eeb68c; margin-top: .75rem; padding: 1rem; border: 1px solid var(--stream-border); border-radius: 15px; background: #fff0e3; color: var(--stream-ink); }
+.stream-disclosure-content h3 { color: var(--stream-ink); }
+.stream-disclosure-content p { color: var(--stream-muted); }
+.stream-disclosure-content li { background: var(--stream-card); border-color: var(--stream-border); }
+.stream-disclosure-content li a, .stream-disclosure-content .stream-state { color: var(--stream-link); }
+.stream-disclosure-content li a { text-decoration: underline; text-underline-offset: .15em; }
+html[data-theme="dark"] .stream-disclosure-content { --stream-ink: #fff0e3; --stream-muted: #f1c6a7; --stream-link: #ffbd83; --stream-card: #493023; --stream-border: #9b613d; background: #38251c; }
 .mission-calendar { margin-block: 1rem; min-width: 0; }
 .mission-calendar summary, .mission-calendar button, .mission-calendar-options a { border: 1px solid var(--border); border-radius: 12px; padding: .7rem 1rem; font: inherit; color: inherit; background: var(--surface); }
 .mission-calendar summary { cursor: pointer; width: fit-content; }

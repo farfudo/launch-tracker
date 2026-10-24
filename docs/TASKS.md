@@ -45,8 +45,11 @@
 
 ## Depois do MVP
 
+- [x] Rever e aprovar fundo laranja claro das transmissões expandidas; autorizado apenas commit local.
+- [ ] Obter autorização de push do fundo laranja das transmissões expandidas.
+
 - [x] Rever e aprovar job PostgreSQL isolado e testes reais de migrações/concorrência; push autorizado (`docs/POSTGRES_CI_REVIEW.md`).
-- [ ] Confirmar execução remota do novo job PostgreSQL após envio.
+- [x] Confirmar execução remota do novo job PostgreSQL: CI `40128103871` passou em `ecb412b`, assim como API, Worker e Web.
 - [x] Atualizar estados antigos do catálogo local `FEATURES_ROADMAP`, mantendo-o excluído dos pushes.
 
 - [x] Rever e aprovar resumo lateral simplificado, distinto da página completa; autorizado apenas commit local (`docs/MISSION_SUMMARY_REVIEW.md`).
