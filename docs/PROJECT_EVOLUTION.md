@@ -557,3 +557,15 @@ Revisão visual no navegador real detetou conflito entre hover global de button 
 Após os ajustes finais, build e os seis E2E de Descobertas foram repetidos com sucesso. A galeria removida pode ser recuperada através de c961731; não foi apagado qualquer vídeo alojado, dado externo ou conteúdo de produção. O estudo e as opções de revisão estão em DISCOVERIES_REDESIGN.md; nenhum commit/push deste rascunho.
 
 Utilizador aprovou a reformulação e autorizou commit local. Guardado este lote antes de preparar, separadamente, a indicação de Artemis como subpágina de Descobertas no cabeçalho. Sem autorização de push; roadmap e exportações excluídos.
+
+### Hierarquia Descobertas → Artemis — rascunho separado
+
+Reformulação guardada em `1e1111f`, sem push. Preparada indicação «↳ Artemis» numa segunda linha sob a ligação Descobertas do cabeçalho, apenas na rota do guia. Secção principal mantém ligação de regresso e destaque; aria-current=location identifica o pai e aria-current=page o filho. Linha do pai compactada para evitar crescimento desnecessário do cabeçalho; não é novo separador de primeiro nível. Rótulo Artemis igual em PT/EN/ES. Ajuste novo ainda sujeito a revisão visual, sem commit/push.
+
+Verificação: build e seis E2E de Descobertas passaram em desktop/smartphone. Testes confirmam rótulo filho só no guia, semântica pai/filho, permanência após mudança de idioma e remoção após regressar a Descobertas. Sem repetir backend/unitários para esta mudança de navegação/apresentação.
+
+Utilizador aprovou a hierarquia e autorizou commit e push dos lotes locais aprovados (`f6b4c06`, `c961731`, `1e1111f` e ajuste do cabeçalho). Roadmap e exportações continuam excluídos. A confirmação do envio será verificada no GitHub; não se confunde push com sucesso de CI/publicação.
+
+### Direção editorial acordada
+
+Prioridade a partir deste incremento: uma experiência amigável, visual e intuitiva para quem não acompanha exploração espacial. Explicar primeiro o que está a acontecer e porque importa; introduzir termos técnicos com contexto; usar ilustrações e interações simples para ensinar uma ideia de cada vez; reservar o aprofundamento para guias próprios e divulgações. Não confundir simplicidade com promessas: distinguir planos, testes e resultados, manter fontes e revisão datada. Esta orientação guia os próximos incrementos; novas funcionalidades e alterações públicas continuam sujeitas ao fluxo de preview, aprovação e autorização de push.

@@ -101,3 +101,5 @@
 - [x] Rever galeria local de aterragens: aprovada no commit local c961731, depois retirada do novo rascunho por mudança de direção editorial do utilizador.
 - [x] Aprovar revisão do hook: sem os três cartões grandes, captura Super Heavy silenciosa em repetição acelerada; commit local c961731, sem push.
 - [x] Aprovar nova preview compacta de Descobertas: laboratório visual Motores/Materiais/Reabastecimento, guia Artemis próprio e biblioteca recolhida. Commit local autorizado, sem push.
+- [x] Aprovar hierarquia no cabeçalho: «↳ Artemis» sob Descobertas apenas na subpágina. Commit/push autorizados com os lotes locais de Descobertas.
+- [ ] Aplicar nos próximos incrementos a direção editorial acordada: linguagem acessível, contexto para iniciantes, ilustrações intuitivas e aprofundamento opcional; documentar decisões e dificuldades em PROJECT_EVOLUTION.

@@ -9,8 +9,12 @@ export function SectionNavigation() {
   const pathname = usePathname();
   const {locale} = useLocale();
   const t = discoveriesCopy[locale];
+  const artemis = pathname === "/discoveries/artemis";
   return <nav className="section-navigation" aria-label={t.nav}>
     <Link href="/" aria-current={pathname === "/" || pathname.startsWith("/launches/") ? "page" : undefined}>{t.launches}<LinkPending /></Link>
-    <Link href="/discoveries" aria-current={pathname === "/discoveries" || pathname.startsWith("/discoveries/") ? "page" : undefined}>{t.nav}<LinkPending /></Link>
+    <div className="section-navigation-branch">
+      <Link href="/discoveries" aria-current={artemis ? "location" : pathname === "/discoveries" ? "page" : undefined}>{t.nav}<LinkPending /></Link>
+      {artemis && <span className="section-navigation-child" aria-current="page"><span aria-hidden="true">↳</span> Artemis</span>}
+    </div>
   </nav>;
 }
