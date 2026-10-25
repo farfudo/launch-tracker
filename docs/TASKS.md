@@ -92,5 +92,6 @@
 - [x] Aprovar correção de saltos de scroll em Favoritos/Todos, períodos e limpar filtros; commit local `cc2a7e4`, sem push.
 - [x] Aprovar filtro por estado/datas provisórias; commit local `5e70f54`, sem push.
 - [x] Aprovar informação rotineira de fonte/cache colapsada em «ⓘ Sobre estes dados», mantendo avisos visíveis; commit/push autorizados com os lotes de scroll e estados/datas.
+- [x] Aprovar continuação natural do scroll nos limites da lista, testada com 30 fixtures na preview; commit/push autorizados.
 - [ ] Transmissões e ligações oficiais.
 - [ ] Telemetria, quando houver fonte adequada.

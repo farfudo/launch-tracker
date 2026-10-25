@@ -37,7 +37,7 @@ test('search, filters, mission, persistent favorite, streams, language and theme
       return Math.abs(left!.y + left!.height - right!.y - right!.height);
     }).toBeLessThan(2);
     await expect(page.locator('.launch-results-scroll')).toHaveCSS('overflow-y','scroll');
-    await expect(page.locator('.launch-results-scroll')).toHaveCSS('overscroll-behavior-y','contain');
+    await expect(page.locator('.launch-results-scroll')).toHaveCSS('overscroll-behavior-y','auto');
     await expect(page.locator('#selected-mission .panel-time-zones')).toHaveCount(0);
     await expect(page.locator('#selected-mission .summary-location')).toHaveCount(0);
     await page.locator('#selected-mission .stream-button').click();

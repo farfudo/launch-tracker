@@ -22,6 +22,12 @@ const launches = [
   ,{ ...base, id: 'e2e-science', name: 'Electron | Test science mission', mission_name: 'Science mission', agency: 'Rocket Lab', vehicle: 'Electron', net: '2099-01-03T12:00:00Z', streams: [], mission_links: [] }
   ,{ ...base, id: 'e2e-history', name: 'Falcon 9 | Archived test mission', mission_name: 'Archived test mission', net: '2020-01-01T12:00:00Z', status: 'Launch Successful' }
 ];
+const scrollLaunches = Array.from({length: 30}, (_, index) => ({
+  ...launches[0], id: `scroll-${index}`, name: `scroll-fixture | Demo mission ${index + 1}`,
+  mission_name: `Demo mission ${index + 1}`,
+  net: new Date(Date.UTC(2099, 0, index + 1, 12)).toISOString(),
+  mission_description: 'Fictitious launch for testing list scrolling. Not a real mission.',
+}));
 
 createServer(async (req, res) => {
   // Optional slow-start proof; affects only this read-only loopback fixture.
@@ -44,7 +50,7 @@ createServer(async (req, res) => {
     const period = url.searchParams.get('period');
     const now = Date.now();
     const candidates = url.searchParams.get('q') === 'scroll-fixture'
-      ? Array.from({length: 12}, (_, index) => ({...launches[0], id: `scroll-${index}`, name: `scroll-fixture mission ${index}`}))
+      ? scrollLaunches
       : launches;
     result = candidates.filter(l => (period !== 'upcoming' || Date.parse(l.net) >= now)
       && (period !== 'past' || Date.parse(l.net) < now)
@@ -54,7 +60,7 @@ createServer(async (req, res) => {
       && (!url.searchParams.get('q') || `${l.name} ${l.agency} ${l.vehicle}`.toLowerCase().includes(url.searchParams.get('q').toLowerCase())))
       .sort((a, b) => (Date.parse(a.net) - Date.parse(b.net)) * (period === 'past' ? -1 : 1))
       .slice(0, Number(url.searchParams.get('limit') || 100));
-  } else result = launches.find(l => url.pathname === `/api/v1/launches/${l.id}`);
+  } else result = [...launches, ...scrollLaunches].find(l => url.pathname === `/api/v1/launches/${l.id}`);
   res.writeHead(result === undefined ? 404 : 200, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify(result ?? { detail: 'Not found' }));
 }).listen(3301, '127.0.0.1');

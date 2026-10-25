@@ -51,7 +51,7 @@ test('calendar view switches preserve document scroll', async ({page, isMobile})
   await page.screenshot({path:test.info().outputPath('calendar-scroll-preserved.png')});
 });
 
-test('desktop launch panel scroll does not move the document', async ({ page, isMobile }) => {
+test('desktop list scroll chains to the page only at its boundaries', async ({ page, isMobile }) => {
   test.skip(isMobile, 'Mobile keeps normal document scrolling');
   await page.setViewportSize({width: 900, height: 900});
   await page.goto('/?q=scroll-fixture');
@@ -61,12 +61,21 @@ test('desktop launch panel scroll does not move the document', async ({ page, is
   const documentY = await page.evaluate(() => window.scrollY);
   const filterY = (await page.locator('.calendar-panel .filters').boundingBox())!.y;
   await expect(page.locator('.launch-scroll-rail')).toHaveCount(0);
-  await page.mouse.wheel(0, 10000);
+  await page.mouse.wheel(0, 100);
   await expect.poll(() => calendar.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(documentY);
   expect((await page.locator('.calendar-panel .filters').boundingBox())!.y).toBe(filterY);
   await page.mouse.wheel(0, 10000);
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(documentY);
+  await expect.poll(() => calendar.evaluate(el => Math.abs(el.scrollHeight - el.clientHeight - el.scrollTop))).toBeLessThan(2);
+  await page.mouse.wheel(0, 300);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(documentY);
+  await calendar.evaluate(el => { el.scrollTop = 0; });
+  await calendar.scrollIntoViewIfNeeded();
+  await calendar.hover();
+  const lowerY = await page.evaluate(() => window.scrollY);
+  expect(lowerY).toBeGreaterThan(0);
+  await page.mouse.wheel(0, -300);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeLessThan(lowerY);
   await page.screenshot({path:test.info().outputPath('independent-scroll.png')});
 });
 

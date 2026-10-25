@@ -482,3 +482,13 @@ Dificuldade: compactar informação rotineira sem esconder falhas/obsolescência
 Verificação: 94 testes web, build e doze E2E passaram (dois casos desktop omitidos no móvel). Novo teste confirma aviso/retry fora da área colapsada; E2E confirma timestamps ocultos inicialmente e abertura/fecho por Enter em desktop/móvel. Captura desktop revista visualmente. Sem mudança backend ou repetição dos respetivos testes, sem commit/push/publicação deste rascunho. Aprovação visual pendente.
 
 Utilizador aprovou a compactação e autorizou commit e push dos lotes locais, incluindo `cc2a7e4` (scroll) e `5e70f54` (estados/datas). Roadmap e exportações continuam excluídos. API e frontend têm alterações aditivas de filtro de estado; confirmação posterior de CI e publicação é necessária antes de afirmar funcionamento público.
+
+### Continuação de scroll nos limites da lista — rascunho local
+
+Lote anterior enviado em `a85b38f`. Utilizador pediu que, ao chegar ao fim/início da lista e continuar o gesto, a página possa seguir para baixo/cima. Alterado apenas overscroll-behavior-y de contain para auto na área dos resultados desktop. Mantidos scroll próprio, filtros fora da zona deslizante, barra e alinhamento inferior; sem handlers de roda ou scroll artificial.
+
+Dificuldade: distinguir scroll interno de encadeamento ao documento. Teste atualizado confirma gesto intermédio altera lista sem mover página/filtros, gesto no limite inferior move documento para baixo e no superior move para cima. Build e doze E2E passaram, dois casos desktop omitidos no móvel; fluxo móvel normal preservado. Unitários/backend não repetidos para esta alteração CSS; não é ensaio de todos os trackpads/browsers. Sem commit/push/publicação; preview local com lista longa pronta para revisão.
+
+Utilizador não conseguia experimentar por estar na URL com status=tbc, que mostra só uma fixture. Ampliada a lista dedicada `q=scroll-fixture` para 30 missões explicitamente fictícias, com IDs de detalhe resolúveis. No modo DESIGN_PREVIEW e apenas nessa pesquisa, os 30 cartões são apresentados de início; produção mantém seis com carregar mais. Preview reiniciada com flag própria e aberta sem filtro de estado/favoritos. Build passou e leitura HTTP confirmou exatamente 30 cartões renderizados. Sem sync, BD pública, commit/push ou alteração de dados reais. Lista criada exclusivamente para testar scroll; não representa calendário real.
+
+Utilizador experimentou e aprovou o comportamento, autorizando commit e push deste lote. Exportações e roadmap continuam locais. Confirmação de envio não implica CI/publicação confirmadas; nenhuma sincronização ou migração de produção foi executada.

@@ -129,7 +129,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </nav>
         <LaunchResultsScroll>
         {hasLaunchData ? (
-          <FavoriteLaunchList key={JSON.stringify(filters)} launches={launches} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} historical={period === "past"} />
+          <FavoriteLaunchList key={JSON.stringify(filters)} launches={launches} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} historical={period === "past"} initialLimit={process.env.DESIGN_PREVIEW === "true" && filters.q === "scroll-fixture" ? 30 : 6} />
         ) : (
           <article className="launch-card">
             <h3>{t.unavailableTitle}</h3>

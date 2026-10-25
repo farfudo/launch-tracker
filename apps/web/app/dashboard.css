@@ -373,7 +373,7 @@ details:not(.stream-disclosure) > summary:focus-visible { outline: 3px solid var
   .launch-dashboard > .calendar-panel { display: flex; flex-direction: column; align-self: stretch; min-height: 0; max-height: none; contain: size; overflow: hidden; }
   .calendar-panel > :not(.launch-results-shell) { flex-shrink: 0; }
   .launch-results-shell { display: flex; flex-direction: column; flex: 1; min-height: 0; }
-  .launch-results-scroll { flex: 1; min-height: 0; overflow-y: scroll; overscroll-behavior-y: contain; scrollbar-gutter: stable; padding-right: .6rem; }
+  .launch-results-scroll { flex: 1; min-height: 0; overflow-y: scroll; overscroll-behavior-y: auto; scrollbar-gutter: stable; padding-right: .6rem; }
   .launch-results-scroll::-webkit-scrollbar { width: 20px; }
   .launch-results-scroll::-webkit-scrollbar-track { background: var(--surface); border-radius: 12px; }
   .launch-results-scroll::-webkit-scrollbar-thumb { min-height: 64px; border: 2px solid var(--surface); border-radius: 12px; background: var(--accent-strong) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 32'%3E%3Cpath fill='%23fffefa' d='M12 3C8 7 7 12 7 18l-4 6 5-1 4 4 4-4 5 1-4-6c0-6-1-11-5-15Z'/%3E%3Ccircle cx='12' cy='13' r='2.5' fill='%230b5e59'/%3E%3Cpath stroke='%23ffb36b' stroke-width='2' d='M10 27v3m4-3v3'/%3E%3C/svg%3E") center / 16px 26px no-repeat; }

@@ -34,12 +34,12 @@ export function FavoriteButton({ id, name }: { id: string; name: string }) {
   </div>;
 }
 
-export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, historical = false }: {
-  launches: Launch[]; favoritesOnly: boolean; emptyCache: boolean; historical?: boolean;
+export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, historical = false, initialLimit = 6 }: {
+  launches: Launch[]; favoritesOnly: boolean; emptyCache: boolean; historical?: boolean; initialLimit?: number;
 }) {
   const { locale, messages: t } = useLocale();
   const { ids, ready } = useFavorites();
-  const [limit, setLimit] = useState(6);
+  const [limit, setLimit] = useState(initialLimit);
   const d = dashboardCopy[locale];
   const selection = useMissionSelection();
   const visible = favoritesOnly ? launches.filter(launch => ids.includes(launch.id)) : launches;
