@@ -7,7 +7,7 @@ import { Spinner } from "./pending-feedback";
 type Player = {
   mute():void; playVideo():void; pauseVideo():void; destroy():void;
   setPlaybackRate(rate:number):void; getAvailablePlaybackRates():number[];
-  loadVideoById(options:{videoId:string; startSeconds:number; endSeconds:number}):void;
+  getCurrentTime():number; seekTo(seconds:number,allowSeekAhead:boolean):void;
 };
 type PlayerEvent = {target:Player; data:number};
 type YouTube = {Player:new(element:HTMLElement,options:Record<string,unknown>) => Player};
@@ -58,11 +58,24 @@ export function BoosterCatchPreview({locale}:{locale:Locale}) {
     if (!enabled || !target) return;
     let cancelled = false;
     let local:Player | undefined;
+    let isPlaying = false;
+    const canPlay = () => visible.current && !document.hidden && wantsPlay.current;
+    const rewind = (p:Player) => {p.seekTo(clip.startSeconds,true); p.playVideo();};
     const sync = () => {
       if (!player.current) return;
-      if (visible.current && !document.hidden && wantsPlay.current) player.current.playVideo();
+      if (canPlay()) {
+        const time = player.current.getCurrentTime();
+        if (time >= clip.endSeconds || time < clip.startSeconds) rewind(player.current);
+        else player.current.playVideo();
+      }
       else player.current.pauseVideo();
     };
+    // Reuse the same decoded video instead of reloading it at every loop.
+    // Mobile Safari may block the fresh playback request after an ended event.
+    const loop = window.setInterval(() => {
+      const p = player.current;
+      if (p && isPlaying && canPlay() && p.getCurrentTime() >= clip.endSeconds - .25) rewind(p);
+    },100);
     const observer = new IntersectionObserver(([entry]) => {visible.current = entry.isIntersecting; sync();},{threshold:.15});
     observer.observe(target);
     document.addEventListener("visibilitychange",sync);
@@ -73,7 +86,7 @@ export function BoosterCatchPreview({locale}:{locale:Locale}) {
       target.appendChild(mount);
       local = new api.Player(mount,{
         host:"https://www.youtube-nocookie.com", videoId:clip.videoId,
-        playerVars:{start:clip.startSeconds,end:clip.endSeconds,autoplay:0,mute:1,controls:0,playsinline:1,rel:0,origin:location.origin},
+        playerVars:{start:clip.startSeconds,autoplay:0,mute:1,controls:0,playsinline:1,rel:0,origin:location.origin},
         events:{
           onReady:({target:p}:PlayerEvent) => {
             if (cancelled) return;
@@ -85,16 +98,17 @@ export function BoosterCatchPreview({locale}:{locale:Locale}) {
           },
           onStateChange:({data,target:p}:PlayerEvent) => {
             if (cancelled) return;
+            isPlaying = data === 1;
             setPlaying(data === 1);
             if (data === 1 && p.getAvailablePlaybackRates().includes(2)) p.setPlaybackRate(2);
-            if (data === 0 && wantsPlay.current && visible.current && !document.hidden) p.loadVideoById(clip);
+            if (data === 0 && canPlay()) rewind(p);
           },
           onError:() => {if (!cancelled) {clearTimeout(timeout); setFailed(true);}},
           onAutoplayBlocked:() => {if (!cancelled) setPlaying(false);},
         },
       });
     }).catch(() => {if (!cancelled) {clearTimeout(timeout); setFailed(true);}});
-    return () => {cancelled = true; clearTimeout(timeout); observer.disconnect(); document.removeEventListener("visibilitychange",sync); player.current = null; local?.destroy(); target.replaceChildren();};
+    return () => {cancelled = true; clearTimeout(timeout); clearInterval(loop); observer.disconnect(); document.removeEventListener("visibilitychange",sync); player.current = null; local?.destroy(); target.replaceChildren();};
   },[enabled,t.title]);
   return <figure className="booster-catch">
     <div className="booster-catch-screen"><div ref={host} className="booster-catch-player"/>
@@ -104,7 +118,11 @@ export function BoosterCatchPreview({locale}:{locale:Locale}) {
     <div className="booster-catch-actions"><button type="button" disabled={failed || (enabled && !ready)} onClick={() => {
       if (!enabled) {wantsPlay.current = true; setEnabled(true); return;}
       wantsPlay.current = !playing;
-      if (playing) player.current?.pauseVideo(); else player.current?.playVideo();
+      if (playing) player.current?.pauseVideo(); else {
+        const p = player.current;
+        if (p && (p.getCurrentTime() >= clip.endSeconds || p.getCurrentTime() < clip.startSeconds)) p.seekTo(clip.startSeconds,true);
+        p?.playVideo();
+      }
     }}>{playing ? `Ⅱ ${t.pause}` : `▶ ${t.play}`}</button><a href="https://www.youtube.com/watch?v=hI9HQfCAw64&t=125s" target="_blank" rel="noopener noreferrer">{t.source} ↗</a></div>
     {failed && ready && <p role="status">{t.error}</p>}
   </figure>;

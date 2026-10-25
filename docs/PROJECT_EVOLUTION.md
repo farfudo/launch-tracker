@@ -599,3 +599,11 @@ Primeira execução dos novos testes encontrou ainda um transbordo real a 320 px
 Verificação final do rascunho: build e seis testes E2E passaram, cobrindo limites laterais em 320/390/430 px nos dois temas, quatro rotas, e regressões de cabeçalho/rodapé. `git diff --check` sem erros. Correção mobile ainda sem commit/push, para revisão visual.
 
 Utilizador aprovou posteriormente o commit e push desta correção mobile, juntamente com o cabeçalho/rodapé já guardados em `cc68e0a`. Documentos locais de partilha e `FEATURES_ROADMAP.md` continuam excluídos do envio.
+
+### Novo rascunho — gesto de zoom iOS e repetição do excerto
+
+Após publicação, utilizador mostrou espaço à direita durante pinch/zoom-out em Safari/iPhone e relatou que a captura do booster ficava preta após o primeiro ciclo. O teste de largura documental não reproduz todo o comportamento do visual viewport/ressalto elástico do Safari. Reforçado `overflow-x: clip` também no body, com largura de 100% e min-width zero, mantendo o eixo vertical, os scrollers internos e a possibilidade de zoom (sem maximum-scale nem user-scalable=no). Esta mitigação necessita confirmação no dispositivo físico; não se apresenta emulação Chromium como prova do gesto nativo Safari.
+
+No leitor, o código anterior usava `end` e `loadVideoById` ao terminar: isso iniciava novo carregamento/reprodução a cada ciclo. Substituído por `getCurrentTime` e `seekTo` no mesmo vídeo antes do fim do excerto, com intervalo de 100 ms, fallback de estado ended, reposicionamento ao regressar à viewport e ao carregar em reproduzir. Mantidas pausa fora de vista/aba oculta, movimento reduzido, áudio desligado e 2× quando disponível. O navegador pode continuar a bloquear autoplay; o botão continua utilizável para retomar, sem prometer contornar restrições do iOS. Teste com leitor simulado verifica três ciclos, pausa fora da viewport, retoma, ended, autoplay bloqueado e limpeza dos temporizadores. Fonte técnica: https://developers.google.com/youtube/iframe_api_reference.
+
+Reposta altura mínima de 200 px recomendada para embeds YouTube, mantendo a largura explícita de 100% que impede o crescimento lateral por aspect-ratio. Build, 97 testes unitários e lint do componente/teste passaram. Rascunho local, sem commit/push; reprodução real no iPhone ainda por confirmar.

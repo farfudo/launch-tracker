@@ -10,6 +10,8 @@ test('page canvas matches the theme and does not scroll sideways on narrow scree
         await page.evaluate(value => { document.documentElement.dataset.theme = value; }, theme);
         await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).backgroundColor === getComputedStyle(document.body).backgroundColor)).toBe(true);
         await expect(page.locator('html')).toHaveCSS('overscroll-behavior-x', 'none');
+        await expect(page.locator('body')).toHaveCSS('overflow-x', 'clip');
+        expect(await page.locator('meta[name="viewport"]').getAttribute('content')).not.toMatch(/user-scalable=no|maximum-scale=1/);
         expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
         await page.evaluate(() => window.scrollTo({ left: 200, behavior: 'instant' }));
         expect(await page.evaluate(() => window.scrollX)).toBe(0);

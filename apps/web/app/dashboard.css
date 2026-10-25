@@ -1,7 +1,9 @@
 /* Reference-inspired dashboard, shared with both existing theme palettes. */
 html { scroll-behavior: smooth; scroll-padding-top: 100px; }
 :root { font-family: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif; background: var(--surface); overflow-x: clip; overscroll-behavior-x: none; }
-body { background: var(--surface); }
+/* Clip on the body as well: Safari can expose descendant visual overflow
+   during pinch gestures even when the root canvas is clipped. Keep Y free. */
+body { width:100%; min-width:0; overflow-x:clip; background: var(--surface); }
 html { scroll-padding-top:calc(var(--site-header-height,100px) + 12px); }
 .scroll-header { position:sticky; top:0; z-index:60; transform:translateY(0); transition:transform .22s cubic-bezier(.22,.61,.36,1); }
 .scroll-header[data-hidden="true"] { transform:translateY(-100%); }
@@ -680,7 +682,7 @@ html[data-theme="dark"] .is-planned { background:#483b18; color:#ffe29a; }
 @media(max-width:1000px) { .artemis-feature-visual { flex-direction:column; justify-content:center; align-items:start; } .lunar-orbit { flex-basis:120px; width:120px; height:120px; } .guide-role-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 @media(max-width:800px) {
   .discovery-start,.technology-panel,.artemis-feature { grid-template-columns:1fr; gap:1rem; padding:1rem; }
-  .booster-catch-screen { width:100%; min-height:0; }
+  .booster-catch-screen { width:100%; min-width:0; min-height:200px; }
   .discoveries-intro h1 { font-size:2rem; }
   .discovery-hook-copy > p:not(.eyebrow),.technology-explainer > p,.guide-role-grid p,.guide-missions p,.guide-challenges p { font-size:1rem; }
   .booster-catch figcaption :is(span,small),.booster-catch-actions :is(a,button),.technology-panel figcaption { font-size:.875rem; }
