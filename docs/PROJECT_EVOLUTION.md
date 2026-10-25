@@ -370,3 +370,47 @@ Lote anterior guardado em `dc9eef7`, sem push. Acrescentado o componente existen
 Passaram 92 testes web, build e quatro percursos E2E desktop/móvel da revisão UI, incluindo presença dos quatro blocos. Primeira tentativa E2E encontrou a porta da API fictícia ocupada; foi parado apenas esse servidor local e repetido o ensaio com sucesso. Preview manual desktop com dados fictícios, viewport reposto; captura `/tmp/mission-countdown-preview.png`. Backend e produção não alterados. Novo rascunho sem commit, aprovação visual pendente; nenhum push realizado.
 
 O utilizador aprovou a preview do countdown e autorizou commit e push deste lote, incluindo os commits locais anteriores `01ed45b` e `dc9eef7`. Exportações e `FEATURES_ROADMAP.md` mantêm-se locais. A autorização/envio não substitui a confirmação posterior de CI e publicação.
+
+### Legibilidade em smartphone — rascunho local
+
+Push anterior concluído em `748bba0`. A pedido do utilizador, preparado ajuste apenas até 600 px: texto principal de 16 px, datas/notas de 14 px, etiquetas de 13 px, controlos de cerca de 15 px e campos de 16 px. Aumentados espaçamento entre linhas e títulos dos cartões; removidos truncamentos de agência/título em smartphone. Filtros passam a uma coluna e ações empilham quando necessário. Desktop mantém os tamanhos anteriores.
+
+Dificuldade: letras maiores reduzem o espaço útil e podem cortar datas/títulos. Solução: permitir mais linhas, adaptar grelhas e quebrar fusos longos sem esconder conteúdo. Mantida hierarquia: etiquetas secundárias menores que o texto principal, não um aumento global que desproporcionasse títulos e cabeçalho.
+
+Verificação: 92 testes web, build e quatro E2E desktop/móvel passaram. Adicionadas verificações de 16 px nas notas da missão, 14 px nas datas dos cartões e ausência de scroll horizontal nos cenários testados. Capturas geradas pelos E2E revistas visualmente (home/detalhe móvel). A revisão interativa adicional foi bloqueada pela política de acesso do browser; não foi contornada. Não constitui auditoria formal de acessibilidade nem teste de todos os idiomas/zoom/dispositivos. Preview local em http://127.0.0.1:3300/; dados fictícios. Sem backend, commit, push ou alteração pública deste rascunho; aprovação visual pendente.
+
+### Fusos e transmissões no resumo esquerdo — rascunho local
+
+Pedido: reunir Watch here e time zones no painel esquerdo e retirar fusos dos cartões à direita. Watch here já existia no resumo quando há transmissões válidas; foi preservado e testado. Fusos passam para uma expansão única no resumo, baseada na missão selecionada, disponível mesmo enquanto carrega o detalhe. Ao trocar de missão, a expansão reinicia fechada e usa o fuso da nova missão, sem mostrar horários da seleção anterior. Removida a expansão repetida em cada cartão da lista. Atualizada a nota de orientação em português/inglês/espanhol.
+
+Dificuldade: distinguir layout desktop do móvel, que não mostra painel lateral e abre diretamente a página completa. Mantido esse fluxo: smartphone conserva fusos/transmissões na página completa; não se duplicou o painel escondido nem se mudou a navegação sem pedido. Ausência de streams continua sem botão enganador. Sem alteração de API/BD.
+
+Verificação: 92 testes web, build e oito E2E passaram, incluindo abertura de fusos e stream no resumo desktop, ausência de fusos na lista e percurso móvel completo. Captura E2E do resumo revista visualmente; revisão interativa continua indisponível pelo bloqueio previamente registado. Rascunho inclui as alterações mobile anteriores ainda por aprovar; sem commit/push ou alteração pública.
+
+### Watch here visível sem transmissão — rascunho local
+
+A pedido do utilizador, o estado sem ligações válidas passa a manter o botão Watch here/Ver aqui/Ver aquí visível, desativado, em laranja suave, acompanhado do aviso localizado já existente: sem ligação de vídeo nos últimos dados em cache. Aplica-se ao resumo e à página completa. Não se mostra seta de expansão ou contador zero, nem se inventa uma transmissão. Ligações inválidas também resultam no estado indisponível. Com transmissões válidas mantém-se o expansível laranja existente.
+
+Dificuldade: aparência esbatida não pode tornar o aviso ilegível nem prometer que a fonte não tem qualquer live em tempo real. Usadas cores próprias claras/escuras, sem reduzir opacidade do texto; aviso refere os dados em cache, não uma verificação em direto. Botão nativamente disabled não abre uma lista vazia. Passaram 92 testes web, build e oito E2E desktop/móvel; testes atualizados verificam botão visível/desativado e ausência de expansão fictícia. Captura E2E desktop revista. Sem backend, commit/push ou alteração pública; inclui rascunhos mobile/resumo ainda pendentes de aprovação.
+
+### Painéis alinhados e scroll independente — rascunho local
+
+Pedido: alinhar painel esquerdo/direito e permitir scroll da lista sem deslocar o documento. Apresentação inicial e indicadores passam a ocupar a linha acima; resumo e calendário ficam na segunda linha da mesma grelha desktop, alinhados pelo topo. Calendário limitado à altura disponível (`100dvh - 2rem`), com overflow vertical próprio e overscroll contain para não transferir o gesto à página ao chegar ao limite. Região focável por teclado com foco visível. Até 800 px conserva-se scroll normal do documento e navegação direta para detalhe.
+
+Dificuldade: o resumo estava dentro da coluna da apresentação, abaixo do hero, impedindo alinhamento com a lista. Extraído como irmão na grelha, sem duplicar conteúdo; apresentação ocupa largura completa apenas no desktop. Não se bloqueia o scroll global da página, necessário para chegar à apresentação/rodapé; apenas os gestos dentro da lista são contidos.
+
+Verificação: 92 testes web, build e nove E2E passaram, com um teste exclusivamente desktop omitido intencionalmente no móvel. Verificados alinhamento dos topos, overflow/overscroll e gesto real de roda sobre lista: scrollTop aumenta sem mudar scrollY do documento, incluindo novo gesto no limite. Captura `independent-scroll.png` revista visualmente. Sem auditoria de todos os browsers/gestos; revisão interativa adicional indisponível conforme bloqueio anterior. Sem backend, commit/push ou alteração pública; aprovação do lote local pendente.
+
+Correção após clarificação do utilizador: não pretendia alinhamento do resumo pelo topo nem apresentação a toda a largura; pretendia preservar a estrutura anterior e alinhar apenas a base. Reposto hero/indicadores/resumo na coluna esquerda. Calendário direito estica até à base da coluna esquerda; contenção de tamanho evita que o conteúdo da lista imponha a altura da linha e overflow/overscroll mantêm scroll independente quando necessário. Sem bloqueio global do documento. Estrutura móvel preservada.
+
+Verificação da correção: build e nove E2E passaram (um cenário desktop omitido no móvel). Primeira execução revelou medição durante animação e fixture curta sem overflow; corrigido teste para aguardar geometria estável e criada lista longa exclusivamente fictícia para ensaiar scroll real. Confirmados limites inferiores alinhados e scroll da lista sem alterar scrollY. Captura final com movimento reduzido para não registar animação a meio. Os 92 testes unitários passaram antes desta correção de layout, não foram repetidos; sem alteração de lógica backend. Rascunho continua sem commit/push.
+
+### Scroll apenas dos resultados e indicador temático — rascunho local
+
+Nova clarificação: cabeçalho, tabs e filtros do calendário não devem deslizar; scroll começa no primeiro lançamento. Criado contentor próprio para resultados/favoritos/carregar mais, abaixo dos filtros. Painel externo mantém alinhamento inferior com coluna esquerda; só a área de resultados tem overflow e contenção de gestos. Mobile conserva documento normal.
+
+Dificuldade: barras nativas podem ficar ocultas pelo sistema, mesmo com estilos. Mantida barra nativa e acrescentado trilho decorativo sempre visível no desktop com ícone de foguetão que acompanha a proporção real de scroll. Ícone sem interação, sem anúncios e sem animação automática; não substitui a barra nativa por um controlo de acessibilidade incompleto. ResizeObserver atualiza o indicador quando área/conteúdo muda (incluindo carregar mais), com limpeza de observadores/eventos. Sem temporizador ou chamadas de rede novas.
+
+Verificação: 92 testes web, build e nove E2E passaram; um cenário exclusivamente desktop omitido no móvel. Confirmados scroll dos resultados, filtros imóveis, documento imóvel e avanço do indicador; captura E2E revista. Em browsers com scrollbar WebKit há decoração adicional; outros conservam estilo nativo e trilho temático. Arrastar o foguetão não é suportado: é indicador decorativo; navegação mantém rato/trackpad/teclado e barra nativa. Preview local com fixture longa para demonstrar, sem commit/push/produção. Aprovação pendente do lote.
+
+O utilizador aprovou a preview final e autorizou commit e push de todo o lote: legibilidade smartphone, fusos/transmissões no resumo esquerdo, Watch here indisponível visível, alinhamento inferior preservando estrutura superior e scroll só dos resultados com indicador temático. Roadmap e exportações continuam excluídos conforme preferência anterior. Envio autorizado não equivale a confirmação de CI/deploy; essa validação é posterior.

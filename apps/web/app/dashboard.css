@@ -119,7 +119,7 @@ body { background: var(--surface); }
 @media (max-width: 480px) { .site-toolbar { flex-direction: row; align-items: center; margin: 0; padding: .9rem 1rem; }.toolbar-controls .language-control select { width: 76px; font-size: .65rem; padding: .4rem; }.theme-toggle { font-size: .7rem; padding: .4rem; }.home-brand { font-size: 1.12rem; }.dashboard-hero-copy { max-width: 100%; padding: 1.7rem 1.3rem; }.dashboard-hero-copy > p:not(.eyebrow) { font-size: .85rem; }.dashboard-hero h1 { font-size: 2.8rem; }.dashboard-hero .vehicle-visual-frame::after { background: linear-gradient(180deg, var(--surface-raised), color-mix(in srgb, var(--surface-raised) 75%, transparent) 60%, transparent); }.dashboard-benefits { padding: 1rem; }.dashboard-explore { grid-template-columns: 1fr; }.explore-card { padding-left: 3.8rem; }.explore-card .mission-icon { position: absolute; left: 1rem; top: 1.3rem; }.calendar-panel { padding: 1rem; }.calendar-panel .launch-list > .launch-card { column-gap: .65rem; }.featured-launch { padding: 1.4rem; }.featured-launch h2 { font-size: 1.6rem; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
-/* Usability refinement: one page scroll, progressive results and readable metadata. */
+/* Base single-column scrolling; desktop workspace overrides below. */
 .calendar-panel { max-height: none; overflow: visible; }
 .launch-dashboard { align-items: start; }
 .dashboard-introduction { position: static; }
@@ -310,6 +310,9 @@ button .action-spinner { margin-right: .5rem; }
 .development-badge { display: inline-flex; align-items: center; gap: .4rem; align-self: center; white-space: nowrap; border: 1px solid #d4b676; background: #fff4d8; color: #654818; border-radius: 99px; padding: .35rem .65rem; font-size: .7rem; font-weight: 650; }
 html[data-theme="dark"] .development-badge { background: #3d321e; color: #f5d595; border-color: #80683b; }
 .stream-unavailable { padding: .8rem 1rem; border: 1px dashed var(--border); border-radius: 12px; color: var(--text-soft); font-size: .85rem; }
+.stream-unavailable .stream-button-unavailable { width: 100%; box-sizing: border-box; background: #f8e7d9; border: 1px solid #d6b69e; color: #785138; box-shadow: none; cursor: not-allowed; }
+.stream-unavailable p { margin: .65rem 0 0; line-height: 1.6; }
+html[data-theme="dark"] .stream-unavailable .stream-button-unavailable { background: #352b25; border-color: #80624d; color: #ddbea7; }
 .mission-hero-copy .mission-target { margin-top: 1rem; margin-bottom: 1.25rem; padding-top: .8rem; }
 @media (max-width: 800px) {
   .site-toolbar { display: grid; grid-template-columns: 1fr auto; gap: .5rem .7rem; padding: .8rem 1rem; }
@@ -365,3 +368,63 @@ details:not(.stream-disclosure) > summary:focus-visible { outline: 3px solid var
 .mission-calendar[open] .mission-calendar-options a { background: var(--surface-raised); }
 .advanced-filters[open] > :not(summary) { margin-top: .8rem; }
 @media (prefers-reduced-motion: reduce) { details:not(.stream-disclosure) > summary::after { transition: none; } }
+
+@media (min-width: 801px) {
+  .launch-dashboard > .calendar-panel { display: flex; flex-direction: column; align-self: stretch; min-height: 0; max-height: none; contain: size; overflow: hidden; }
+  .calendar-panel > :not(.launch-results-shell) { flex-shrink: 0; }
+  .launch-results-shell { display: grid; grid-template-columns: minmax(0, 1fr) 22px; gap: .4rem; flex: 1; min-height: 0; }
+  .launch-results-scroll { min-height: 0; overflow-y: scroll; overscroll-behavior-y: contain; scrollbar-gutter: stable; padding-right: .6rem; }
+  .launch-scroll-rail { display: block; position: relative; margin-block: 4px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); pointer-events: none; }
+  .launch-scroll-rocket { position: absolute; left: -3px; width: 26px; height: 34px; display: grid; place-items: center; color: var(--accent-strong); background: var(--surface-raised); border-radius: 10px; border: 1px solid var(--border-strong); }
+  .launch-scroll-rocket .mission-icon { width: 22px; height: 22px; }
+  .launch-results-scroll::-webkit-scrollbar { width: 20px; }
+  .launch-results-scroll::-webkit-scrollbar-track { background: var(--surface); border-radius: 12px; }
+  .launch-results-scroll::-webkit-scrollbar-thumb { min-height: 64px; border: 2px solid var(--surface); border-radius: 12px; background: var(--accent-strong) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 32'%3E%3Cpath fill='%23fffefa' d='M12 3C8 7 7 12 7 18l-4 6 5-1 4 4 4-4 5 1-4-6c0-6-1-11-5-15Z'/%3E%3Ccircle cx='12' cy='13' r='2.5' fill='%230b5e59'/%3E%3Cpath stroke='%23ffb36b' stroke-width='2' d='M10 27v3m4-3v3'/%3E%3C/svg%3E") center / 16px 26px no-repeat; }
+  .launch-results-scroll::-webkit-scrollbar-thumb:hover { background-color: var(--accent); }
+  @supports not selector(::-webkit-scrollbar) { .launch-results-scroll { scrollbar-color: var(--accent-strong) var(--surface); scrollbar-width: auto; } }
+}
+.launch-results-scroll:focus-visible { outline: 3px solid var(--accent-strong); outline-offset: -3px; border-radius: 10px; }
+@media (max-width: 800px) { .launch-scroll-rail { display: none; } }
+
+/* Smartphone reading scale: preserve desktop density, give mobile text room. */
+@media (max-width: 600px) {
+  .dashboard-hero-copy > p:not(.eyebrow), .mission-description,
+  .mission-panel .launch-meta, .mission-source-card a,
+  .mission-calendar, .mission-share-content { font-size: 1rem; line-height: 1.65; }
+  .calendar-panel .launch-card h3, .next-launch-panel h2 { font-size: 1.15rem; line-height: 1.4; }
+  .calendar-panel .launch-agency { white-space: normal; overflow: visible; font-size: .875rem; line-height: 1.5; }
+  .calendar-panel .launch-date, .next-launch-panel p,
+  .row-detail-link, .hero-detail-link, .selected-mission-panel .launch-meta,
+  .calendar-panel > .launch-meta, .data-explanation, .mission-summary-hint,
+  .mission-source-footer, .vehicle-visual figcaption, .photo-reference-note,
+  .mission-source-card small, .dashboard-footer, .frontend-cache-notice { font-size: .875rem; line-height: 1.6; }
+  .calendar-panel .launch-card h3 { display: block; overflow: visible; }
+  .calendar-panel .filters input, .calendar-panel .filters select,
+  .calendar-panel .filters button { font-size: 1rem; min-height: 44px; }
+  .calendar-panel .filters { grid-template-columns: 1fr; }
+  .calendar-panel .filters label span, .calendar-panel .clear-filters,
+  .agency-chips a, .calendar-panel .favorite-views a,
+  .period-tabs a, .favorite-button, .launch-row-actions .favorite-button,
+  details:not(.stream-disclosure) > summary { font-size: .9375rem; line-height: 1.45; }
+  .calendar-panel .status, .launch-status-tag, .mission-status,
+  .fact-card-heading dt, .mission-target p, .mission-window-track p,
+  .mission-hero-copy .eyebrow, .dashboard-hero-copy .eyebrow,
+  .next-launch-panel .eyebrow { font-size: .8125rem; line-height: 1.5; letter-spacing: .04em; }
+  .mission-panel-heading h2 { font-size: 1.15rem; line-height: 1.4; }
+  .mission-fact-card dd, .mission-target time { font-size: 1.125rem; line-height: 1.5; }
+  .mission-clock-panel .time-comparison { min-width: 0; }
+  .mission-clock-panel .time-comparison > div { display: block; }
+  .mission-clock-panel .time-comparison dt, .time-comparison dt { font-size: .875rem; }
+  .mission-clock-panel .time-comparison dd, .time-comparison dd { font-size: 1rem; text-align: left; margin-top: .35rem; overflow-wrap: anywhere; }
+  .mission-clock-panel .zone-name { font-size: .8125rem; overflow-wrap: anywhere; }
+  .mission-countdown { padding: .75rem; }
+  .mission-countdown .countdown { gap: .35rem; }
+  .mission-countdown .countdown strong { font-size: clamp(1.2rem, 5.5vw, 1.8rem); }
+  .mission-countdown .countdown span, .countdown-estimate,
+  .mission-countdown .countdown-estimate, .countdown-compact,
+  .launch-row-actions .countdown span { font-size: .8125rem; }
+  .countdown-compact strong, .countdown-note { font-size: .9375rem; }
+  .launch-row-actions { flex-wrap: wrap; }
+  .launch-row-actions .countdown-group, .launch-row-actions .favorite-action { flex-basis: 100%; }
+  .mission-navigation .back-link { font-size: .9375rem; }
+}

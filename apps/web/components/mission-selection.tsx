@@ -12,6 +12,7 @@ import { FavoriteButton } from "./favorites";
 import { MissionStreams } from "./mission-streams";
 import { Spinner, LinkPending } from "./pending-feedback";
 import { CacheNotice } from "./cache-notice";
+import { LaunchTimes } from "./launch-times";
 
 type Selection = {
   selected: Launch | null;
@@ -73,9 +74,9 @@ export function MissionDetailPanel() {
   const { locale, messages: t } = useLocale();
   const d = dashboardCopy[locale];
   const summaryCopy = {
-    "pt-PT": { title: "Resumo da missão", hint: "Descrição, janela de lançamento, fusos horários e fontes estão na página completa." },
-    "en-GB": { title: "Mission at a glance", hint: "Description, launch window, time zones and sources are on the full mission page." },
-    "es-ES": { title: "Resumen de la misión", hint: "La descripción, ventana de lanzamiento, zonas horarias y fuentes están en la página completa." },
+    "pt-PT": { title: "Resumo da missão", hint: "Descrição, janela de lançamento e fontes estão na página completa." },
+    "en-GB": { title: "Mission at a glance", hint: "Description, launch window and sources are on the full mission page." },
+    "es-ES": { title: "Resumen de la misión", hint: "La descripción, ventana de lanzamiento y fuentes están en la página completa." },
   }[locale];
   const panel = useRef<HTMLElement>(null);
   const revision = selection?.revision ?? 0;
@@ -98,6 +99,7 @@ export function MissionDetailPanel() {
     <p className="selected-mission-agency">{selected.agency || t.agencyPending} · {selected.vehicle || t.vehiclePending}</p>
     <span className="launch-status-tag" data-tone={launchStatusTone(selected.status)}>{formatLaunchStatus(selected.status, locale)}</span>
     <p className="selected-mission-date"><LocalLaunchDate date={selected.net} /></p>
+    <details key={selected.id} className="panel-time-zones"><summary>{d.zones}</summary><LaunchTimes isoDate={selected.net} launchTimeZone={detail?.launch_timezone ?? selected.launch_timezone} /></details>
     <p className="visually-hidden" role="status">{loading ? d.loadingMission : `${d.selectedMission}: ${selected.name}`}</p>
     {loading ? <p className="panel-feedback"><Spinner /> {d.loadingMission}</p> : null}
     {error ? <div className="panel-feedback" role="alert"><p>{d.missionError}</p><button type="button" onClick={() => select(selected)}>{t.retry}</button></div> : null}

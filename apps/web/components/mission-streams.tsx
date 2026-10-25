@@ -17,8 +17,10 @@ export function MissionStreams({ launch, compact = false }: { launch: LaunchDeta
   const { locale } = useLocale();
   const d = dashboardCopy[locale];
   const streams = (launch.streams || []).map(safeMissionLink).filter(link => link !== null);
-  if (compact && !streams.length) return null;
-  if (!streams.length) return <p className="stream-unavailable">{d.streamMissing}</p>;
+  if (!streams.length) return <div className="stream-unavailable">
+    <button className="stream-button stream-button-unavailable" type="button" disabled><span aria-hidden="true">▷</span> {d.watchHere}</button>
+    <p>{d.streamMissing}</p>
+  </div>;
   const snapshot = Date.parse(launch.source_updated_at);
   return <details key={launch.id} className={`mission-streams stream-disclosure${compact ? " stream-disclosure-compact" : ""}`}>
     <summary className="stream-button"><span aria-hidden="true">▷</span> {d.watchHere}<span className="stream-count">{streams.length}</span><span className="stream-chevron" aria-hidden="true">⌄</span></summary>

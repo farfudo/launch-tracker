@@ -15,6 +15,7 @@ test('search, filters, mission, persistent favorite, streams, language and theme
   await page.getByRole('button', { name: 'Apply filters', exact: true }).click();
   const rows = page.locator('.launch-list article');
   await expect(rows).toHaveCount(1);
+  await expect(rows.locator('.launch-row-times')).toHaveCount(0);
   await expect(rows.first()).toContainText('Falcon 9 | Test Starlink');
   await expect(page).toHaveURL(/agency=SpaceX/);
   await rows.getByRole('button', { name: 'Save favorite: Falcon 9 | Test Starlink', exact: true }).click();
@@ -29,7 +30,20 @@ test('search, filters, mission, persistent favorite, streams, language and theme
     await expect(page.locator('#selected-mission')).toContainText('Mission at a glance');
     await expect(page.locator('#selected-mission .mission-sources')).toHaveCount(0);
     await expect(page.locator('#selected-mission')).not.toContainText('Controlled mission for browser tests.');
+    await expect.poll(async () => {
+      const left = await page.locator('.dashboard-introduction').boundingBox();
+      const right = await page.locator('.calendar-panel').boundingBox();
+      return Math.abs(left!.y + left!.height - right!.y - right!.height);
+    }).toBeLessThan(2);
+    await expect(page.locator('.launch-results-scroll')).toHaveCSS('overflow-y','scroll');
+    await expect(page.locator('.launch-results-scroll')).toHaveCSS('overscroll-behavior-y','contain');
+    await page.locator('#selected-mission .panel-time-zones summary').click();
+    await expect(page.locator('#selected-mission .panel-time-zones .time-comparison')).toBeVisible();
+    await page.locator('#selected-mission .stream-button').click();
+    await expect(page.locator('#selected-mission').getByRole('link', {name:/Fixture broadcast/})).toBeVisible();
+    await page.emulateMedia({reducedMotion: 'reduce'});
     await page.locator('#selected-mission').screenshot({ path: test.info().outputPath('mission-summary.png') });
+    await page.screenshot({ path: test.info().outputPath('aligned-workspace.png'), fullPage: true });
     await page.locator('#selected-mission').getByRole('link', { name: /View full details/ }).click();
   }
   await expect(page).toHaveURL(/\/launches\/e2e-falcon$/);

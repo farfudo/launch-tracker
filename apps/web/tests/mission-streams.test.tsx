@@ -9,7 +9,8 @@ import type { LaunchDetail } from "../lib/api";
 const base = {net:"2020-01-01T00:00:00Z",source_updated_at:"2026-10-22T12:00:00Z"} as LaunchDetail;
 function render(launch: LaunchDetail, compact = false) { return renderToStaticMarkup(<LocaleProvider locale="en-GB"><MissionStreams launch={launch} compact={compact} /></LocaleProvider>); }
 it("does not invent a stream or live status when no video link was supplied", () => {
-  expect(render(base, true)).toBe("");
+  expect(render(base, true)).toContain("Watch here");
+  expect(render(base, true)).toContain('disabled=""');
   expect(render(base)).toContain("No video link supplied");
   expect(render(base)).not.toContain("<summary");
 });

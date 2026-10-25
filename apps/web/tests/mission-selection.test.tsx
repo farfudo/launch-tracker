@@ -83,7 +83,8 @@ it("keeps only the summary and directs advanced information to the full page", (
   expect(panel.textContent).not.toContain("First description");
   expect(panel.querySelector(".mission-sources")).toBeNull();
   expect(panel.querySelector(".mission-calendar")).toBeNull();
-  expect(panel.querySelector(".panel-time-zones")).toBeNull();
+  expect(panel.querySelector(".panel-time-zones summary")?.textContent).toBe("Time zones");
+  expect(panel.querySelectorAll(".panel-time-zones .time-comparison > div")).toHaveLength(3);
   expect(panel.textContent).not.toContain("Share mission");
   expect(panel.querySelector(".mission-summary-hint")?.textContent).toContain("full mission page");
   expect(panel.querySelector(".pill-button")?.getAttribute("href")).toBe("/launches/first");

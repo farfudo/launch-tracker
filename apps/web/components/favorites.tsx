@@ -10,7 +10,6 @@ import { LocalLaunchDate } from "./local-launch-date";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { formatLaunchStatus, launchStatusTone } from "../lib/launch";
 import { useLocale } from "./locale-provider";
-import { LaunchTimes } from "./launch-times";
 import { useMissionSelection } from "./mission-selection";
 import { LinkPending, Spinner } from "./pending-feedback";
 
@@ -63,7 +62,6 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, histor
         {selection?.selected?.id === launch.id ? <span className="mission-selected-label">{d.selectedMission}</span> : null}
       </Link>
       <div className="launch-row-actions">{historical ? null : <Countdown date={launch.net} status={launch.status} compact={index !== 0 && selection?.selected?.id !== launch.id} />}<FavoriteButton id={launch.id} name={launch.name} /></div>
-      <details className="launch-row-times"><summary>{d.zones}</summary><LaunchTimes isoDate={launch.net} launchTimeZone={launch.launch_timezone} /></details>
     </article>)}</div> : <article className="launch-card">
       <h3>{favoritesOnly ? ids.length ? t.noFavoriteMatches : t.noFavorites : emptyCache ? t.emptyTitle : t.noResults}</h3>
       <p>{favoritesOnly ? t.favoriteEmptyBody : emptyCache ? t.emptyBody : t.noResultsBody}</p>

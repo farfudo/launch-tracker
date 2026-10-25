@@ -81,5 +81,9 @@
 - [ ] Validar futuramente arranque a frio público controlado, sem confundir o ciclo de revalidação já observado com prova de todas as condições de falha.
 
 - [ ] Alertas configuráveis.
+- [x] Rever preview de legibilidade smartphone (texto maior até 600 px); lote aprovado com commit/push autorizados.
+- [x] Rever fusos/transmissões concentrados no resumo esquerdo, sem fusos repetidos na lista direita; manter página completa no móvel.
+- [x] Rever alinhamento desktop; proposta inicial de apresentação acima de ambos substituída pela correção seguinte.
+- [x] Aprovar estrutura original em cima, bases alinhadas e scroll apenas dos resultados abaixo dos filtros, com indicador decorativo de foguetão; commit/push autorizados.
 - [ ] Transmissões e ligações oficiais.
 - [ ] Telemetria, quando houver fonte adequada.

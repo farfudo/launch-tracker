@@ -43,7 +43,10 @@ createServer(async (req, res) => {
   else if (url.pathname === '/api/v1/launches') {
     const period = url.searchParams.get('period');
     const now = Date.now();
-    result = launches.filter(l => (period !== 'upcoming' || Date.parse(l.net) >= now)
+    const candidates = url.searchParams.get('q') === 'scroll-fixture'
+      ? Array.from({length: 12}, (_, index) => ({...launches[0], id: `scroll-${index}`, name: `scroll-fixture mission ${index}`}))
+      : launches;
+    result = candidates.filter(l => (period !== 'upcoming' || Date.parse(l.net) >= now)
       && (period !== 'past' || Date.parse(l.net) < now)
       && (!url.searchParams.get('agency') || l.agency === url.searchParams.get('agency'))
       && (!url.searchParams.get('vehicle') || l.vehicle === url.searchParams.get('vehicle'))

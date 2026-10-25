@@ -7,6 +7,7 @@ import { formatLaunchDate } from "../lib/date";
 import { dictionaries } from "../lib/i18n";
 import { getLocale } from "../lib/locale-server";
 import { LaunchHero, FeaturedLaunch } from "../components/launch-dashboard";
+import { LaunchResultsScroll } from "../components/launch-results-scroll";
 import { MissionSelectionProvider, MissionDetailPanel } from "../components/mission-selection";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { MissionIcon } from "../components/mission-icon";
@@ -119,6 +120,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           <Link href={allHref} aria-current={!favoritesOnly ? "page" : undefined}>{t.allLaunches}<LinkPending /></Link>
           <Link href={favoritesHref} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}<LinkPending /></Link>
         </nav>
+        <LaunchResultsScroll>
         {hasLaunchData ? (
           <FavoriteLaunchList key={JSON.stringify(filters)} launches={launches} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} historical={period === "past"} />
         ) : (
@@ -128,6 +130,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <RetryButton />
           </article>
         )}
+        </LaunchResultsScroll>
       </section>
       {featured ? <FeaturedLaunch launch={featured} locale={locale} /> : null}
       {nextLaunch?.image_url ? <p className="dashboard-image-credit">{d.imagery}: {nextLaunch.image_credit || "Launch Library 2"} · {nextLaunch.image_license || t.imageLicenseUnknown}. {d.reference} <Link href={`/launches/${nextLaunch.id}`}>{d.imageInfo} ↗</Link></p> : null}
