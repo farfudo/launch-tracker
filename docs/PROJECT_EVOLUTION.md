@@ -436,3 +436,17 @@ Dificuldade: aumentar números sem comprimir excessivamente títulos ou provocar
 Verificação: 92 testes web, build e nove E2E passaram (um caso desktop omitido no móvel), incluindo cores computadas da lista/detalhe, ausência de overflow horizontal nos cenários móveis e Watch here ainda visível no primeiro ecrã testado. Capturas desktop da lista e detalhe revistas visualmente. Não constitui auditoria formal de contraste nem cobertura de todos os títulos/idiomas/browsers. Sem alteração backend, commit/push ou publicação; preview local com dados fictícios aguarda aprovação.
 
 O utilizador aprovou o destaque azul e autorizou apenas commit local, sem push. Pediu uma proposta de reorganização do resumo esquerdo; essa reorganização ainda não foi implementada nem aprovada.
+
+### Resumo esquerdo centrado na missão — rascunho local
+
+Countdown azul guardado no commit local `2616cc5`, sem push. Utilizador clarificou que pretende descrição do lançamento no painel esquerdo, identificação da missão, Watch here e countdown bem presentes, conservando View full details. Reorganizado resumo: nome/agência/veículo/estado/data, contagem azul grande, transmissão, descrição original e ações. Fusos colapsados, local numa linha e cache/nota ficam numa zona secundária no fim. Eliminado cartão grande dedicado só ao local; não duplicadas fontes/calendário/partilha da página completa.
+
+Dificuldade: descrições podem ser longas ou não existir e não devem esconder a transmissão ou aparentar tradução automática. Watch here fica antes da descrição; texto original preservado com atribuição, mensagem localizada quando indisponível, quebra de linhas/palavras sem truncamento arbitrário. Contagem reutiliza elegibilidade e neutralidade de horários incertos/decorridos. Durante troca de seleção, descrição anterior não é reutilizada; loading/erro e acesso à página completa preservados.
+
+Verificação: 92 testes web, build e nove E2E passaram (um cenário desktop omitido no móvel). Testes atualizados confirmam descrição e timer no resumo, ausência de fontes/calendário/partilha, fusos e navegação completa existentes. Captura do resumo revista visualmente. Sem alteração de API/BD, sem commit/push deste rascunho; lote azul anterior continua apenas local. Preview sujeita a aprovação, sem publicação.
+
+Refinamento pedido: retirar fusos do resumo esquerdo; ficam exclusivamente na página completa. Removida expansão e importação do resumo; data na hora do visitante preservada. Verificados 92 testes web, build e dois percursos E2E desktop/móvel com ausência de fusos no resumo e presença na página de detalhe. Captura atualizada revista. Sem commit/push; rascunho do resumo continua pendente de aprovação.
+
+Refinamento seguinte: local de lançamento também fica apenas na página completa. Removida linha do resumo e estilo sem uso; informação mantida nos cartões da página de detalhe. Passaram 92 testes web, build e dois E2E desktop/móvel, incluindo ausência do local no resumo e presença no detalhe. Sem mudança de dados/API nem commit/push; preview local atualizada.
+
+Utilizador aprovou o resumo final e autorizou commit e push, incluindo o commit local anterior `2616cc5` do countdown azul. Resumo final contém identificação da missão, data local, contagem, Watch here, descrição e View full details; fusos e local reservados à página completa. Roadmap/exportações permanecem locais; CI e publicação ainda carecem de confirmação posterior.

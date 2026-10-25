@@ -29,7 +29,8 @@ test('search, filters, mission, persistent favorite, streams, language and theme
   if (!isMobile) {
     await expect(page.locator('#selected-mission')).toContainText('Mission at a glance');
     await expect(page.locator('#selected-mission .mission-sources')).toHaveCount(0);
-    await expect(page.locator('#selected-mission')).not.toContainText('Controlled mission for browser tests.');
+    await expect(page.locator('#selected-mission .summary-description')).toContainText('Controlled mission for browser tests.');
+    await expect(page.locator('#selected-mission .summary-countdown [role="timer"]')).toBeVisible();
     await expect.poll(async () => {
       const left = await page.locator('.dashboard-introduction').boundingBox();
       const right = await page.locator('.calendar-panel').boundingBox();
@@ -37,8 +38,8 @@ test('search, filters, mission, persistent favorite, streams, language and theme
     }).toBeLessThan(2);
     await expect(page.locator('.launch-results-scroll')).toHaveCSS('overflow-y','scroll');
     await expect(page.locator('.launch-results-scroll')).toHaveCSS('overscroll-behavior-y','contain');
-    await page.locator('#selected-mission .panel-time-zones summary').click();
-    await expect(page.locator('#selected-mission .panel-time-zones .time-comparison')).toBeVisible();
+    await expect(page.locator('#selected-mission .panel-time-zones')).toHaveCount(0);
+    await expect(page.locator('#selected-mission .summary-location')).toHaveCount(0);
     await page.locator('#selected-mission .stream-button').click();
     await expect(page.locator('#selected-mission').getByRole('link', {name:/Fixture broadcast/})).toBeVisible();
     await page.emulateMedia({reducedMotion: 'reduce'});
@@ -49,6 +50,8 @@ test('search, filters, mission, persistent favorite, streams, language and theme
   await expect(page).toHaveURL(/\/launches\/e2e-falcon$/);
   await expect(page.getByRole('heading', { name: 'Test Starlink', exact: true, level: 1 })).toBeVisible();
   await expect(page.locator('.mission-description')).toContainText('Controlled mission for browser tests.');
+  await expect(page.locator('.mission-clock-panel .time-comparison')).toBeVisible();
+  await expect(page.locator('.mission-fact-card').filter({hasText:/launch site/i})).toContainText('Test launch site');
   const sources = page.getByRole('region', { name: 'Explore sources' });
   await expect(sources.getByRole('link', { name: /Example agency website/ })).toHaveAttribute('href', 'https://example.com/agency');
   await expect(sources.getByRole('link', { name: /Example rocket website/ })).toHaveAttribute('target', '_blank');

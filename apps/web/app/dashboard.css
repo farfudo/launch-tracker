@@ -470,3 +470,11 @@ html[data-theme="dark"] { --timer-bg: #142b4b; --timer-border: #416999; --timer-
 @media (min-width: 1101px) {
   .calendar-panel .launch-list > .launch-card { grid-template-columns: 75px minmax(0, 1fr) 160px; }
 }
+.selected-mission-panel .summary-countdown { margin: .8rem 0 1rem; }
+.selected-mission-panel .summary-countdown .countdown strong { font-size: clamp(1.6rem, 3vw, 2.4rem); }
+.summary-description { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.selected-mission-panel .summary-description h3 { margin: 0 0 .65rem; font-size: 1.05rem; }
+.summary-description > p { font-size: 1rem; line-height: 1.75; color: var(--text-soft); white-space: pre-line; overflow-wrap: anywhere; }
+.summary-description > .launch-meta { font-size: .8rem; }
+.summary-secondary { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.summary-secondary .mission-summary-hint { border: 0; padding-top: 0; font-size: .8rem; }

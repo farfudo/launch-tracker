@@ -87,6 +87,7 @@
 - [x] Aprovar estrutura original em cima, bases alinhadas e scroll apenas dos resultados abaixo dos filtros, com indicador decorativo de foguetão; commit/push autorizados.
 - [x] Aprovar detalhe compacto com Watch here no topo e remoção do trilho extra da lista; commit/push autorizados.
 - [x] Aprovar destaque azul do countdown na lista e página completa; autorizado commit local, sem push.
-- [ ] Propor e rever reorganização do resumo esquerdo, distinguindo informação essencial dos detalhes completos.
+- [x] Propor e rever reorganização do resumo esquerdo, distinguindo informação essencial dos detalhes completos.
+- [x] Aprovar resumo com descrição original, identificação da missão, countdown azul, Watch here e View full details; fusos e local apenas na página completa. Commit/push autorizados.
 - [ ] Transmissões e ligações oficiais.
 - [ ] Telemetria, quando houver fonte adequada.

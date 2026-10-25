@@ -12,7 +12,7 @@ import { FavoriteButton } from "./favorites";
 import { MissionStreams } from "./mission-streams";
 import { Spinner, LinkPending } from "./pending-feedback";
 import { CacheNotice } from "./cache-notice";
-import { LaunchTimes } from "./launch-times";
+import { Countdown } from "./countdown";
 
 type Selection = {
   selected: Launch | null;
@@ -74,9 +74,9 @@ export function MissionDetailPanel() {
   const { locale, messages: t } = useLocale();
   const d = dashboardCopy[locale];
   const summaryCopy = {
-    "pt-PT": { title: "Resumo da missão", hint: "Descrição, janela de lançamento e fontes estão na página completa." },
-    "en-GB": { title: "Mission at a glance", hint: "Description, launch window and sources are on the full mission page." },
-    "es-ES": { title: "Resumen de la misión", hint: "La descripción, ventana de lanzamiento y fuentes están en la página completa." },
+    "pt-PT": { title: "Resumo da missão", hint: "Janela de lançamento, fontes e restantes detalhes estão na página completa." },
+    "en-GB": { title: "Mission at a glance", hint: "Launch window, sources and further details are on the full mission page." },
+    "es-ES": { title: "Resumen de la misión", hint: "La ventana de lanzamiento, fuentes y demás detalles están en la página completa." },
   }[locale];
   const panel = useRef<HTMLElement>(null);
   const revision = selection?.revision ?? 0;
@@ -99,17 +99,20 @@ export function MissionDetailPanel() {
     <p className="selected-mission-agency">{selected.agency || t.agencyPending} · {selected.vehicle || t.vehiclePending}</p>
     <span className="launch-status-tag" data-tone={launchStatusTone(selected.status)}>{formatLaunchStatus(selected.status, locale)}</span>
     <p className="selected-mission-date"><LocalLaunchDate date={selected.net} /></p>
-    <details key={selected.id} className="panel-time-zones"><summary>{d.zones}</summary><LaunchTimes isoDate={selected.net} launchTimeZone={detail?.launch_timezone ?? selected.launch_timezone} /></details>
+    <div className="mission-countdown summary-countdown"><Countdown date={selected.net} status={selected.status} /></div>
     <p className="visually-hidden" role="status">{loading ? d.loadingMission : `${d.selectedMission}: ${selected.name}`}</p>
     {loading ? <p className="panel-feedback"><Spinner /> {d.loadingMission}</p> : null}
     {error ? <div className="panel-feedback" role="alert"><p>{d.missionError}</p><button type="button" onClick={() => select(selected)}>{t.retry}</button></div> : null}
     {detail ? <div className={revision > 0 ? "mission-detail-enter" : undefined}>
-      {detail.frontend_cache ? <CacheNotice entries={[detail.frontend_cache]} autoRefresh={false} onRetry={() => select(selected)} /> : null}
-      <dl className="selected-mission-facts"><div><dt>{t.launchSite}</dt><dd>{detail.location_name || t.pending}</dd></div></dl>
       <MissionStreams launch={detail} compact />
+      <div className="summary-description"><h3>{t.aboutMission}</h3><p>{detail.mission_description || t.descriptionPending}</p>
+      {detail.mission_description ? <p className="launch-meta">{t.originalDescription}</p> : null}</div>
     </div> : null}
     <div className="selected-mission-actions"><Link className="pill-button" href={`/launches/${selected.id}`}>{d.fullDetails} →<LinkPending /></Link><FavoriteButton id={selected.id} name={selected.name} /></div>
+    <div className="summary-secondary">
     <p className="mission-summary-hint">{summaryCopy.hint}</p>
+    {detail?.frontend_cache ? <CacheNotice entries={[detail.frontend_cache]} autoRefresh={false} onRetry={() => select(selected)} /> : null}
+    </div>
     </div>
   </section>;
 }

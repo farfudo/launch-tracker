@@ -80,11 +80,12 @@ it("keeps only the summary and directs advanced information to the full page", (
   const panel = container.querySelector("#selected-mission")!;
   expect(panel.textContent).toContain("Mission at a glance");
   expect(panel.textContent).toContain("Agency · Rocket");
-  expect(panel.textContent).not.toContain("First description");
+  expect(panel.textContent).toContain("First description");
+  expect(panel.querySelector('.summary-countdown [role="timer"]')).not.toBeNull();
   expect(panel.querySelector(".mission-sources")).toBeNull();
   expect(panel.querySelector(".mission-calendar")).toBeNull();
-  expect(panel.querySelector(".panel-time-zones summary")?.textContent).toBe("Time zones");
-  expect(panel.querySelectorAll(".panel-time-zones .time-comparison > div")).toHaveLength(3);
+  expect(panel.querySelector(".panel-time-zones")).toBeNull();
+  expect(panel.querySelector(".summary-location")).toBeNull();
   expect(panel.textContent).not.toContain("Share mission");
   expect(panel.querySelector(".mission-summary-hint")?.textContent).toContain("full mission page");
   expect(panel.querySelector(".pill-button")?.getAttribute("href")).toBe("/launches/first");
