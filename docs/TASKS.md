@@ -85,5 +85,6 @@
 - [x] Rever fusos/transmissões concentrados no resumo esquerdo, sem fusos repetidos na lista direita; manter página completa no móvel.
 - [x] Rever alinhamento desktop; proposta inicial de apresentação acima de ambos substituída pela correção seguinte.
 - [x] Aprovar estrutura original em cima, bases alinhadas e scroll apenas dos resultados abaixo dos filtros, com indicador decorativo de foguetão; commit/push autorizados.
+- [x] Aprovar detalhe compacto com Watch here no topo e remoção do trilho extra da lista; commit/push autorizados.
 - [ ] Transmissões e ligações oficiais.
 - [ ] Telemetria, quando houver fonte adequada.

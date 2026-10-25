@@ -68,9 +68,12 @@ export default async function LaunchDetail({ params, searchParams }: {
               <div><p>{t.expectedDate}</p><LocalLaunchDate date={launch.net} /></div>
             </div>
             <div className="mission-countdown"><Countdown date={launch.net} status={launch.status} /></div>
+            <MissionStreams launch={launch} />
+            <div className="mission-secondary-actions">
             <FavoriteButton id={launch.id} name={launch.name} />
             <MissionCalendar launch={launch} />
             <MissionShare key={launch.id} id={launch.id} name={launch.name} />
+            </div>
           </div>
           <VehicleVisual key={launch.image_url || launch.id} launch={launch} />
         </section>
@@ -88,7 +91,6 @@ export default async function LaunchDetail({ params, searchParams }: {
 
         <MissionSources launch={launch} />
         <div className="mission-content-grid">
-          <MissionStreams launch={launch} />
           <section className="mission-panel mission-story" aria-labelledby="mission-heading">
             <div className="mission-panel-heading"><span className="panel-icon"><MissionIcon name="orbit" /></span><h2 id="mission-heading">{t.aboutMission}</h2><span className="panel-index" aria-hidden="true">01</span></div>
             <p className="mission-description">{launch.mission_description || t.descriptionPending}</p>

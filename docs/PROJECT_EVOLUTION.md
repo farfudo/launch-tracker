@@ -414,3 +414,15 @@ Dificuldade: barras nativas podem ficar ocultas pelo sistema, mesmo com estilos.
 Verificação: 92 testes web, build e nove E2E passaram; um cenário exclusivamente desktop omitido no móvel. Confirmados scroll dos resultados, filtros imóveis, documento imóvel e avanço do indicador; captura E2E revista. Em browsers com scrollbar WebKit há decoração adicional; outros conservam estilo nativo e trilho temático. Arrastar o foguetão não é suportado: é indicador decorativo; navegação mantém rato/trackpad/teclado e barra nativa. Preview local com fixture longa para demonstrar, sem commit/push/produção. Aprovação pendente do lote.
 
 O utilizador aprovou a preview final e autorizou commit e push de todo o lote: legibilidade smartphone, fusos/transmissões no resumo esquerdo, Watch here indisponível visível, alinhamento inferior preservando estrutura superior e scroll só dos resultados com indicador temático. Roadmap e exportações continuam excluídos conforme preferência anterior. Envio autorizado não equivale a confirmação de CI/deploy; essa validação é posterior.
+
+### Detalhe compacto, transmissão prioritária e barra única — rascunho local
+
+Lote anterior enviado em `8d25ef1`. Novo pedido: Watch here no início da página de lançamento (principalmente smartphone), mais informação visível no desktop e apenas a barra nativa verde com foguetão, sem trilho decorativo extra. Movida a única instância de MissionStreams para o hero, após a contagem e antes das ações secundárias. Mantidos estado indisponível e expansão normal; sem duplicar links ou jogadores. Reduzidos margem superior, título, espaços e altura da imagem apenas na página de detalhe; favoritos/calendário/partilha agrupados numa linha quando cabe. Mantida escala legível móvel e ordem do conteúdo.
+
+Dificuldade: destacar a transmissão sem aumentar novamente o primeiro ecrã. Solução: compactar espaços e hierarquia, não esconder conteúdo principal; imagem segue depois das ações no móvel. Títulos muito longos, zoom e ecrãs baixos ainda podem exigir scroll; não se promete visibilidade universal.
+
+Removido trilho extra e respetivo estado/eventos/ResizeObserver; LaunchResultsScroll torna-se componente simples sem JavaScript próprio. Mantida barra nativa decorada nos motores que suportam scrollbar WebKit, com fallback nativo noutros; filtros fixos e contenção de scroll preservados. Não se alteram definições do sistema para forçar barras sempre visíveis.
+
+Verificação: 92 testes web, build e nove E2E passaram (um caso desktop omitido no móvel). Confirmados Watch here único e completamente visível no primeiro ecrã das fixtures desktop/Pixel 7, filtros imóveis, scroll isolado e ausência de trilho extra. Capturas desktop/móvel revistas visualmente, incluindo primeiros cartões visíveis no desktop. Não representa todos os idiomas/títulos/tamanhos de ecrã nem teste Safari real. Sem backend, commit/push ou alteração pública; preview sujeita a aprovação.
+
+O utilizador aprovou este lote e autorizou commit e push. Inclui documentação e testes, mantendo roadmap/exportações locais. CI e publicação requerem confirmação posterior ao envio.

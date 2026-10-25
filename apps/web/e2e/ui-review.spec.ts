@@ -9,10 +9,9 @@ test('desktop launch panel scroll does not move the document', async ({ page, is
   await calendar.hover();
   const documentY = await page.evaluate(() => window.scrollY);
   const filterY = (await page.locator('.calendar-panel .filters').boundingBox())!.y;
-  await expect(page.locator('.launch-scroll-rail')).toBeVisible();
+  await expect(page.locator('.launch-scroll-rail')).toHaveCount(0);
   await page.mouse.wheel(0, 10000);
   await expect.poll(() => calendar.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
-  await expect.poll(() => page.locator('.launch-scroll-rocket').evaluate(el => parseFloat((el as HTMLElement).style.top))).toBeGreaterThan(0);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(documentY);
   expect((await page.locator('.calendar-panel .filters').boundingBox())!.y).toBe(filterY);
   await page.mouse.wheel(0, 10000);
@@ -60,6 +59,9 @@ test('development label and informative detail without empty stream actions', as
 test('calendar and sharing use an explicit expanded state', async ({ page, context }) => {
   await context.route('**/*', route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.abort());
   await page.goto('/launches/e2e-falcon');
+  await expect(page.locator('.mission-hero .stream-button')).toBeInViewport({ratio:1});
+  await expect(page.locator('.stream-button')).toHaveCount(1);
+  await page.screenshot({path:test.info().outputPath('detail-first-screen.png')});
   await expect(page.locator('.mission-countdown [role="timer"]')).toBeVisible();
   await expect(page.locator('.mission-countdown .countdown > div')).toHaveCount(4);
   const calendar = page.locator('details.mission-calendar');

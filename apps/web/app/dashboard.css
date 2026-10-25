@@ -372,11 +372,8 @@ details:not(.stream-disclosure) > summary:focus-visible { outline: 3px solid var
 @media (min-width: 801px) {
   .launch-dashboard > .calendar-panel { display: flex; flex-direction: column; align-self: stretch; min-height: 0; max-height: none; contain: size; overflow: hidden; }
   .calendar-panel > :not(.launch-results-shell) { flex-shrink: 0; }
-  .launch-results-shell { display: grid; grid-template-columns: minmax(0, 1fr) 22px; gap: .4rem; flex: 1; min-height: 0; }
-  .launch-results-scroll { min-height: 0; overflow-y: scroll; overscroll-behavior-y: contain; scrollbar-gutter: stable; padding-right: .6rem; }
-  .launch-scroll-rail { display: block; position: relative; margin-block: 4px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); pointer-events: none; }
-  .launch-scroll-rocket { position: absolute; left: -3px; width: 26px; height: 34px; display: grid; place-items: center; color: var(--accent-strong); background: var(--surface-raised); border-radius: 10px; border: 1px solid var(--border-strong); }
-  .launch-scroll-rocket .mission-icon { width: 22px; height: 22px; }
+  .launch-results-shell { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  .launch-results-scroll { flex: 1; min-height: 0; overflow-y: scroll; overscroll-behavior-y: contain; scrollbar-gutter: stable; padding-right: .6rem; }
   .launch-results-scroll::-webkit-scrollbar { width: 20px; }
   .launch-results-scroll::-webkit-scrollbar-track { background: var(--surface); border-radius: 12px; }
   .launch-results-scroll::-webkit-scrollbar-thumb { min-height: 64px; border: 2px solid var(--surface); border-radius: 12px; background: var(--accent-strong) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 32'%3E%3Cpath fill='%23fffefa' d='M12 3C8 7 7 12 7 18l-4 6 5-1 4 4 4-4 5 1-4-6c0-6-1-11-5-15Z'/%3E%3Ccircle cx='12' cy='13' r='2.5' fill='%230b5e59'/%3E%3Cpath stroke='%23ffb36b' stroke-width='2' d='M10 27v3m4-3v3'/%3E%3C/svg%3E") center / 16px 26px no-repeat; }
@@ -384,7 +381,6 @@ details:not(.stream-disclosure) > summary:focus-visible { outline: 3px solid var
   @supports not selector(::-webkit-scrollbar) { .launch-results-scroll { scrollbar-color: var(--accent-strong) var(--surface); scrollbar-width: auto; } }
 }
 .launch-results-scroll:focus-visible { outline: 3px solid var(--accent-strong); outline-offset: -3px; border-radius: 10px; }
-@media (max-width: 800px) { .launch-scroll-rail { display: none; } }
 
 /* Smartphone reading scale: preserve desktop density, give mobile text room. */
 @media (max-width: 600px) {
@@ -427,4 +423,33 @@ details:not(.stream-disclosure) > summary:focus-visible { outline: 3px solid var
   .launch-row-actions { flex-wrap: wrap; }
   .launch-row-actions .countdown-group, .launch-row-actions .favorite-action { flex-basis: 100%; }
   .mission-navigation .back-link { font-size: .9375rem; }
+}
+
+/* Detail: viewing the broadcast is primary; keep it above secondary actions. */
+.mission-detail-page { padding-top: 1.25rem; }
+.mission-navigation { margin-bottom: .8rem; }
+.mission-hero { align-items: start; gap: 1.8rem; margin-bottom: 1rem; }
+.mission-hero-copy { padding: 0; }
+.mission-hero h1 { font-size: clamp(2rem, 3.5vw, 3rem); margin: .65rem 0; line-height: 1.1; }
+.mission-hero-copy .mission-target { margin: .7rem 0; padding-top: .65rem; }
+.mission-hero .mission-countdown { margin: .7rem 0; padding: .75rem; }
+.mission-hero .mission-countdown .countdown { margin-top: .5rem; }
+.mission-hero .mission-countdown .countdown > div { padding: .4rem .25rem; }
+.mission-hero .stream-disclosure { margin: .65rem 0; }
+.mission-hero .stream-unavailable { margin: .65rem 0; padding: .65rem; }
+.mission-hero .stream-unavailable .stream-button { margin-top: 0; }
+.mission-hero > .vehicle-visual .vehicle-visual-frame { height: 340px; }
+.mission-secondary-actions { display: flex; flex-wrap: wrap; align-items: start; gap: .5rem; margin-top: .75rem; }
+.mission-secondary-actions > .favorite-action, .mission-secondary-actions > .mission-calendar, .mission-secondary-actions > .mission-share { margin: 0; }
+.mission-secondary-actions > details[open] { flex-basis: 100%; }
+.mission-facts { margin-top: 1rem; }
+.mission-fact-card { padding: 1rem; }
+.fact-card-heading { margin-bottom: .65rem; }
+@media (max-width: 800px) {
+  .mission-detail-page { padding-top: 1rem; }
+  .mission-hero { gap: 1rem; }
+  .mission-hero h1 { font-size: clamp(1.65rem, 7vw, 2.2rem); }
+  .mission-navigation .mission-wordmark { display: none; }
+  .mission-hero > .vehicle-visual .vehicle-visual-frame { height: 260px; }
+  .mission-secondary-actions { gap: .6rem; }
 }
