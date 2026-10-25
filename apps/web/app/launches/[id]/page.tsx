@@ -65,7 +65,7 @@ export default async function LaunchDetail({ params, searchParams }: {
             <span className="mission-status" data-tone={launchStatusTone(launch.status)}><span aria-hidden="true" />{formatLaunchStatus(launch.status, locale)}</span>
             <div className="mission-target">
               <span className="mission-target-icon"><MissionIcon name="clock" /></span>
-              <div><p>{t.expectedDate}</p><LocalLaunchDate date={launch.net} /></div>
+              <div><p>{t.expectedDate}</p><LocalLaunchDate date={launch.net} status={launch.status} /></div>
             </div>
             <div className="mission-countdown"><Countdown date={launch.net} status={launch.status} /></div>
             <MissionStreams launch={launch} />

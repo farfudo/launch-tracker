@@ -46,10 +46,11 @@ def list_launches(
     agency: str | None = Query(default=None, max_length=200),
     vehicle: str | None = Query(default=None, max_length=200),
     period: Literal["all", "upcoming", "past"] = Query(default="all"),
+    status: Literal["go", "tbc", "tbd", "success", "hold", "failure", "partial", "inflight"] | None = Query(default=None),
     db: Session = Depends(get_db),
 ) -> list[LaunchResponse]:
     """List launches stored in the local cache."""
-    return list_cached_launches(db, limit, q, agency, vehicle, period)
+    return list_cached_launches(db, limit, q, agency, vehicle, period, status=status)
 
 
 @app.get(

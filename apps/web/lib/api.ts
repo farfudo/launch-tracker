@@ -72,6 +72,7 @@ function fetchApi(url: string, timeoutMs = API_TIMEOUT_MS) {
 }
 
 export type LaunchFilters = {
+  status?: string;
   q?: string;
   agency?: string;
   vehicle?: string;

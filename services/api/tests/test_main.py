@@ -5,6 +5,19 @@ from app.models import Launch
 from app.repositories import list_launches, upsert_launches
 
 
+def test_status_filter_aliases_and_composition(client, db_session):
+    upsert_launches(db_session, [
+        LaunchSummary(id="ready", name="Ready", status="Go for Launch", net="2099-01-01T12:00:00Z", agency="SpaceX"),
+        LaunchSummary(id="unknown", name="Unknown", status="TBD", net="2099-01-02T12:00:00Z", agency="NASA"),
+        LaunchSummary(id="confirmed", name="Unconfirmed", status="To Be Confirmed", net="2099-01-03T12:00:00Z", agency="NASA"),
+    ])
+    assert [x["id"] for x in client.get("/api/v1/launches?status=tbd").json()] == ["unknown"]
+    assert [x["id"] for x in client.get("/api/v1/launches?status=tbc").json()] == ["confirmed"]
+    assert [x["id"] for x in client.get("/api/v1/launches?status=go&agency=SpaceX&limit=1").json()] == ["ready"]
+    assert client.get("/api/v1/launches?status=tbd&agency=SpaceX").json() == []
+    assert client.get("/api/v1/launches?status=invalid").status_code == 422
+
+
 def test_entity_source_categories_survive_storage_and_detail_response(client, db_session):
     links = [{"kind": "agency", "url": "https://example.com/agency", "title": "Agency"},
              {"url": "https://example.com/legacy"}]

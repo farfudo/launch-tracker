@@ -460,3 +460,15 @@ Dificuldade: distinguir navegação dentro da mesma vista de deslocações inten
 Verificação: 92 testes web, build e dez E2E passaram; dois testes específicos desktop omitidos no móvel. Novo ensaio desktop mede scrollY antes/depois de Favoritos, Todos, Histórico, Próximos, agência e limpar filtros, confirmando posição estável. Percursos móveis existentes também passaram, mas teste geométrico novo está limitado ao desktop. Sem backend, alteração pública, commit ou push; preview local pronta para revisão.
 
 Utilizador aprovou a correção de scroll e autorizou apenas commit local, sem push. Pedido seguinte: filtros/esquema de cores por estado e indicação explícita de datas incertas; preparação sujeita a nova preview.
+
+### Estados filtráveis e datas provisórias — rascunho local
+
+Correção de scroll guardada em `cc2a7e4`, sem push. A pedido do utilizador, acrescentado seletor de estado: pronto, a confirmar, data por definir, sucesso, espera, falha, falha parcial e em voo. Mantida paleta semântica existente: verde positivo, amarelo pendente, azul em voo, vermelho negativo e neutro para desconhecidos. Query `status` conservada ao trocar agência/favoritos/período e limpa pelo controlo limpar filtros.
+
+Filtro implementado na API antes da ordenação/limite, com grupos de aliases do fornecedor e validação de valores; não se aproxima uma pesquisa global sobre apenas 100 resultados do frontend. Pesquisa de estado segue caminho autoritativo existente da cache. Sem migração de BD. Contrato aditivo exige API atualizada antes de considerar filtro validado publicamente; nenhum deploy realizado neste rascunho.
+
+Dificuldade: TBD não significa necessariamente ausência de qualquer estimativa: a fonte pode guardar um instante provisório. Conservada a estimativa, com fundo/borda amarelos, ícone e texto «Data provisória» em PT/EN/ES nos cartões, resumo, hero, destaque e detalhe. TBC/TBD/Hold considerados incertos; sem countdown numérico nesses estados conforme regra existente. Não inventada opção «sem data» para timestamps nulos, que o contrato atual não suporta. Horários Go continuam previsões, não garantia de execução. Estilos claros/escuros próprios sem depender só de cor.
+
+Verificação: 93 testes web, build, 55 testes API SQLite isolada e Ruff passaram. Python do sistema não tinha pytest; reutilizado ambiente temporário de testes existente sem instalar dependências nem tocar na BD pública. Um aviso de depreciação Starlette/httpx no ambiente. Doze E2E passaram, dois cenários desktop omitidos no móvel, incluindo filtro TBC composto com favoritos, data provisória visível e ausência de timer incerto. Captura desktop revista visualmente. Não repetidos testes PostgreSQL nem auditoria formal de contraste. Preview usa API fictícia equivalente; API real coberta pelos testes isolados. Sem commit/push do incremento; aprovação visual pendente.
+
+Utilizador aprovou o incremento de estados/datas provisórias e autorizou apenas commit local, sem push. Pediu depois compactar/colapsar informação de fonte e cache; nova alteração sujeita a preview.

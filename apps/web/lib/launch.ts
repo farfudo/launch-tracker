@@ -31,3 +31,8 @@ export function launchStatusTone(status: string): string {
   if (key === "statusInFlight") return "active";
   return "neutral";
 }
+
+export const statusFilters = {go:"statusGo", tbc:"statusTbc", tbd:"statusTbd", success:"statusSuccess", hold:"statusHold", failure:"statusFailure", partial:"statusPartialFailure", inflight:"statusInFlight"} as const;
+export function uncertainLaunchDate(status?: string): boolean {
+  return !!status && ["statusTbc", "statusTbd", "statusHold"].includes(statusKeys[status]);
+}

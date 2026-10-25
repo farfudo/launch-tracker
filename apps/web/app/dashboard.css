@@ -478,3 +478,8 @@ html[data-theme="dark"] { --timer-bg: #142b4b; --timer-border: #416999; --timer-
 .summary-description > .launch-meta { font-size: .8rem; }
 .summary-secondary { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
 .summary-secondary .mission-summary-hint { border: 0; padding-top: 0; font-size: .8rem; }
+.date-uncertain { display: inline-block; border-left: 3px solid #d29b18; padding: .25rem .5rem; background: #fff3c9; color: #705000; border-radius: 6px; }
+.date-uncertainty-note { display: block; font-size: .8rem; font-weight: 650; margin-top: .2rem; line-height: 1.5; }
+.mission-target .date-uncertain time { color: inherit; }
+html[data-theme="dark"] .date-uncertain { background: #3b321a; color: #ffdf89; border-color: #e6b83c; }
+.calendar-panel .filters .status-filter { grid-column: 1 / -1; }

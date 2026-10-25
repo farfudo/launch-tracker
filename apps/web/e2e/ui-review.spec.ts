@@ -1,5 +1,21 @@
 import { expect, test } from '@playwright/test';
 
+test('status filter keeps provisional dates explicit and composes with favorites', async ({page}) => {
+  await page.goto('/?period=upcoming');
+  await page.locator('select[name="status"]').selectOption('tbc');
+  await page.getByRole('button',{name:'Apply filters',exact:true}).click();
+  await expect(page).toHaveURL(/status=tbc/);
+  await expect(page.locator('.launch-list .launch-card')).toHaveCount(1);
+  await expect(page.locator('.launch-list .date-uncertain')).toContainText('Provisional date');
+  await expect(page.locator('.launch-list [role="timer"]')).toHaveCount(0);
+  await page.locator('.favorite-views a').filter({hasText:'My favorites'}).click();
+  await expect(page).toHaveURL(/status=tbc/);
+  await expect(page).toHaveURL(/favorites=1/);
+  await page.locator('.favorite-views a').filter({hasText:/^All$/}).click();
+  await expect(page.locator('.launch-list .date-uncertain')).toBeVisible();
+  await page.screenshot({path:test.info().outputPath('provisional-date-filter.png'),fullPage:true});
+});
+
 test('calendar view switches preserve document scroll', async ({page, isMobile}) => {
   test.skip(isMobile, 'Desktop regression at a fixed document offset');
   await page.setViewportSize({width:1280, height:1000});

@@ -50,6 +50,7 @@ createServer(async (req, res) => {
       && (period !== 'past' || Date.parse(l.net) < now)
       && (!url.searchParams.get('agency') || l.agency === url.searchParams.get('agency'))
       && (!url.searchParams.get('vehicle') || l.vehicle === url.searchParams.get('vehicle'))
+      && (!url.searchParams.get('status') || ({go:['Go','Go for Launch'],tbc:['TBC','To Be Confirmed'],tbd:['TBD','To Be Determined'],success:['Success','Launch Successful']}[url.searchParams.get('status')] || []).includes(l.status))
       && (!url.searchParams.get('q') || `${l.name} ${l.agency} ${l.vehicle}`.toLowerCase().includes(url.searchParams.get('q').toLowerCase())))
       .sort((a, b) => (Date.parse(a.net) - Date.parse(b.net)) * (period === 'past' ? -1 : 1))
       .slice(0, Number(url.searchParams.get('limit') || 100));

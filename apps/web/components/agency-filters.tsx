@@ -7,7 +7,7 @@ import { useLocale } from "./locale-provider";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { Spinner } from "./pending-feedback";
 
-export function AgencyFilters({ agencies, filters }: { agencies: string[]; filters: { q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string } }) {
+export function AgencyFilters({ agencies, filters }: { agencies: string[]; filters: { q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string; status?: string } }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [target, setTarget] = useState<string | null>(null);
@@ -20,6 +20,7 @@ export function AgencyFilters({ agencies, filters }: { agencies: string[]; filte
       const params = new URLSearchParams();
       params.set("period", filters.period === "past" ? "past" : "upcoming");
       if (filters.q) params.set("q", filters.q);
+      if (filters.status) params.set("status", filters.status);
       if (filters.vehicle) params.set("vehicle", filters.vehicle);
       if (filters.favorites === "1") params.set("favorites", "1");
       if (agency) params.set("agency", agency);

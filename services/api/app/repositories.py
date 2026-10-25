@@ -8,6 +8,17 @@ from app.clients.launch_library import LaunchSummary
 from app.models import Launch
 from app.schemas import DataStatusResponse
 
+STATUS_GROUPS = {
+    "go": ["Go", "Go for Launch"],
+    "tbc": ["TBC", "To Be Confirmed"],
+    "tbd": ["TBD", "To Be Determined"],
+    "success": ["Success", "Launch Successful"],
+    "hold": ["Hold"],
+    "failure": ["Failure", "Launch Failure"],
+    "partial": ["Partial Failure", "Launch was a Partial Failure"],
+    "inflight": ["In Flight", "Launch in Flight"],
+}
+
 
 def get_data_status(db: Session) -> DataStatusResponse:
     count, last_updated = db.execute(
@@ -29,6 +40,7 @@ def list_launches(
     vehicle: str | None = None,
     period: Literal["all", "upcoming", "past"] = "all",
     now: datetime | None = None,
+    status: str | None = None,
 ) -> list[Launch]:
     statement = select(Launch)
     reference = now or datetime.now(UTC)
@@ -50,6 +62,8 @@ def list_launches(
         statement = statement.where(Launch.agency == agency)
     if vehicle:
         statement = statement.where(Launch.vehicle == vehicle)
+    if status:
+        statement = statement.where(Launch.status.in_(STATUS_GROUPS.get(status, [])))
 
     ordering = Launch.net.desc() if period == "past" else Launch.net.asc()
     statement = statement.order_by(ordering, Launch.id).limit(limit)

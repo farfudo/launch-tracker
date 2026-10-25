@@ -13,8 +13,9 @@ import { dashboardCopy } from "../lib/dashboard-i18n";
 import { MissionIcon } from "../components/mission-icon";
 import { AgencyFilters } from "../components/agency-filters";
 import { LinkPending, SearchForm } from "../components/pending-feedback";
+import { statusFilters } from "../lib/launch";
 
-type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string }>;
+type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string; status?: string }>;
 export const maxDuration = 60;
 
 export default async function Home({ searchParams }: { searchParams: SearchParams }) {
@@ -22,7 +23,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const favoritesOnly = filters.favorites === "1";
   const period = filters.period === "past" ? "past" : "upcoming";
   const periodParams = new URLSearchParams();
-  for (const key of ["q", "agency", "vehicle", "favorites"] as const) {
+  for (const key of ["q", "agency", "vehicle", "favorites", "status"] as const) {
     if (filters[key]) periodParams.set(key, filters[key]);
   }
   periodParams.set("period", "upcoming");
@@ -31,7 +32,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const historyHref = `/?${periodParams}#launch-calendar`;
   const viewParams = new URLSearchParams();
   viewParams.set("period", period);
-  for (const key of ["q", "agency", "vehicle"] as const) {
+  for (const key of ["q", "agency", "vehicle", "status"] as const) {
     if (filters[key]) viewParams.set(key, filters[key]);
   }
   const allHref = `/?${viewParams.toString()}`;
@@ -41,9 +42,9 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const t = dictionaries[locale];
   const d = dashboardCopy[locale];
   const dataStatusPromise = getCachedStatus().catch(() => null);
-  const nextCandidatesPromise = period === "past" || filters.q || filters.agency || filters.vehicle ? getCachedLaunches(2, { period: "upcoming" }).catch(() => null) : null;
+  const nextCandidatesPromise = period === "past" || filters.q || filters.agency || filters.vehicle || filters.status ? getCachedLaunches(2, { period: "upcoming" }).catch(() => null) : null;
   const { launches, filterOptions, hasLaunchData, hasFilterOptions, cache } = await getCachedCalendarData(
-    { q: filters.q, agency: filters.agency, vehicle: filters.vehicle, period }
+    { q: filters.q, agency: filters.agency, vehicle: filters.vehicle, status: filters.status, period }
   );
   const nextResult = nextCandidatesPromise ? await nextCandidatesPromise : null;
   const nextCandidates = nextCandidatesPromise ? nextResult?.value ?? [] : launches;
@@ -95,6 +96,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <span>{t.search}</span>
             <input defaultValue={filters.q} name="q" placeholder={t.searchPlaceholder} type="search" />
           </label>
+          <label className="status-filter"><span>{t.status}</span><select name="status" defaultValue={filters.status || ""}>
+            <option value="">{t.allLaunches}</option>
+            {Object.entries(statusFilters).map(([value, key]) => <option key={value} value={value}>{t[key]}</option>)}
+          </select></label>
           <details className="advanced-filters" open={Boolean(filters.agency || filters.vehicle)}>
           <summary>{d.filters}</summary>
           <div className="advanced-filter-fields"><label>

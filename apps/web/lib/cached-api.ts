@@ -87,7 +87,7 @@ export async function getCachedStatus() {
 export async function getCachedLaunches(limit = 100, filters: LaunchFilters = {}): Promise<CachedResult<Launch[]>> {
   const period = filters.period === "past" ? "past" : "upcoming";
   // Free-text and entity searches stay authoritative: do not approximate them over a partial 100-row snapshot.
-  if (filters.q || filters.agency || filters.vehicle) {
+  if (filters.q || filters.agency || filters.vehicle || filters.status) {
     const value = await getUpcomingLaunches(limit, { ...filters, period });
     validateLaunches(value);
     return { value, cache: { checkedAt: new Date().toISOString(), revalidateSeconds: 0 } };
