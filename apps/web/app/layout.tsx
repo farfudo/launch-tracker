@@ -12,6 +12,7 @@ import { dashboardCopy } from "../lib/dashboard-i18n";
 import { LinkPending } from "../components/pending-feedback";
 import "./styles.css";
 import "./dashboard.css";
+import { SectionNavigation } from "../components/section-navigation";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = dictionaries[await getLocale()];
@@ -34,6 +35,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <div className="site-toolbar">
             <Link href="/" className="home-brand" aria-label="NextRocketLaunch home"><BrandMark /><LinkPending /></Link>
             <DevelopmentBadge />
+            <SectionNavigation />
             <div className="toolbar-controls"><ThemeToggle /><LanguageSelector /></div>
           </div>
           {children}

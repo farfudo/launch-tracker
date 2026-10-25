@@ -95,3 +95,5 @@
 - [x] Aprovar continuação natural do scroll nos limites da lista, testada com 30 fixtures na preview; commit/push autorizados.
 - [ ] Transmissões e ligações oficiais.
 - [ ] Telemetria, quando houver fonte adequada.
+- [x] Aprovar estrutura editorial inicial de Descobertas; autorizado commit local, sem push. Ver `docs/DISCOVERIES_REVIEW.md`.
+- [ ] Após aprovação, desenhar ingestão segura/cache de RSS Artemis e validar fontes/permissões para notícias dos outros programas.

@@ -492,3 +492,15 @@ Dificuldade: distinguir scroll interno de encadeamento ao documento. Teste atual
 Utilizador não conseguia experimentar por estar na URL com status=tbc, que mostra só uma fixture. Ampliada a lista dedicada `q=scroll-fixture` para 30 missões explicitamente fictícias, com IDs de detalhe resolúveis. No modo DESIGN_PREVIEW e apenas nessa pesquisa, os 30 cartões são apresentados de início; produção mantém seis com carregar mais. Preview reiniciada com flag própria e aberta sem filtro de estado/favoritos. Build passou e leitura HTTP confirmou exatamente 30 cartões renderizados. Sem sync, BD pública, commit/push ou alteração de dados reais. Lista criada exclusivamente para testar scroll; não representa calendário real.
 
 Utilizador experimentou e aprovou o comportamento, autorizando commit e push deste lote. Exportações e roadmap continuam locais. Confirmação de envio não implica CI/publicação confirmadas; nenhuma sincronização ou migração de produção foi executada.
+
+### Descobertas: reutilização, Artemis e Starship — rascunho local
+
+Lote anterior enviado em `4e870da`. Utilizador aprovou avançar com nova secção focada em foguetões reutilizáveis, Artemis e Starship. Preparada rota `/discoveries`, navegação entre duas secções, três cartões temáticos e seis guias/fontes oficiais com resumos introdutórios próprios PT/EN/ES. Temas cruzados não duplicam a mesma fonte. Sem imagens/logos externos; cores e ícones coerentes com a app.
+
+Decisão de âmbito: primeira preview editorial explicitamente identificada, não feed automático de notícias. Investigados NASA RSS/Artemis/media, SpaceX, Blue Origin e ESA Themis. Diferenciados objetivos de projeto, testes e operação; sem inventar datas de notícias, estatísticas de reutilização ou marcos. Data exibida corresponde à consulta editorial. Investigação, permissões e caminho para RSS futuro em `docs/DISCOVERIES_REVIEW.md`.
+
+Dificuldades: integrar nova navegação sem apertar cabeçalho móvel; adicionada linha própria no smartphone e estado atual visível. Teste antigo que exigia ausência de nav atualizado para o novo requisito. Suite revelou também cache de fixtures expirada; movida cache gerada para pasta temporária recuperável, sem alterar regras de dados públicos. Nova execução completa passou.
+
+Verificação: 95 testes web, build e 14 E2E passaram, dois casos desktop omitidos no móvel. Temas, URLs seguras únicas, claro/escuro, idioma, contagens e largura móvel cobertos; capturas revistas. Sem backend, custos externos, conta, cron, sync, commit/push ou publicação. Preview aguarda aprovação; próxima fase é ingestão segura de notícias, não incluída nesta entrega.
+
+Utilizador aprovou a estrutura inicial de Descobertas e autorizou apenas commit local, sem push, antes de preparar um novo rascunho de introdução para leitores iniciantes. O novo hook não faz parte desta aprovação inicial.

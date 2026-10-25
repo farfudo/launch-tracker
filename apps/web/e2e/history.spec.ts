@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test('upcoming and history are separate and preserve search on switching', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.site-toolbar nav')).toHaveCount(0);
+  await expect(page.locator('.site-toolbar .section-navigation')).toHaveCount(1);
+  await expect(page.locator('.site-toolbar .section-navigation a')).toHaveCount(2);
   await expect(page.locator('.language-short')).toHaveText('EN⌄');
   await expect(page.getByRole('link', { name: 'farfudo ↗', exact: true })).toHaveAttribute('href', 'https://github.com/farfudo');
   await expect(page.getByRole('link', { name: 'Source code ↗', exact: true })).toHaveAttribute('href', 'https://github.com/farfudo/launch-tracker');
