@@ -426,3 +426,13 @@ Removido trilho extra e respetivo estado/eventos/ResizeObserver; LaunchResultsSc
 Verificação: 92 testes web, build e nove E2E passaram (um caso desktop omitido no móvel). Confirmados Watch here único e completamente visível no primeiro ecrã das fixtures desktop/Pixel 7, filtros imóveis, scroll isolado e ausência de trilho extra. Capturas desktop/móvel revistas visualmente, incluindo primeiros cartões visíveis no desktop. Não representa todos os idiomas/títulos/tamanhos de ecrã nem teste Safari real. Sem backend, commit/push ou alteração pública; preview sujeita a aprovação.
 
 O utilizador aprovou este lote e autorizou commit e push. Inclui documentação e testes, mantendo roadmap/exportações locais. CI e publicação requerem confirmação posterior ao envio.
+
+### Countdown azul com maior destaque — rascunho local
+
+Lote anterior enviado em `f67ed15`. Pedido: destacar contagem na lista e página completa. Proposta azul aceite para preparação: lista com fundo azul suave, borda própria e números maiores; detalhe com painel azul-escuro e números claros. Laranja reservado às transmissões e verde aos estados/interface. Paleta da lista adaptada ao tema escuro. Informação de previsão permanece explícita, sem mudar lógica/intervalos/elegibilidade; horário incerto ou ultrapassado não recebe destaque azul de timer.
+
+Dificuldade: aumentar números sem comprimir excessivamente títulos ou provocar overflow. Coluna de ações no desktop largo passa de 115 para 160 px, mantendo disposição empilhada nos breakpoints existentes. Destaque aplicado apenas aos grupos de contagem na lista e ao painel de detalhe que contém timer, sem pintar mensagens neutras ou histórico. Sem pulsação/flash novo.
+
+Verificação: 92 testes web, build e nove E2E passaram (um caso desktop omitido no móvel), incluindo cores computadas da lista/detalhe, ausência de overflow horizontal nos cenários móveis e Watch here ainda visível no primeiro ecrã testado. Capturas desktop da lista e detalhe revistas visualmente. Não constitui auditoria formal de contraste nem cobertura de todos os títulos/idiomas/browsers. Sem alteração backend, commit/push ou publicação; preview local com dados fictícios aguarda aprovação.
+
+O utilizador aprovou o destaque azul e autorizou apenas commit local, sem push. Pediu uma proposta de reorganização do resumo esquerdo; essa reorganização ainda não foi implementada nem aprovada.

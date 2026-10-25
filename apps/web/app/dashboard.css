@@ -453,3 +453,20 @@ details:not(.stream-disclosure) > summary:focus-visible { outline: 3px solid var
   .mission-hero > .vehicle-visual .vehicle-visual-frame { height: 260px; }
   .mission-secondary-actions { gap: .6rem; }
 }
+
+/* Countdown accent is separate from green status and orange broadcast actions. */
+:root { --timer-bg: #eaf2ff; --timer-border: #a8c6f4; --timer-ink: #174ba0; --timer-muted: #385b87; }
+html[data-theme="dark"] { --timer-bg: #142b4b; --timer-border: #416999; --timer-ink: #a6ceff; --timer-muted: #c1d6ee; }
+.launch-row-actions :is(.countdown-group, .countdown-compact) { padding: .65rem; border: 1px solid var(--timer-border); border-radius: 12px; background: var(--timer-bg); }
+.launch-row-actions .countdown { color: var(--timer-ink); margin: .35rem 0 0; }
+.launch-row-actions .countdown strong { font-size: 1.1rem; font-weight: 750; }
+.launch-row-actions .countdown span { color: var(--timer-muted); opacity: 1; }
+.launch-row-actions .countdown-estimate, .launch-row-actions .countdown-compact > span { color: var(--timer-muted); }
+.launch-row-actions .countdown-compact strong { font-size: 1rem; color: var(--timer-ink); }
+.mission-countdown:has([role="timer"]) { background: #102e55; border-color: #5288c6; box-shadow: 0 4px 14px #102e551a; }
+.mission-countdown:has([role="timer"]) .countdown > div { background: #193e6b; border-color: #416b9d; }
+.mission-countdown:has([role="timer"]) .countdown strong { color: #f1f7ff; text-shadow: 0 1px 8px #88bdff20; }
+.mission-countdown:has([role="timer"]) :is(.countdown-estimate, .countdown span) { color: #c8def8; }
+@media (min-width: 1101px) {
+  .calendar-panel .launch-list > .launch-card { grid-template-columns: 75px minmax(0, 1fr) 160px; }
+}

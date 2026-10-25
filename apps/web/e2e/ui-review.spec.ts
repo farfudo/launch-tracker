@@ -43,6 +43,7 @@ test('development label and informative detail without empty stream actions', as
   await page.screenshot({path:test.info().outputPath('ui-review-detail.png'),fullPage:true});
   await page.goto('/?q=Test');
   await expect(page.locator('.launch-list .countdown-compact')).toHaveCount(1);
+  await expect(page.locator('.launch-row-actions .countdown-group').first()).toHaveCSS('background-color','rgb(234, 242, 255)');
   if ((page.viewportSize()?.width ?? 1000) <= 600) {
     await expect(page.locator('.launch-date').first()).toHaveCSS('font-size', '14px');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -60,6 +61,7 @@ test('calendar and sharing use an explicit expanded state', async ({ page, conte
   await context.route('**/*', route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.abort());
   await page.goto('/launches/e2e-falcon');
   await expect(page.locator('.mission-hero .stream-button')).toBeInViewport({ratio:1});
+  await expect(page.locator('.mission-countdown')).toHaveCSS('background-color','rgb(16, 46, 85)');
   await expect(page.locator('.stream-button')).toHaveCount(1);
   await page.screenshot({path:test.info().outputPath('detail-first-screen.png')});
   await expect(page.locator('.mission-countdown [role="timer"]')).toBeVisible();
