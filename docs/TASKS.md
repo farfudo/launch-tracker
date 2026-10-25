@@ -89,5 +89,6 @@
 - [x] Aprovar destaque azul do countdown na lista e página completa; autorizado commit local, sem push.
 - [x] Propor e rever reorganização do resumo esquerdo, distinguindo informação essencial dos detalhes completos.
 - [x] Aprovar resumo com descrição original, identificação da missão, countdown azul, Watch here e View full details; fusos e local apenas na página completa. Commit/push autorizados.
+- [ ] Rever correção de saltos de scroll em Favoritos/Todos, períodos e limpar filtros; preservar navegação intencional para detalhes.
 - [ ] Transmissões e ligações oficiais.
 - [ ] Telemetria, quando houver fonte adequada.

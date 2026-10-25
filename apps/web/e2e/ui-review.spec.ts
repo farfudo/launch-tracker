@@ -1,5 +1,34 @@
 import { expect, test } from '@playwright/test';
 
+test('calendar view switches preserve document scroll', async ({page, isMobile}) => {
+  test.skip(isMobile, 'Desktop regression at a fixed document offset');
+  await page.setViewportSize({width:1280, height:1000});
+  await page.goto('/?period=upcoming');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.evaluate(() => window.scrollTo({top:120, behavior:'instant'}));
+  const y = await page.evaluate(() => window.scrollY);
+  expect(y).toBeGreaterThan(0);
+  await page.locator('.favorite-views a').filter({hasText:'My favorites'}).click();
+  await expect(page).toHaveURL(/favorites=1/);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(y);
+  await page.locator('.favorite-views a').filter({hasText:/^All$/}).click();
+  await expect(page).not.toHaveURL(/favorites=1/);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(y);
+  await page.locator('.period-tabs a').filter({hasText:'History'}).click();
+  await expect(page).toHaveURL(/period=past/);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(y);
+  await page.locator('.period-tabs a').filter({hasText:'Upcoming launches'}).click();
+  await expect(page).toHaveURL(/period=upcoming/);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(y);
+  await page.locator('.agency-chips a').filter({hasText:'SpaceX'}).click();
+  await expect(page).toHaveURL(/agency=SpaceX/);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(y);
+  await page.locator('.clear-filters').click();
+  await expect(page).not.toHaveURL(/agency=SpaceX/);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(y);
+  await page.screenshot({path:test.info().outputPath('calendar-scroll-preserved.png')});
+});
+
 test('desktop launch panel scroll does not move the document', async ({ page, isMobile }) => {
   test.skip(isMobile, 'Mobile keeps normal document scrolling');
   await page.setViewportSize({width: 900, height: 900});

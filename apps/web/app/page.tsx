@@ -82,8 +82,8 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         ) : null}
         <CacheNotice entries={cacheEntries} />
         <nav className="period-tabs" aria-label={t.launchPeriod}>
-          <Link href={upcomingHref} aria-current={period === "upcoming" ? "page" : undefined}>{t.upcoming}<LinkPending /></Link>
-          <Link href={historyHref} aria-current={period === "past" ? "page" : undefined}>{t.history}<LinkPending /></Link>
+          <Link href={upcomingHref} scroll={false} aria-current={period === "upcoming" ? "page" : undefined}>{t.upcoming}<LinkPending /></Link>
+          <Link href={historyHref} scroll={false} aria-current={period === "past" ? "page" : undefined}>{t.history}<LinkPending /></Link>
         </nav>
         <details className="data-explanation"><summary>{t.aboutData}</summary><p className="launch-meta">{period === "past" ? t.historyNotice : t.upcomingNotice}</p></details>
         {!hasFilterOptions ? <p role="status" className="launch-meta">{t.filtersUnavailable}</p> : null}
@@ -114,11 +114,11 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             </select>
           </label>
           </div></details>
-          <Link className="clear-filters" href={`/?period=${period}#launch-calendar`}>{t.clear}<LinkPending /></Link>
+          <Link className="clear-filters" href={`/?period=${period}#launch-calendar`} scroll={false}>{t.clear}<LinkPending /></Link>
         </SearchForm>
         <nav className="favorite-views" aria-label={t.calendarView}>
-          <Link href={allHref} aria-current={!favoritesOnly ? "page" : undefined}>{t.allLaunches}<LinkPending /></Link>
-          <Link href={favoritesHref} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}<LinkPending /></Link>
+          <Link href={allHref} scroll={false} aria-current={!favoritesOnly ? "page" : undefined}>{t.allLaunches}<LinkPending /></Link>
+          <Link href={favoritesHref} scroll={false} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}<LinkPending /></Link>
         </nav>
         <LaunchResultsScroll>
         {hasLaunchData ? (

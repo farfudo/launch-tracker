@@ -24,7 +24,7 @@ export function AgencyFilters({ agencies, filters }: { agencies: string[]; filte
       if (filters.favorites === "1") params.set("favorites", "1");
       if (agency) params.set("agency", agency);
       const href = `/?${params}#launch-calendar`;
-      return <Link key={agency} href={href} prefetch={false} aria-current={(filters.agency || "") === agency ? "page" : undefined} data-pending={pending && target === agency || undefined} onClick={event => {
+      return <Link key={agency} href={href} scroll={false} prefetch={false} aria-current={(filters.agency || "") === agency ? "page" : undefined} data-pending={pending && target === agency || undefined} onClick={event => {
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         event.preventDefault();
         setTarget(agency);

@@ -450,3 +450,13 @@ Refinamento pedido: retirar fusos do resumo esquerdo; ficam exclusivamente na p�
 Refinamento seguinte: local de lançamento também fica apenas na página completa. Removida linha do resumo e estilo sem uso; informação mantida nos cartões da página de detalhe. Passaram 92 testes web, build e dois E2E desktop/móvel, incluindo ausência do local no resumo e presença no detalhe. Sem mudança de dados/API nem commit/push; preview local atualizada.
 
 Utilizador aprovou o resumo final e autorizou commit e push, incluindo o commit local anterior `2616cc5` do countdown azul. Resumo final contém identificação da missão, data local, contagem, Watch here, descrição e View full details; fusos e local reservados à página completa. Roadmap/exportações permanecem locais; CI e publicação ainda carecem de confirmação posterior.
+
+### Evitar saltos de scroll nas vistas do calendário — rascunho local
+
+Lote anterior enviado em `25372e4`. Utilizador reportou salto para cima ao abrir Favoritos e pediu correção de problemas semelhantes. Encontrados links de Favoritos/Todos, próximos/histórico e limpar filtros sem desativação explícita do scroll de navegação Next. Acrescentado `scroll={false}` nesses links e também na declaração dos chips de agência (cujo router.push já tinha scroll:false). Pesquisa já preservava scroll e foi mantida. Consultada documentação instalada de Link para comportamento de scroll/hash.
+
+Dificuldade: distinguir navegação dentro da mesma vista de deslocações intencionais. Não se desativou scroll globalmente: entrada numa página de lançamento, CTA do hero e revelação de missão selecionada continuam com comportamento existente. Não foram criados timers de reposição de posição. Quando o conteúdo encolhe abaixo da posição atual, o browser ainda pode limitar o scroll ao novo fim da página; não é possível preservar coordenada fora do documento.
+
+Verificação: 92 testes web, build e dez E2E passaram; dois testes específicos desktop omitidos no móvel. Novo ensaio desktop mede scrollY antes/depois de Favoritos, Todos, Histórico, Próximos, agência e limpar filtros, confirmando posição estável. Percursos móveis existentes também passaram, mas teste geométrico novo está limitado ao desktop. Sem backend, alteração pública, commit ou push; preview local pronta para revisão.
+
+Utilizador aprovou a correção de scroll e autorizou apenas commit local, sem push. Pedido seguinte: filtros/esquema de cores por estado e indicação explícita de datas incertas; preparação sujeita a nova preview.
