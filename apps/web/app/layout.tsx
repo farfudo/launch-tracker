@@ -13,6 +13,8 @@ import { LinkPending } from "../components/pending-feedback";
 import "./styles.css";
 import "./dashboard.css";
 import { SectionNavigation } from "../components/section-navigation";
+import { ScrollHeader } from "../components/scroll-header";
+import { SiteFooter } from "../components/site-footer";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = dictionaries[await getLocale()];
@@ -32,13 +34,14 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <ThemeScript />
         <LocaleProvider locale={locale}>
           <a className="skip-link" href="#main-content">{d.skip}</a>
-          <div className="site-toolbar">
+          <ScrollHeader>
             <Link href="/" className="home-brand" aria-label="NextRocketLaunch home"><BrandMark /><LinkPending /></Link>
             <DevelopmentBadge />
             <SectionNavigation />
             <div className="toolbar-controls"><ThemeToggle /><LanguageSelector /></div>
-          </div>
+          </ScrollHeader>
           {children}
+          <SiteFooter locale={locale}/>
         </LocaleProvider>
       </body>
     </html>

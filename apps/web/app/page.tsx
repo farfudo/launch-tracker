@@ -141,7 +141,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       </section>
       {featured ? <FeaturedLaunch launch={featured} locale={locale} /> : null}
       {nextLaunch?.image_url ? <p className="dashboard-image-credit">{d.imagery}: {nextLaunch.image_credit || "Launch Library 2"} · {nextLaunch.image_license || t.imageLicenseUnknown}. {d.reference} <Link href={`/launches/${nextLaunch.id}`}>{d.imageInfo} ↗</Link></p> : null}
-      <footer className="dashboard-footer"><div><p>NextRocketLaunch <span>· {d.tagline}</span></p><p>{t.developedBy} <a href="https://github.com/farfudo" target="_blank" rel="noopener noreferrer">farfudo ↗</a> · <a href="https://github.com/farfudo/launch-tracker" target="_blank" rel="noopener noreferrer">{t.sourceCode} ↗</a></p></div><p>{t.dataSource} {t.datesNotice}</p></footer>
+      <p className="dashboard-footer">{t.dataSource} {t.datesNotice}</p>
     </main>
     </MissionSelectionProvider>
   );

@@ -569,3 +569,21 @@ Utilizador aprovou a hierarquia e autorizou commit e push dos lotes locais aprov
 ### Direção editorial acordada
 
 Prioridade a partir deste incremento: uma experiência amigável, visual e intuitiva para quem não acompanha exploração espacial. Explicar primeiro o que está a acontecer e porque importa; introduzir termos técnicos com contexto; usar ilustrações e interações simples para ensinar uma ideia de cada vez; reservar o aprofundamento para guias próprios e divulgações. Não confundir simplicidade com promessas: distinguir planos, testes e resultados, manter fontes e revisão datada. Esta orientação guia os próximos incrementos; novas funcionalidades e alterações públicas continuam sujeitas ao fluxo de preview, aprovação e autorização de push.
+
+### Cabeçalho com revelação por direção do scroll — rascunho local
+
+Pedido: cabeçalho global reaparece suavemente ao subir e recolhe ao descer. Introduzido wrapper cliente ScrollHeader no layout, preservando conteúdo/navegação existentes e espaço no fluxo. Position sticky e transform movem só o cabeçalho, sem retirar/reinserir altura no documento. Sombra discreta fora do topo. Animação de 220ms; prefers-reduced-motion remove-a. Sem JavaScript, o cabeçalho permanece acessível/fixo ao topo por sticky.
+
+Dificuldades previstas: microinversões de trackpad, altura móvel e acesso a controlos fora de vista. Tolerância acumulada de 10px evita oscilações; topo mostra sempre. Foco dentro do cabeçalho revela-o imediatamente e impede recolha durante interação; não se usa aria-hidden/inert para remover ligações do teclado. ResizeObserver mede a altura para compensar âncoras; navegação entre rotas repõe estado visível. Listener passivo no scroll do documento, limitado por requestAnimationFrame, sem intervir no scroll próprio da lista de lançamentos. Efeito/listeners/observer limpos ao mudar rota.
+
+Sem novo backend, dependência, sincronização ou alteração pública. Preview e testes antes da aprovação; não existe autorização de commit/push deste ajuste.
+
+Verificação: 96 testes unitários web, build e 20 E2E passaram (dois casos exclusivos desktop omitidos no móvel); lint do componente/layout sem avisos. Novo E2E em desktop/smartphone verifica ocultação ao descer, revelação ao subir longe do topo, ausência de salto no conteúdo, foco acessível, estado após navegação e movimento reduzido. Suites existentes de filtros, favoritos, scroll interno e guias mantiveram sucesso. Não é validação de todos os browsers/trackpads; preview local pronta para revisão.
+
+### Correção de modalidade de foco e rodapé comum — continuação do rascunho
+
+Utilizador gostou do scroll, mas verificou que clicar no cabeçalho o mantinha visível até clicar fora. Causa: proteção de foco usava qualquer activeElement dentro da barra e CSS focus-within incondicional. Corrigido com distinção de modalidade: teclado protege/revela o cabeçalho; pointerdown e roda libertam essa proteção sem forçar blur nem retirar ligações do teclado. A proteção CSS aplica-se apenas à modalidade de teclado. O mesmo listener/ciclo de limpeza mantém-se por rota.
+
+Pedido adicional: assinatura «NextRocketLaunch · tagline», autoria farfudo e código-fonte em todas as páginas. Criado SiteFooter partilhado no layout, localizado PT/EN/ES, com ligações externas seguras. Retirada cópia da autoria da home para não duplicar; texto de origem/datas da home preservado. Rodapé normal no fim do documento, não barra fixa que reduza área útil. Não acrescenta scripts, tracking ou pedidos externos automáticos. Preparado rascunho, sem commit/push.
+
+Verificação: 96 testes unitários, build e 22 E2E passaram (dois cenários exclusivamente desktop omitidos no móvel); lint dos componentes/layout sem avisos. Regressão específica clica no botão do cabeçalho antes de descer e confirma ocultação real; teclado volta a revelar. Rodapé verificado sem autoria duplicada em home, Descobertas, Artemis, detalhe e preview/loading, incluindo mudança PT. Sem backend ou produção alterados.
