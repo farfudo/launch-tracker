@@ -6,6 +6,12 @@ test('curated discovery topics filter without duplicating sources and support th
   await expect(page.getByRole('heading',{level:1})).toHaveText('Space discoveries and advances');
   await expect(page.locator('.section-navigation a[aria-current="page"]')).toHaveText('Discoveries');
   await expect(page.locator('.discovery-source-card')).toHaveCount(6);
+  if (test.info().project.name === 'desktop-chromium') {
+    expect(await page.locator('.discovery-start').evaluate(element=>element.getBoundingClientRect().bottom)).toBeLessThan(720);
+    expect(await page.evaluate(()=>document.documentElement.scrollHeight)).toBeLessThan(1900);
+  }
+  await expect(page.locator('.discovery-library')).not.toHaveAttribute('open');
+  await page.locator('.discovery-library > summary').click();
   await expect(page.locator('.discovery-topics')).toHaveCount(0);
   const question = page.locator('.discovery-first-question');
   await expect(page.getByRole('heading',{name:'What if a rocket could fly again?',exact:true})).toBeVisible();
@@ -15,9 +21,9 @@ test('curated discovery topics filter without duplicating sources and support th
   await expect(question.locator('p')).toContainText('Recovery means');
   await question.locator('summary').press('Enter');
   await page.locator('.discovery-hook-actions .pill-button').click();
-  await expect(page).toHaveURL(/topic=reuse/);
-  await expect(page.locator('.discovery-source-card')).toHaveCount(5);
-  await expect(page.locator('.discovery-editorial-note')).toContainText('Not an automated news feed');
+  await expect(page).toHaveURL(/#technology-lab/);
+  await expect(page.locator('.technology-panel')).toBeVisible();
+  await expect(page.locator('.discovery-footer')).toContainText('not an automatic feed');
   await page.locator('.topic-artemis').click();
   await expect(page.locator('.discovery-source-card')).toHaveCount(1);
   await expect(page.locator('.discovery-source-card h3')).toHaveText('Artemis');
@@ -27,14 +33,17 @@ test('curated discovery topics filter without duplicating sources and support th
   await expect(page.locator('.discovery-source-card')).toHaveCount(2);
   await page.locator('.topic-reuse').click();
   await expect(page.locator('.discovery-source-card')).toHaveCount(5);
+  await page.locator('.discovery-library > summary').click();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({path:test.info().outputPath('discoveries-light.png'),fullPage:true});
   await page.getByRole('button',{name:'Switch to dark theme',exact:true}).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
+  await expect(page.locator('body')).toHaveCSS('background-color','rgb(16, 27, 33)');
   await page.screenshot({path:test.info().outputPath('discoveries-dark.png'),fullPage:true});
   await page.getByRole('combobox',{name:'Language',exact:true}).selectOption('pt-PT');
   await expect(page.getByRole('heading',{level:1})).toHaveText('Descobertas e avanços espaciais');
   await expect(page).toHaveURL(/topic=reuse/);
+  if (await page.locator('.discovery-library').getAttribute('open') !== null) await page.locator('.discovery-library > summary').click();
   await page.getByRole('button',{name:'Mudar para o tema claro',exact:true}).click();
   await expect(page.locator('body')).toHaveCSS('background-color','rgb(234, 233, 228)');
   await page.screenshot({path:test.info().outputPath('discoveries-pt.png'),fullPage:true});
@@ -90,30 +99,41 @@ test('hero catch repeats muted at double speed, can pause and respects reduced m
   await expect(page.locator('.booster-catch iframe')).toHaveCount(1);
 });
 
-test('landing excerpts load on request, stop when closed, and keep original sources accessible', async ({page,context}) => {
-  let embedRequests = 0;
-  await context.route('**/*', route => {
-    const url = new URL(route.request().url());
-    if (url.hostname === '127.0.0.1') return route.continue();
-    if (url.hostname === 'www.youtube-nocookie.com') {
-      embedRequests++;
-      return route.fulfill({contentType:'text/html',body:'<p>Test player</p>'});
-    }
-    return route.abort();
-  });
+test('visual technology lab explains concepts and links to a dated Artemis deep dive', async ({page,context}) => {
+  await context.route('**/*',route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.abort());
   await page.goto('/discoveries');
-  await expect(page.locator('.landing-card')).toHaveCount(4);
-  await expect(page.locator('.landing-screen iframe')).toHaveCount(0);
-  expect(embedRequests).toBe(0);
-  await page.getByRole('button',{name:'Watch excerpt · 35 s — Falcon 9',exact:true}).click();
-  await expect(page.locator('.landing-screen iframe')).toHaveAttribute('src',/start=0&end=35&autoplay=0/);
-  await page.getByRole('button',{name:'Watch excerpt · 35 s — Falcon Heavy',exact:true}).click();
-  await expect(page.locator('.landing-screen iframe')).toHaveCount(1);
-  await expect(page.locator('.landing-screen iframe')).toHaveAttribute('title','Falcon Heavy — Watch excerpt');
-  await page.getByRole('button',{name:'Close excerpt — Falcon Heavy',exact:true}).click();
-  await expect(page.locator('.landing-screen iframe')).toHaveCount(0);
-  await expect(page.locator('.landing-actions a')).toHaveCount(4);
-  await expect(page.locator('.landing-landspace a')).toHaveAttribute('href','https://www.landspace.com/');
+  await expect(page.locator('.landing-gallery')).toHaveCount(0);
+  await page.locator('.technology-action').click();
+  await expect(page.locator('.technology-state')).toContainText('Gases exit');
+  await page.getByRole('button',{name:'Materials',exact:true}).click();
+  await expect(page.locator('.technology-stage')).toContainText('Demonstrator');
+  await expect(page.locator('.technology-action')).toHaveAttribute('aria-pressed','false');
+  await page.locator('.technology-action').press('Enter');
+  if (test.info().project.name === 'desktop-chromium') {
+    await page.locator('.technology-action').hover();
+    await expect(page.locator('.technology-action')).toHaveCSS('background-color','rgb(223, 248, 245)');
+    await expect(page.locator('.technology-action')).toHaveCSS('color','rgb(8, 127, 122)');
+  }
+  await expect(page.locator('.technology-state')).toContainText('illustrative only');
+  await page.locator('.technology-limits summary').click();
+  await expect(page.locator('.technology-limits')).toContainText('not a spacecraft already repairing itself');
+  await page.getByRole('button',{name:'Refuelling',exact:true}).click();
+  await page.locator('.technology-action').click();
+  await expect(page.locator('.technology-state')).toContainText('symbolic');
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await expect(page.locator('.tech-flow')).toHaveCSS('animation-name','none');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.locator('.landing-gallery').screenshot({path:test.info().outputPath('landing-gallery.png')});
+  await page.getByRole('link',{name:'Explore the Artemis guide →',exact:true}).click();
+  await expect(page).toHaveURL(/\/discoveries\/artemis/);
+  await expect(page.locator('.section-navigation a[aria-current]')).toHaveText('Discoveries');
+  await expect(page.locator('.guide-role-grid article')).toHaveCount(4);
+  await expect(page.locator('.guide-missions article')).toHaveCount(3);
+  await expect(page.locator('.guide-missions article').last()).toContainText('Low Earth orbit');
+  await expect(page.locator('.guide-update')).toContainText('23 October 2026');
+  await page.locator('.guide-faq summary').press('Enter');
+  await expect(page.locator('.guide-faq p')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({path:test.info().outputPath('artemis-guide.png'),fullPage:true});
+  await page.getByRole('combobox',{name:'Language',exact:true}).selectOption('pt-PT');
+  await expect(page.locator('h1')).toHaveText('Artemis: as peças de um regresso à Lua');
 });

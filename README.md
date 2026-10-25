@@ -16,7 +16,7 @@ Para acompanhar os commits, decisões, dificuldades encontradas e soluções, co
 - Imagens com crédito/licença e ilustração de recurso quando indisponíveis.
 - «Watch here» com opções colapsadas, ligadas a canais oficiais ou independentes; disponibilidade de direto não garantida.
 - Adicionar ao calendário; modo claro predefinido e opção escura com preferência persistida.
-- Em revisão local: «Descobertas», com guias/fontes oficiais por tema (reutilização, Artemis e Starship); ainda não é um feed automático de notícias.
+- Em revisão local: «Descobertas», um hub compacto com laboratório visual de motores, materiais e reabastecimento, guia Artemis em página própria e biblioteca de fontes oficiais; não é um feed automático de notícias. Pesquisa e limites em `docs/DISCOVERIES_REDESIGN.md`.
 
 Os dados vêm da Launch Library 2 e são guardados em PostgreSQL. A sincronização agendada é independente de visitas/deploys. Datas podem mudar; a interface mostra a hora de atualização. O alojamento gratuito da API pode demorar a iniciar após inatividade. Alertas automáticos e telemetria ainda não estão implementados.
 

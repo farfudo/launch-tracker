@@ -1,5 +1,7 @@
 # Descobertas — primeira preview editorial
 
+**Estado atual:** a galeria e os cartões descritos no histórico abaixo pertencem a versões anteriores. O rascunho de reformulação de 25/10/2026 retira a galeria, compacta o hook e acrescenta laboratório visual e guia Artemis. Ver `DISCOVERIES_REDESIGN.md` para estudo, fontes, limites e opções da nova preview. Sem push/publicação.
+
 ## Âmbito
 
 Rota `/discoveries` com três entradas temáticas: reutilização, Artemis/Lua e Starship. Navegação no cabeçalho liga calendário e nova secção. Filtros URL `topic` sem duplicar fontes com vários temas; valor desconhecido regressa à seleção completa. PT/EN/ES, claro/escuro e layout móvel. Conteúdo introdutório original, seis recursos oficiais, sem copiar artigos, logos ou fotografias externas. Arte em CSS e ícones existentes.

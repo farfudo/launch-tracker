@@ -96,7 +96,8 @@
 - [ ] Transmissões e ligações oficiais.
 - [ ] Telemetria, quando houver fonte adequada.
 - [x] Aprovar estrutura editorial inicial de Descobertas; autorizado commit local, sem push. Ver `docs/DISCOVERIES_REVIEW.md`.
-- [ ] Rever hook de Descobertas para iniciantes: pergunta, relevância e diferença entre recuperação/reutilização; preview antes de commit/push.
+- [x] Rever hook de Descobertas para iniciantes: aprovado e guardado no commit local c961731, sem push.
 - [ ] Após aprovação, desenhar ingestão segura/cache de RSS Artemis e validar fontes/permissões para notícias dos outros programas.
-- [ ] Rever e aprovar galeria local de aterragens/captura em Descobertas (quatro excertos oficiais + LandSpace referenciada); confirmar push separadamente e registar verificação em PROJECT_EVOLUTION.
-- [ ] Aprovar revisão do hook: sem os três cartões grandes, captura Super Heavy silenciosa em repetição acelerada; confirmar push à parte.
+- [x] Rever galeria local de aterragens: aprovada no commit local c961731, depois retirada do novo rascunho por mudança de direção editorial do utilizador.
+- [x] Aprovar revisão do hook: sem os três cartões grandes, captura Super Heavy silenciosa em repetição acelerada; commit local c961731, sem push.
+- [x] Aprovar nova preview compacta de Descobertas: laboratório visual Motores/Materiais/Reabastecimento, guia Artemis próprio e biblioteca recolhida. Commit local autorizado, sem push.

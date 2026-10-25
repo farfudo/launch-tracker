@@ -11,6 +11,6 @@ export function SectionNavigation() {
   const t = discoveriesCopy[locale];
   return <nav className="section-navigation" aria-label={t.nav}>
     <Link href="/" aria-current={pathname === "/" || pathname.startsWith("/launches/") ? "page" : undefined}>{t.launches}<LinkPending /></Link>
-    <Link href="/discoveries" aria-current={pathname === "/discoveries" ? "page" : undefined}>{t.nav}<LinkPending /></Link>
+    <Link href="/discoveries" aria-current={pathname === "/discoveries" || pathname.startsWith("/discoveries/") ? "page" : undefined}>{t.nav}<LinkPending /></Link>
   </nav>;
 }
