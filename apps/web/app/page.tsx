@@ -75,18 +75,20 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             {!hasLaunchData ? t.dataUnavailable : dataStatus?.cached_launches === 0 ? t.awaitingData : dataStatus?.stale ? t.staleData : t.launchCalendar}
           </span>
         </div>
+        <CacheNotice entries={cacheEntries} compact>
         {hasLaunchData && dataStatus?.last_updated_at ? (
           <p className="launch-meta">
             {t.source}: {dataStatus.source} · {t.lastUpdated}: {formatLaunchDate(dataStatus.last_updated_at, locale)}.
-            {" "}{dataStatus.stale ? t.staleNotice : t.datesNotice}
+            {" "}{t.datesNotice}
           </p>
         ) : null}
-        <CacheNotice entries={cacheEntries} />
+        <p className="launch-meta">{period === "past" ? t.historyNotice : t.upcomingNotice}</p>
+        </CacheNotice>
+        {dataStatus?.stale ? <p className="launch-meta" role="status">{t.staleNotice}</p> : null}
         <nav className="period-tabs" aria-label={t.launchPeriod}>
           <Link href={upcomingHref} scroll={false} aria-current={period === "upcoming" ? "page" : undefined}>{t.upcoming}<LinkPending /></Link>
           <Link href={historyHref} scroll={false} aria-current={period === "past" ? "page" : undefined}>{t.history}<LinkPending /></Link>
         </nav>
-        <details className="data-explanation"><summary>{t.aboutData}</summary><p className="launch-meta">{period === "past" ? t.historyNotice : t.upcomingNotice}</p></details>
         {!hasFilterOptions ? <p role="status" className="launch-meta">{t.filtersUnavailable}</p> : null}
         <AgencyFilters agencies={filterOptions.agencies} filters={filters} />
         <SearchForm>

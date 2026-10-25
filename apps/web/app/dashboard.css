@@ -483,3 +483,7 @@ html[data-theme="dark"] { --timer-bg: #142b4b; --timer-border: #416999; --timer-
 .mission-target .date-uncertain time { color: inherit; }
 html[data-theme="dark"] .date-uncertain { background: #3b321a; color: #ffdf89; border-color: #e6b83c; }
 .calendar-panel .filters .status-filter { grid-column: 1 / -1; }
+.frontend-cache-notice-compact { margin: .35rem 0; }
+.frontend-cache-notice-compact .data-info > summary { width: fit-content; gap: .45rem; padding: .4rem .6rem; background: transparent; font-size: .8rem; }
+.data-info > div { padding-top: .5rem; line-height: 1.65; }
+.data-info > div p + p { margin-top: .6rem; }

@@ -90,6 +90,7 @@
 - [x] Propor e rever reorganização do resumo esquerdo, distinguindo informação essencial dos detalhes completos.
 - [x] Aprovar resumo com descrição original, identificação da missão, countdown azul, Watch here e View full details; fusos e local apenas na página completa. Commit/push autorizados.
 - [x] Aprovar correção de saltos de scroll em Favoritos/Todos, períodos e limpar filtros; commit local `cc2a7e4`, sem push.
-- [ ] Rever filtro por estado e destaque explícito de datas provisórias (TBC/TBD/Hold); aprovar antes de commit e autorizar push separadamente.
+- [x] Aprovar filtro por estado/datas provisórias; commit local `5e70f54`, sem push.
+- [x] Aprovar informação rotineira de fonte/cache colapsada em «ⓘ Sobre estes dados», mantendo avisos visíveis; commit/push autorizados com os lotes de scroll e estados/datas.
 - [ ] Transmissões e ligações oficiais.
 - [ ] Telemetria, quando houver fonte adequada.

@@ -472,3 +472,13 @@ Dificuldade: TBD não significa necessariamente ausência de qualquer estimativa
 Verificação: 93 testes web, build, 55 testes API SQLite isolada e Ruff passaram. Python do sistema não tinha pytest; reutilizado ambiente temporário de testes existente sem instalar dependências nem tocar na BD pública. Um aviso de depreciação Starlette/httpx no ambiente. Doze E2E passaram, dois cenários desktop omitidos no móvel, incluindo filtro TBC composto com favoritos, data provisória visível e ausência de timer incerto. Captura desktop revista visualmente. Não repetidos testes PostgreSQL nem auditoria formal de contraste. Preview usa API fictícia equivalente; API real coberta pelos testes isolados. Sem commit/push do incremento; aprovação visual pendente.
 
 Utilizador aprovou o incremento de estados/datas provisórias e autorizou apenas commit local, sem push. Pediu depois compactar/colapsar informação de fonte e cache; nova alteração sujeita a preview.
+
+### Informação de fonte/cache compacta — rascunho local
+
+Estados e datas guardados em `5e70f54`, sem push. Substituídos os parágrafos permanentes no cabeçalho do calendário por uma única divulgação nativa «ⓘ Sobre estes dados», fechada por defeito. Inclui fonte, atualização da fonte, verificação da cópia da interface e explicação do período, preservando distinção entre timestamps. Integra a explicação anteriormente separada para não duplicar controlos. Rótulo localizado existente, ícone decorativo e alvo de pelo menos 44 px.
+
+Dificuldade: compactar informação rotineira sem esconder falhas/obsolescência. CacheNotice mantém polling/revalidação montados mesmo com details fechado; estados de atualização/erro e botão de retry ficam fora da divulgação. Aviso de dados antigos da API permanece visível e badge existente preservado. Não alterados intervalos ou regras de cache.
+
+Verificação: 94 testes web, build e doze E2E passaram (dois casos desktop omitidos no móvel). Novo teste confirma aviso/retry fora da área colapsada; E2E confirma timestamps ocultos inicialmente e abertura/fecho por Enter em desktop/móvel. Captura desktop revista visualmente. Sem mudança backend ou repetição dos respetivos testes, sem commit/push/publicação deste rascunho. Aprovação visual pendente.
+
+Utilizador aprovou a compactação e autorizou commit e push dos lotes locais, incluindo `cc2a7e4` (scroll) e `5e70f54` (estados/datas). Roadmap e exportações continuam excluídos. API e frontend têm alterações aditivas de filtro de estado; confirmação posterior de CI e publicação é necessária antes de afirmar funcionamento público.

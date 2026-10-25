@@ -7,6 +7,18 @@ import { LocaleProvider } from "../components/locale-provider";
 const { refresh, router } = vi.hoisted(() => { const refresh = vi.fn(); return { refresh, router: { refresh } }; });
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); refresh.mockClear(); });
+it("collapses routine metadata but keeps stale warnings and retry outside", async () => {
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const container = document.createElement('div'); const root = createRoot(container);
+  try {
+    await act(async () => root.render(<LocaleProvider locale="en-GB"><CacheNotice compact autoRefresh={false} entries={[{checkedAt:new Date(Date.now()-360000).toISOString(), revalidateSeconds:300}]}><p>Source details</p></CacheNotice></LocaleProvider>));
+    expect(container.querySelector('details')?.open).toBe(false);
+    expect(container.querySelector('details')?.textContent).toContain('Source details');
+    expect(container.querySelector('[role="status"]')?.closest('details')).toBeNull();
+    expect(container.querySelector('[role="status"]')?.textContent).toContain('has not been confirmed');
+    expect(container.querySelector('button')?.closest('details')).toBeNull();
+  } finally { await act(async () => root.unmount()); }
+});
 it("bounds refresh attempts and preserves saved-data messaging", async () => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   vi.useFakeTimers();
