@@ -587,3 +587,15 @@ Utilizador gostou do scroll, mas verificou que clicar no cabeçalho o mantinha v
 Pedido adicional: assinatura «NextRocketLaunch · tagline», autoria farfudo e código-fonte em todas as páginas. Criado SiteFooter partilhado no layout, localizado PT/EN/ES, com ligações externas seguras. Retirada cópia da autoria da home para não duplicar; texto de origem/datas da home preservado. Rodapé normal no fim do documento, não barra fixa que reduza área útil. Não acrescenta scripts, tracking ou pedidos externos automáticos. Preparado rascunho, sem commit/push.
 
 Verificação: 96 testes unitários, build e 22 E2E passaram (dois cenários exclusivamente desktop omitidos no móvel); lint dos componentes/layout sem avisos. Regressão específica clica no botão do cabeçalho antes de descer e confirma ocultação real; teclado volta a revelar. Rodapé verificado sem autoria duplicada em home, Descobertas, Artemis, detalhe e preview/loading, incluindo mudança PT. Sem backend ou produção alterados.
+
+### Aprovação do rodapé e correção do fundo lateral em telemóvel
+
+Cabeçalho e rodapé em duas linhas aprovados e guardados no commit `cc68e0a`, sem push. Utilizador reportou uma barra escura ao arrastar lateralmente no telemóvel. Diagnóstico a 390 px: home, Descobertas, Artemis e detalhe tinham largura documental igual ao viewport, mas o elemento raiz ainda usava `rgb(8,17,31)` do estilo inicial, enquanto o body claro usava `rgb(234,233,228)`. O ressalto lateral podia expor esse fundo antigo. A especificidade de `:root` preservava a cor antiga apesar da regra posterior `html`.
+
+Rascunho de correção: raiz passa a usar `var(--surface)` como o body, acompanhando ambos os temas; `overflow-x: clip` limita o canvas lateral sem criar um contentor de scroll que prejudique o cabeçalho sticky, e `overscroll-behavior-x: none` impede encadeamento/ressalto lateral nos navegadores compatíveis. Não se bloqueia o eixo vertical nem o scroll próprio dos filtros. Teste de regressão cobre larguras 320/390/430, quatro páginas e ambos os temas. Não implica alteração de produção; validação física em Safari/iPhone continua recomendada para o gesto elástico nativo.
+
+Primeira execução dos novos testes encontrou ainda um transbordo real a 320 px em Descobertas: `min-height: 200px` combinado com `aspect-ratio: 16/9` fazia a área do vídeo crescer até cerca de 356 px dentro de um cartão mais estreito. Em mobile, a área passa a ter largura explícita de 100% e deixa de impor essa altura mínima, preservando a proporção e sem cortar conteúdo. Cabeçalho e rodapé continuaram a passar nos quatro testes existentes durante este diagnóstico.
+
+Verificação final do rascunho: build e seis testes E2E passaram, cobrindo limites laterais em 320/390/430 px nos dois temas, quatro rotas, e regressões de cabeçalho/rodapé. `git diff --check` sem erros. Correção mobile ainda sem commit/push, para revisão visual.
+
+Utilizador aprovou posteriormente o commit e push desta correção mobile, juntamente com o cabeçalho/rodapé já guardados em `cc68e0a`. Documentos locais de partilha e `FEATURES_ROADMAP.md` continuam excluídos do envio.
