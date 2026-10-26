@@ -24,6 +24,9 @@ test('curated discovery topics filter without duplicating sources and support th
   await page.locator('.discovery-hook-actions .pill-button').click();
   await expect(page).toHaveURL(/#technology-lab/);
   await expect(page.locator('.technology-panel')).toBeVisible();
+  await expect(page.locator('.artemis-feature-photo')).toContainText('Artemis I');
+  await expect(page.locator('.artemis-feature-photo')).toContainText('NASA / JSC');
+  await expect(page.locator('.artemis-feature .lunar-orbit')).toHaveCount(0);
   await expect(page.locator('.discovery-footer')).toContainText('not an automatic feed');
   await page.locator('.topic-artemis').click();
   await expect(page.locator('.discovery-source-card')).toHaveCount(1);
@@ -68,7 +71,8 @@ test('hero catch repeats muted at double speed, can pause and respects reduced m
       setPlaybackRate(rate:number) {calls.push(`rate:${rate}`);}
       playVideo() {calls.push('play'); this.options.events.onStateChange({target:this,data:1});}
       pauseVideo() {calls.push('pause'); this.options.events.onStateChange({target:this,data:2});}
-      loadVideoById(clip:{startSeconds:number;endSeconds:number}) {calls.push(`loop:${clip.startSeconds}:${clip.endSeconds}`);}
+      getCurrentTime() {return 125;}
+      seekTo(seconds:number) {calls.push(`seek:${seconds}`);}
       destroy() {this.frame.remove();}
     }}});
   });
@@ -85,10 +89,11 @@ test('hero catch repeats muted at double speed, can pause and respects reduced m
   expect(await calls()).toContain('mute'); expect(await calls()).toContain('rate:2');
   expect(await calls()).toContain('controls:0');
   await page.evaluate(() => (window as unknown as {catchEnd:()=>void}).catchEnd());
-  expect(await calls()).toContain('loop:125:145');
-  await page.getByRole('button',{name:'▶ Play excerpt',exact:true}).click();
+  expect(await calls()).toContain('seek:125');
   await page.getByRole('button',{name:'Ⅱ Pause excerpt',exact:true}).click();
   await expect(page.getByRole('button',{name:'▶ Play excerpt',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'▶ Play excerpt',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Ⅱ Pause excerpt',exact:true})).toBeVisible();
   expect(await calls()).toContain('pause');
   await page.emulateMedia({reducedMotion:'reduce'});
   await expect(page.locator('.booster-catch iframe')).toHaveCount(0);
@@ -105,7 +110,21 @@ test('visual technology lab explains concepts and links to a dated Artemis deep 
   await page.goto('/discoveries');
   await expect(page.locator('.landing-gallery')).toHaveCount(0);
   await page.locator('.technology-action').click();
-  await expect(page.locator('.technology-state')).toContainText('Gases exit');
+  await expect(page.locator('.technology-steps')).toHaveCount(0);
+  await expect(page.locator('.technology-panel figure .technology-action')).toHaveCount(1);
+  const artBottom=await page.locator('.technology-art').evaluate(element=>element.getBoundingClientRect().bottom);
+  const playTop=await page.locator('.technology-action').evaluate(element=>element.getBoundingClientRect().top);
+  expect(playTop-artBottom).toBeGreaterThanOrEqual(0);
+  expect(playTop-artBottom).toBeLessThan(20);
+  await expect(page.locator('.technology-art')).toHaveClass(/is-active/);
+  await expect(page.locator('.engine-pump')).toHaveCount(2);
+  for(let i=0;i<3;i++) await page.locator('.technology-next').click();
+  if(test.info().project.name==='desktop-chromium') {
+    await page.locator('.technology-next').hover();
+    await expect(page.locator('.technology-next')).toHaveCSS('background-color','rgb(223, 248, 245)');
+    await expect(page.locator('.technology-next')).toHaveCSS('color','rgb(8, 127, 122)');
+  }
+  await expect(page.locator('.technology-state')).toContainText('opposite direction');
   await page.getByRole('button',{name:'Materials',exact:true}).click();
   await expect(page.locator('.technology-stage')).toContainText('Demonstrator');
   await expect(page.locator('.technology-action')).toHaveAttribute('aria-pressed','false');
@@ -120,9 +139,14 @@ test('visual technology lab explains concepts and links to a dated Artemis deep 
   await expect(page.locator('.technology-limits')).toContainText('not a spacecraft already repairing itself');
   await page.getByRole('button',{name:'Refuelling',exact:true}).click();
   await page.locator('.technology-action').click();
-  await expect(page.locator('.technology-state')).toContainText('symbolic');
+  await expect(page.locator('.docking-transfer')).toHaveAttribute('opacity','0');
+  for(let i=0;i<3;i++) await page.locator('.technology-next').click();
+  await expect(page.locator('.technology-state')).toContainText('separate circuits');
+  await expect(page.locator('.docking-transfer')).toHaveAttribute('opacity','1');
+  await expect(page.locator('.orbital-starship')).toHaveCount(2);
+  await expect(page.locator('.technology-art-note')).toContainText('dorsal docking');
   await page.emulateMedia({reducedMotion:'reduce'});
-  await expect(page.locator('.tech-flow')).toHaveCSS('animation-name','none');
+  for (const flow of await page.locator('.tech-flow').all()) await expect(flow).toHaveCSS('animation-name','none');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('link',{name:'Explore the Artemis guide →',exact:true}).click();
   await expect(page).toHaveURL(/\/discoveries\/artemis/);

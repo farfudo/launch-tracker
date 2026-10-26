@@ -13,6 +13,15 @@ it("keeps the visual lab and guide complete across languages with traceable sour
   }
   for (const url of [...Object.values(artemisSources),...technologySources.flat().map(source=>source.url)]) {
     expect(new URL(url).protocol).toBe("https:");
-    expect(["www.nasa.gov","www.esa.int","www.spacex.com","www.blueorigin.com"]).toContain(new URL(url).hostname);
+    expect(["www.nasa.gov","techport.nasa.gov","ntrs.nasa.gov","www.esa.int","www.spacex.com","www.blueorigin.com"]).toContain(new URL(url).hostname);
   }
+});
+
+it('distinguishes Raptor-inspired art and planned Starship transfer from demonstrated internal transfer',()=>{
+  const copy=explorerCopy['en-GB'];
+  expect(copy.technologies[0].title).toContain('Raptor');
+  expect(copy.technologies[0].limit).toContain('not a replica');
+  expect(copy.technologies[2].tag).toContain('Planned');
+  expect(copy.technologies[2].limit).toContain('inside one Starship');
+  expect(copy.technologies[2].limit).toContain('does not prove transfer between two ships');
 });

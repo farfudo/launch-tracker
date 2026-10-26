@@ -51,3 +51,26 @@ Dificuldade editorial real: páginas antigas e novas descrevem arquiteturas dife
 ## Opções para revisão
 
 Recomendado: laboratório primeiro, Artemis a seguir. Alternativas: inverter a ordem para dar maior destaque a Artemis; ou simplificar a biblioteca para apenas ligações. Futuro: novos guias bem pesquisados (proteção térmica, aterragem autónoma, propulsão elétrica) e só depois um feed com cache, datas editoriais e regras de atualização explícitas.
+
+## Referências concretas para as ilustrações — Raptor e Starship
+
+Pedido do utilizador: trocar o motor genérico por inspiração no Raptor e depósitos isolados por duas Starships em órbita. Verificação em 25/10/2026:
+
+- SpaceX, https://www.spacex.com/updates/reusability : identifica o Raptor como motor reutilizável de metano/oxigénio de combustão faseada de fluxo total. O desenho usa referências visuais dessa família, sem afirmar reproduzir todas as tubagens/peças ou uma versão específica.
+- NASA, 23/10/2026, https://www.nasa.gov/missions/artemis/nasa-partners-accelerate-lander-development-for-2028-moon-missions/ : arquitetura planeada com Starships-cisterna a fornecer propelente a uma Starship-depósito, que abastece o veículo HLS. É um conceito de operações sujeito a demonstração, não garantia de datas/configuração.
+- NASA TechPort, https://techport.nasa.gov/projects/116764 : projeto concluído de transferência de oxigénio líquido entre depósitos de uma única Starship. Não equivale a demonstração entre duas naves.
+
+Decisão visual: duas silhuetas Starship com cortes de depósitos separados para O₂ e CH₄, sem chamas durante a transferência. Percursos tracejados representam fluxos; posição, ligação, volumes e variantes são simbólicos. Legenda visível «conceito planeado» e detalhe explicam limites. O estado do projeto nunca é inferido apenas a partir da animação.
+
+## Destaque fotográfico Artemis — 26/10/2026
+
+Fotografia escolhida: NASA/JSC, Artemis I Flight Day 13: Orion, Earth, and Moon, 28/11/2022, identificador art001e000673. Página original https://www.nasa.gov/image-detail/amf-art001e000673/ . Mostra hardware real e o contexto Terra–Lua numa só imagem; preservada inteira (contain) para não perder os dois astros em recortes mobile. Identificação histórica/data/crédito visíveis, ligação à fonte e sem sugerir apoio institucional. Uso informativo segundo https://www.nasa.gov/nasa-brand-center/images-and-media/ . Carregamento lazy, área reservada e fallback em erro. Substitui desenho lunar decorativo e lista de tópicos redundantes no cartão, mantendo título, explicação e acesso ao guia.
+
+## Funcionamento por fases, não movimento decorativo — 26/10/2026
+
+Nova investigação para corrigir a limitação do desenho anterior:
+
+- SpaceX, «Introducing Starship V3», https://www.spacex.com/updates/reusability : quatro docking drogues na face leeward (oposta ao escudo térmico), sondas na configuração cisterna, interfaces de propelente e navegação DragonEye. O mesmo artigo descreve integração/proteção de sensores e controladores no Raptor 3. Evitar apresentar tubagem ilustrada como corte exato do hardware, ou distância/cronologia animada como dados de voo.
+- NASA, Rocket Propulsion Fundamentals, full-flow staged combustion (Two TPAs / Two PBs), https://ntrs.nasa.gov/api/citations/20140002716/downloads/20140002716.pdf : base didática para separar bombas, dois pré-queimadores/turbinas, combustão principal e expansão no bocal. O percurso da explicação não é a sequência de arranque/ignição do Raptor 3.
+
+Decisão: quatro fases com reprodução/pausa, avanço manual e reposição, sem recuperar os cartões de passos rejeitados. Raptor: alimentação → pré-queimadores/turbinas → câmara → bocal/impulso. Starships: encontro → alinhamento dorsal → captura/ligação → transferência. Escudos orientados para fora, quatro pontos de união e fluxo apenas após ligação, com líquidos separados. Ilustração continua conceptual e não resolve detalhes não publicados. Preferência de movimento reduzido usa avanço manual e estados estáticos.

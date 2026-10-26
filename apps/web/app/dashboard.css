@@ -610,8 +610,16 @@ html[data-theme="dark"] .date-uncertain { background: #3b321a; color: #ffdf89; b
 .technology-panel { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:1.25rem; background:var(--surface-raised); border:1px solid var(--border-strong); border-radius:18px; padding:1rem; }
 .technology-panel figure { align-self:center; min-width:0; margin:0; }
 .technology-art { width:100%; display:block; border-radius:12px; background:radial-gradient(ellipse at 50% 100%,#273f64,#0f233d 70%); }
-.technology-art text { font-family:inherit; font-size:14px; fill:#e7f1ff; }
+.technology-art text { font-family:inherit; font-size:18px; fill:#e7f1ff; }
+.technical-callout { fill:#a7cbd9; stroke:#789eaf; stroke-width:1.5; }
+.technical-callout path { fill:none; }
+.composite-layer { transition:transform 1.5s cubic-bezier(.2,.65,.3,1); }
+.tank-liquid-surface { transition:cy 3s ease-in-out; }
+.material-heat-rays { transition:opacity 1s ease; }
 .technology-panel figcaption { color:var(--text-soft); font-size:.75rem; line-height:1.5; padding-top:.5rem; }
+.technology-art-note { display:block; margin-top:.25rem; }
+.technology-art .ship-propellant { font-size:14px; font-weight:650; fill:#f2fbff; }
+.technology-art .ship-transfer-label { font-size:16px; fill:#c9e6e8; }
 .technology-stage { font-size:.75rem; color:var(--accent-strong); font-weight:650; }
 .technology-explainer h3 { font-size:1.4rem; margin:.4rem 0 .6rem; letter-spacing:-.025em; }
 .technology-explainer > p { font-size:.95rem; line-height:1.6; color:var(--text-soft); margin:.55rem 0; }
@@ -624,11 +632,53 @@ html[data-theme="dark"] .date-uncertain { background: #3b321a; color: #ffdf89; b
 .material-crack,.material-heat,.tank-liquid,.engine-flame { transition:all .45s ease; }
 .is-active .tech-flow { stroke-dasharray:7 5; animation:technology-flow 1.2s linear infinite; }
 @keyframes technology-flow { to { stroke-dashoffset:-24; } }
-.artemis-feature { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:1.5rem; padding:1.5rem; margin:1.5rem 0; border-radius:18px; border:1px solid #557394; background:linear-gradient(115deg,#112f4e,#15283b); color:#edf5ff; }
+.technology-playback { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.65rem; }
+.technology-playback .technology-action { flex:1; display:flex; align-items:center; justify-content:center; gap:.35rem; margin:0; }
+.technology-next,.technology-reset { min-height:44px; padding:.5rem .65rem; font-size:.8rem; border:1px solid var(--border-strong); border-radius:9px; color:var(--accent-strong); background:var(--surface); white-space:normal; }
+.technology-reset { min-width:44px; font-size:1.2rem; }
+.technology-next:hover,.technology-reset:hover { background:var(--accent-soft); color:var(--accent-strong); border-color:var(--accent-strong); }
+.technology-progress { display:flex; gap:.5rem; margin:.4rem 0 0; color:var(--accent-strong); font-size:.75rem; line-height:1.5; font-variant-numeric:tabular-nums; }
+.technology-progress span { color:var(--text-soft); }
+.technology-state strong { display:block; margin-bottom:.25rem; }
+.orbital-starship { transition:transform 3s ease-in-out; }
+.ship-name { transition:x 3s ease-in-out; }
+.docking-capture { transition:opacity 3s ease-in; }
+.docking-transfer { transition:opacity .4s ease; }
+.technology-art.is-paused * { animation-play-state:paused !important; }
+.art-0[data-stage="-1"] .engine-combustion,.art-0[data-stage="0"] .engine-combustion,.art-0[data-stage="1"] .engine-combustion { opacity:0 !important; animation:none; }
+.art-0:not([data-stage="3"]) :is(.engine-flame,.engine-exhaust,.engine-thrust) { opacity:0 !important; animation:none; }
+.engine-part-labels text { font-size:14px; }
+@media(min-width:801px) { .technology-art { max-height:300px; } }
+.engine-pump { transform-box:fill-box; transform-origin:center; }
+.is-active .engine-pump { animation:engine-pump 2s linear infinite; }
+.is-active .engine-combustion { animation:engine-burn 1.3s ease-in-out infinite alternate; }
+.is-active .engine-exhaust { stroke-dasharray:3 5; animation:technology-flow .65s linear infinite; }
+.is-active .engine-thrust { animation:engine-burn 1.3s ease-in-out infinite alternate; }
+.material-sensor-halo { opacity:.25; }
+.is-active .material-sensor-halo { transform-box:fill-box; transform-origin:center; animation:sensor-pulse 2s ease-out infinite; }
+.is-active .material-crack { transition:opacity 1.8s ease 1s; }
+.is-active .material-heat { transition:opacity 1s ease; }
+.tank-liquid { transition:y 3s ease-in-out,height 3s ease-in-out; }
+.is-active .transfer-drops { animation:transfer-drops 1s linear infinite; }
+@keyframes engine-pump { to { transform:rotate(360deg); } }
+@keyframes engine-burn { from { opacity:.55; } to { opacity:1; } }
+@keyframes sensor-pulse { from { opacity:.8; transform:scale(.7); } to { opacity:0; transform:scale(1.5); } }
+@keyframes transfer-drops { from { transform:translateX(-6px); } to { transform:translateX(6px); } }
+@media(prefers-reduced-motion:reduce) {
+  .technology-art * { animation:none !important; transition:none !important; }
+}
+.artemis-feature { display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:1.5rem; padding:1.25rem; margin:1.5rem 0; border-radius:18px; border:1px solid #557394; background:linear-gradient(115deg,#112f4e,#15283b); color:#edf5ff; }
 .artemis-feature .eyebrow { color:#a6e4de; }
 .artemis-feature h2 { font-size:clamp(1.4rem,2.4vw,1.9rem); line-height:1.2; letter-spacing:-.035em; margin:.6rem 0; }
 .artemis-feature-copy > p:not(.eyebrow) { color:#d0deeb; line-height:1.65; font-size:.95rem; }
 .artemis-feature .pill-button { margin-top:.3rem; min-height:44px; }
+.artemis-feature-photo { margin:0; min-width:0; align-self:center; }
+.artemis-feature-photo-frame { position:relative; height:220px; overflow:hidden; border:1px solid #567c94; border-radius:12px; background:#050b13; }
+.artemis-feature-photo-frame img { object-fit:contain; }
+.artemis-photo-loading { position:absolute; inset:0; display:flex; gap:.6rem; align-items:center; justify-content:center; padding:1rem; color:#d0e9ee; font-size:.875rem; }
+.artemis-feature-photo figcaption { display:flex; flex-wrap:wrap; justify-content:space-between; gap:.3rem .8rem; padding-top:.5rem; font-size:.75rem; line-height:1.5; color:#c1d5e1; }
+.artemis-feature-photo figcaption a { color:#a6eee1; text-underline-offset:3px; }
+@media(max-width:800px) { .artemis-feature-photo-frame { height:auto; aspect-ratio:4/3; max-height:280px; } .artemis-feature-photo figcaption { font-size:.875rem; } }
 .artemis-feature-visual { display:flex; align-items:center; gap:1rem; }
 .artemis-feature-visual ul { list-style:none; padding:0; margin:0; }
 .artemis-feature-visual li { font-size:.85rem; line-height:1.55; margin:.6rem 0; }

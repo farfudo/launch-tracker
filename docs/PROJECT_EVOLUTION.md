@@ -607,3 +607,53 @@ Após publicação, utilizador mostrou espaço à direita durante pinch/zoom-out
 No leitor, o código anterior usava `end` e `loadVideoById` ao terminar: isso iniciava novo carregamento/reprodução a cada ciclo. Substituído por `getCurrentTime` e `seekTo` no mesmo vídeo antes do fim do excerto, com intervalo de 100 ms, fallback de estado ended, reposicionamento ao regressar à viewport e ao carregar em reproduzir. Mantidas pausa fora de vista/aba oculta, movimento reduzido, áudio desligado e 2× quando disponível. O navegador pode continuar a bloquear autoplay; o botão continua utilizável para retomar, sem prometer contornar restrições do iOS. Teste com leitor simulado verifica três ciclos, pausa fora da viewport, retoma, ended, autoplay bloqueado e limpeza dos temporizadores. Fonte técnica: https://developers.google.com/youtube/iframe_api_reference.
 
 Reposta altura mínima de 200 px recomendada para embeds YouTube, mantendo a largura explícita de 100% que impede o crescimento lateral por aspect-ratio. Build, 97 testes unitários e lint do componente/teste passaram. Rascunho local, sem commit/push; reprodução real no iPhone ainda por confirmar.
+
+### Ilustrações tecnológicas com maior detalhe — rascunho local
+
+Utilizador aprovou as correções anteriores e pediu commit: guardadas em `6078c07`, sem push. Novo pedido: aprofundar as animações de motores, materiais e reabastecimento, mantendo a direção intuitiva para não especialistas.
+
+Enriquecidos os SVG existentes, sem imagens pesadas, dependências ou novos pedidos externos. Motor: linhas de alimentação, indicadores nos depósitos, elementos rotativos simbólicos, injetor/câmara, bocal em corte, brilho de combustão, saída dos gases e seta de impulso oposta. Compósito: trama de fibras em camadas, pontos de sensores com pulsação, traço de aquecimento e desaparecimento progressivo da fissura ilustrativa. Reabastecimento: paredes duplas esquemáticas, marcas de nível, ligações, válvula e indicadores, partículas de fluxo e transição mais lenta dos níveis. Acrescentada uma legenda de três etapas em PT/EN/ES. São esquemas conceptuais — não diagramas de engenharia do Raptor/BE-4, simulações físicas ou prova de reparação operacional.
+
+Movimento só no estado ativado, com botão para repor; preferência de movimento reduzido desativa animações/transições e apresenta o resultado estático. Mantida leitura por teclado e descrição textual. Atualizado o leitor simulado E2E ao contrato seekTo/getCurrentTime introduzido no commit anterior, para testar repetição sem recarregar. Build, 97 testes unitários e lint verificados; alterações visuais permanecem para aprovação local, sem commit/push.
+
+Suite E2E completa: 24 cenários passaram, dois exclusivos desktop omitidos no projeto mobile. Inclui três tecnologias, teclado, temas, idiomas, movimento reduzido, repetição do vídeo e limites laterais. `git diff --check` sem erros.
+
+### Revisão visual — de diagramas planos a cortes ilustrados com volume
+
+Utilizador não aprovou a versão anterior das animações: continuava demasiado simples/plana. Pediu uma direção mais 3D, mas compreensível. Rascunho reformulado em SVG com perspetiva, superfícies sombreadas, reflexos e cortes visíveis — não WebGL, modelos rodáveis ou uma simulação física. A escolha reutiliza o sistema vetorial existente, evita bibliotecas/ficheiros 3D pesados e mantém texto/teclado/acessibilidade e desempenho mobile.
+
+Motor com depósitos cilíndricos, tubagem curva, bombas, câmara, bocal metálico e secção interior; compósito em vista isométrica com três camadas que se separam para revelar o aquecimento; depósitos cilíndricos com corte semitransparente, superfície elíptica do líquido e ligação com válvula. Mantidas as legendas de três passos e preferência de movimento reduzido. Geometria conceptual, não reprodução de hardware real. Separado desenho em `technology-art.tsx` para não misturar geometria com controlos e traduções. Sem commit/push desta reformulação, para nova revisão.
+
+Verificação da reformulação: build, 97 testes unitários, oito testes E2E de Descobertas/limites mobile e lint dos dois componentes passaram; `git diff --check` sem erros.
+
+### Referências reais no laboratório — Raptor e duas Starships
+
+Utilizador pediu que o motor se baseasse num Raptor real e a transferência mostrasse duas Starships em órbita. Pesquisa oficial SpaceX/NASA registada em DISCOVERIES_REDESIGN: Raptor a metano/oxigénio, arquitetura planeada cisterna → depósito → HLS e diferença entre transferência já demonstrada dentro de uma nave e transferência entre naves ainda por demonstrar nas referências consultadas.
+
+Motor redesenhado com admissão, turbomáquinas e tubagem compacta inspiradas na família Raptor; retirados os grandes depósitos do desenho anterior. Não é uma réplica, modelo CAD ou esquema completo do ciclo. Cena orbital com duas Starships, Terra ao fundo e depósitos/circuitos distintos para metano e oxigénio. Fluxos e níveis simbólicos; orientação/posição da ligação não são anunciadas como hardware final. Texto visível e secção de limites explicam a distinção, traduzidos PT/EN/ES. Fontes oficiais associadas atualizadas; teste editorial evita confundir plano com demonstração. Build, 98 testes unitários e lint passaram. Continuação de rascunho local sem commit/push.
+
+Primeira execução E2E identificou dois ajustes: a legenda adicional aumentou a altura desktop para 1908 px, acima do limite de compacidade de 1900, e o teste de movimento reduzido esperava um único circuito quando agora existem dois. Compactados os três passos no desktop (número junto ao texto, preservando disposição mobile) e verificada ausência de animação em ambos os circuitos, sem enfraquecer a asserção de largura/altura.
+
+Validação final: build e oito testes E2E de Descobertas/limites mobile passaram, além dos 98 testes unitários e lint. Rascunho continua sem commit/push.
+
+### Controlo junto à ilustração e fotografia real de Artemis
+
+Pedido do utilizador: colocar reproduzir/repor imediatamente sob o desenho, retirar os três cartões de passos e substituir o elemento decorativo do destaque Artemis por fotografia real. Movido o mesmo botão acessível (aria-pressed/aria-controls, teclado e tamanho tátil) para a figure, antes da legenda; removidos cartões/traduções/CSS de passos redundantes. Explicação e estado textual permanecem ao lado/abaixo conforme o ecrã.
+
+Escolhida fotografia oficial NASA/JSC `art001e000673`, Artemis I, 28/11/2022: Orion em primeiro plano com Terra e Lua ao fundo. Fonte: https://www.nasa.gov/image-detail/amf-art001e000673/ ; orientações de utilização: https://www.nasa.gov/nasa-brand-center/images-and-media/ . Enquadramento integral com contain, data/crédito e ligação à origem — imagem histórica identificada, não ilustração de uma missão futura. Novo componente traduzido PT/EN/ES usa imagem lazy com dimensões reservadas, foguete de carregamento e fallback com ligação à NASA em erro. Evita texto sobre a fotografia, recortes que percam a Terra/Lua e alteração pública sem aprovação. Build, 98 testes unitários e lint passaram; rascunho sem commit/push.
+
+Oito testes E2E passaram após pequeno ajuste de espaçamento no cartão para manter a compacidade desktop. Verificado carregamento real da fotografia NASA (naturalWidth > 0), além de capturas desktop/mobile e posição do controlo abaixo do SVG. Testes isolados bloqueiam fontes externas e mantêm crédito/estrutura sem depender da NASA. Sem commit/push.
+
+### Reformulação funcional: ciclo Raptor 3 e acoplagem antes da transferência
+
+Utilizador aprovou organização/fotografia, mas rejeitou novamente a animação genérica do motor e pediu funcionamento real do Raptor 3 e aproximação/acoplagem entre Starships. Pesquisa adicional oficial SpaceX sobre Starship V3 (quatro pontos dorsais, sondas e DragonEye) e NASA sobre o ciclo full-flow registada em DISCOVERIES_REDESIGN. Limite essencial: não existe aqui CAD/diagrama completo validado do motor nem configuração final de cada interface. Não inventar precisão a partir do aspeto 3D.
+
+Trocado o simples estado ligado/desligado por explicações em quatro fases. Raptor 3: alimentação/bombas, pré-queimadores/turbinas, câmara principal, bocal e impulso. Texto identifica gás rico em metano e gás rico em oxigénio e diferencia percurso didático de sequência de ignição. Starships: encontro relativo, alinhamento das faces dorsais, quatro capturas mecânicas e preparação de interfaces, transferência por circuitos separados. Antes da última fase não há alteração dos níveis nem fluxo entre naves. Escudos térmicos para fora; posição, tempo e proporção da ligação continuam esquemáticos.
+
+Controlos sob o desenho: reproduzir/pausar, etapa seguinte e repor; indicador compacto 00–04 e explicação de cada fase, sem cartões numerados. Passo automático a cada cinco segundos em tempo didático (não duração real), não avança com aba oculta, e é cancelado ao pausar/trocar tema/desmontar. Movimento reduzido permite apenas passos manuais e elimina animações. Materiais mantém controlo simples. Testes unitários cobrem pausa, temporizador, reposição, troca de tecnologia e proibição de fluxo antes da ligação; 100 testes, build e lint passaram. Rascunho sem commit/push.
+
+Suite completa: 24 E2E passaram, dois cenários exclusivos desktop omitidos em mobile. Ajuste final acrescentou deslocamento também na primeira fase de encontro (não apenas no alinhamento) e retirou botão «seguinte» duplicado no modo de movimento reduzido. Build e regressões unitárias/E2E específicas de fases voltaram a passar. Sem commit/push.
+
+Revisão visual identificou contraste insuficiente no hover do novo botão de avanço por herdar estilo global; aplicada regra específica e teste de cor/fundo. Separadas cores dos fluidos na admissão e afastada a legenda dos pré-queimadores da identificação do metano. Evidência visual de câmara/impulso, captura sem fluxo e transferência após ligação, em desktop/mobile.
+
+Utilizador autorizou o push do conjunto revisto: explicações Raptor 3/Starship por fases, controlos sob as ilustrações, remoção dos cartões de passos e fotografia real Artemis I. Inclui também o commit local anterior `6078c07` (canvas mobile e repetição do vídeo). Documentação/testes acompanham o código; FEATURES_ROADMAP e documentos locais de partilha continuam excluídos. A autorização de push não constitui confirmação do resultado de CI ou deploy.

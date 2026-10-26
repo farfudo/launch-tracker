@@ -4,6 +4,7 @@ import { discoveriesCopy, discoverySources, discoveryTopics, resolveTopic } from
 import { LinkPending } from "../../components/pending-feedback";
 import { BoosterCatchPreview } from "../../components/booster-catch-preview";
 import { TechnologyLab } from "../../components/technology-lab";
+import { ArtemisFeaturePhoto } from "../../components/artemis-feature-photo";
 import { explorerCopy } from "../../lib/discovery-explorers";
 
 export async function generateMetadata() {
@@ -28,7 +29,7 @@ export default async function Discoveries({searchParams}:{searchParams:Promise<{
     <TechnologyLab locale={locale}/>
     <section id="artemis-feature" className="artemis-feature" aria-labelledby="artemis-feature-title">
       <div className="artemis-feature-copy"><p className="eyebrow">{e.featureLabel}</p><h2 id="artemis-feature-title">{e.featureTitle}</h2><p>{e.featureBody}</p><Link href="/discoveries/artemis" className="pill-button">{e.featureAction} →<LinkPending/></Link></div>
-      <div className="artemis-feature-visual"><div className="lunar-orbit" aria-hidden="true"><span className="lunar-disc"/><span className="lunar-traveller"/></div><ul>{e.featureTopics.map((item,index)=><li key={item}><span>0{index+1}</span>{item}</li>)}</ul></div>
+      <ArtemisFeaturePhoto locale={locale}/>
     </section>
     <details className="discovery-library" open={topic !== "all"}><summary><span>{e.sources}<small>{e.sourcesHint}</small></span></summary>
     <section id="discovery-results" aria-labelledby="discovery-heading">

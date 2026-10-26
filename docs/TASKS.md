@@ -103,5 +103,7 @@
 - [x] Aprovar nova preview compacta de Descobertas: laboratório visual Motores/Materiais/Reabastecimento, guia Artemis próprio e biblioteca recolhida. Commit local autorizado, sem push.
 - [x] Aprovar hierarquia no cabeçalho: «↳ Artemis» sob Descobertas apenas na subpágina. Commit/push autorizados com os lotes locais de Descobertas.
 - [ ] Aplicar nos próximos incrementos a direção editorial acordada: linguagem acessível, contexto para iniciantes, ilustrações intuitivas e aprofundamento opcional; documentar decisões e dificuldades em PROJECT_EVOLUTION.
-- [ ] Rever preview do cabeçalho global: reaparece ao subir, recolhe ao descer, com acesso por teclado e movimento reduzido; confirmar commit/push separadamente.
-- [ ] Confirmar correção do cabeçalho após clique e rodapé comum (autoria/GitHub/código-fonte) nas páginas; registar evidência em PROJECT_EVOLUTION, sem commit/push antes de autorização.
+- [x] Aprovar cabeçalho global após clique e rodapé comum; commit cc68e0a e push autorizados e concluídos.
+- [x] Guardar correções de zoom/canvas mobile e repetição do excerto no commit 6078c07; envio autorizado juntamente com o lote de Descobertas.
+- [x] Rever e autorizar envio da explicação por fases Raptor 3 e encontro/alinhamento/acoplagem/transferência entre Starships V3, com fontes oficiais e limitações explícitas.
+- [x] Aprovar controlos sob a ilustração, remoção dos cartões de passos e fotografia oficial Artemis I; documentação e envio autorizados.
