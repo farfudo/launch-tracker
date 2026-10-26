@@ -7,6 +7,7 @@ export function SiteFooter({locale}:{locale:Locale}) {
   const t = dictionaries[locale];
   return <footer className="site-footer">
     <p>NextRocketLaunch · {dashboardCopy[locale].tagline}</p>
-    <p>{t.developedBy} <a href="https://github.com/farfudo" target="_blank" rel="noopener noreferrer">farfudo ↗</a> · <a href="https://github.com/farfudo/launch-tracker" target="_blank" rel="noopener noreferrer">{t.sourceCode} ↗</a><BackgroundCredit locale={locale}/></p>
+    <p>{t.developedBy} <a href="https://github.com/farfudo" target="_blank" rel="noopener noreferrer">farfudo ↗</a> · <a href="https://github.com/farfudo/launch-tracker" target="_blank" rel="noopener noreferrer">{t.sourceCode} ↗</a></p>
+    <p className="footer-image-credit"><BackgroundCredit locale={locale}/></p>
   </footer>;
 }

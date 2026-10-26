@@ -21,5 +21,5 @@ export function PageBackground() {
 export function BackgroundCredit({locale}:{locale:Locale}) {
   const image=pageBackgrounds[getBackgroundSection(usePathname())];
   const label={'pt-PT':'Fundo','en-GB':'Background','es-ES':'Fondo'}[locale];
-  return <span className="background-credit"> · {label}: <a href={image.source} title={image.title} target="_blank" rel="noopener noreferrer">{image.credit} ↗</a></span>;
+  return <span className="background-credit">{label}: <a href={image.source} title={image.title} target="_blank" rel="noopener noreferrer">{image.credit} ↗</a></span>;
 }

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { InfoDisclosure } from "../components/info-disclosure";
 import { RetryButton } from "../components/retry-button";
 import { FavoriteLaunchList } from "../components/favorites";
 import { getCachedCalendarData, getCachedLaunches, getCachedStatus } from "../lib/cached-api";
@@ -140,8 +141,8 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </LaunchResultsScroll>
       </section>
       {featured ? <FeaturedLaunch launch={featured} locale={locale} /> : null}
-      {nextLaunch?.image_url ? <p className="dashboard-image-credit">{d.imagery}: {nextLaunch.image_credit || "Launch Library 2"} · {nextLaunch.image_license || t.imageLicenseUnknown}. {d.reference} <Link href={`/launches/${nextLaunch.id}`}>{d.imageInfo} ↗</Link></p> : null}
-      <p className="dashboard-footer">{t.dataSource} {t.datesNotice}</p>
+      {nextLaunch?.image_url && nextLaunch.image_url !== featured?.image_url ? <p className="dashboard-image-credit">{d.imagery}: {nextLaunch.image_credit || "Launch Library 2"} · {nextLaunch.image_license || t.imageLicenseUnknown} <InfoDisclosure label={d.imageInfo}>{d.reference} <Link href={`/launches/${nextLaunch.id}`}>{d.imageInfo} ↗</Link></InfoDisclosure></p> : null}
+      <p className="dashboard-footer"><InfoDisclosure label={t.aboutData}>{t.dataSource} {t.datesNotice}</InfoDisclosure> {t.source}: Launch Library 2</p>
     </main>
     </MissionSelectionProvider>
   );

@@ -695,3 +695,11 @@ Em mobile, três separadores partilham a linha; ajuste pontual até 360 px mant�
 Verificação: build, lint, 12 testes E2E de Descobertas, cabeçalho e larguras 320/390/430 passaram; `git diff --check` sem erros. Conteúdo/destaque de Descobertas preservados.
 
 Utilizador aprovou o envio da navegação Artemis ao lado de Descobertas e do commit local dos fundos `d813258`. Commit/push autorizados; documentação e testes acompanham as alterações. Documentos locais de partilha e FEATURES_ROADMAP permanecem excluídos. Resultado de CI/deploy requer verificação própria e não é inferido do push.
+
+### Notas secundárias compactas e autoria separada — rascunho
+
+Pedido: reduzir linhas de créditos e colocar os detalhes do excerto num «ⓘ», aplicando o padrão a notas semelhantes. Componente comum usa popover nativo em primeiro plano, evitando que cartões cortem o painel. Abre por cursor, foco ou toque; Escape e toque fora permitem fechar. Texto do excerto, limites das ilustrações, referência das fotografias e nota editorial ficam disponíveis sem ocupar permanentemente espaço. Autor/licença das imagens continuam visíveis. Créditos repetidos da mesma imagem na home são consolidados; avisos de erro, atualização e estados das missões continuam visíveis.
+
+O crédito do fundo fica numa linha própria do rodapé, separado das ligações ao autor e código-fonte. Dificuldade encontrada: eventos de rato sintetizados pelo toque fechavam o painel prematuramente; abertura por hover agora limitada ao ponteiro de rato. Verificação: 102 testes unitários, build e lint passaram; dois testes de navegador confirmaram desktop/mobile, abertura por foco/toque/cursor, Escape, limites horizontais e separação de créditos. Rascunho local, sem commit/push.
+
+Utilizador aprovou a preview e autorizou commit e push. Revisão visual detetou ainda conflito com a cor global dos botões ao passar o cursor; estilo do «ⓘ» isolado para preservar contraste e alvo tátil de 44 px. Build final e verificação do diff passaram. Documentos locais de partilha e FEATURES_ROADMAP excluídos do envio. Sucesso do push não confirma, por si só, CI ou publicação.

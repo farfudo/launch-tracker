@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { InfoDisclosure } from "../../components/info-disclosure";
 import { getLocale } from "../../lib/locale-server";
 import { discoveriesCopy, discoverySources, discoveryTopics, resolveTopic } from "../../lib/discoveries";
 import { LinkPending } from "../../components/pending-feedback";
@@ -44,6 +45,6 @@ export default async function Discoveries({searchParams}:{searchParams:Promise<{
       </article> : null)}</div>
     </section>
     </details>
-    <footer className="discovery-footer"><p>{e.editorial} · {t.checked}: <time dateTime="2026-10-25">{new Intl.DateTimeFormat(locale,{dateStyle:"long",timeZone:"UTC"}).format(new Date("2026-10-25T12:00:00Z"))}</time>.</p></footer>
+    <footer className="discovery-footer"><p>{t.checked}: <time dateTime="2026-10-25">{new Intl.DateTimeFormat(locale,{dateStyle:"long",timeZone:"UTC"}).format(new Date("2026-10-25T12:00:00Z"))}</time> <InfoDisclosure label={t.checked}>{e.editorial}</InfoDisclosure></p></footer>
   </main>;
 }

@@ -7,6 +7,7 @@ import type { Launch } from "../lib/api";
 import { useLocale } from "./locale-provider";
 import { RocketArt } from "./rocket-art";
 import { Spinner } from "./pending-feedback";
+import { InfoDisclosure } from "./info-disclosure";
 
 function httpsUrl(value: string | null | undefined) {
   try {
@@ -47,7 +48,7 @@ export function VehicleVisual({ launch, priority = true }: { launch: Launch; pri
       {hasImage ? <>
         <span>{t.imageCredit}: {launch.image_credit || "Launch Library 2"}</span>
         {" · "}{licenseUrl ? <a href={licenseUrl} target="_blank" rel="noreferrer">{launch.image_license || t.imageLicenseUnknown} ↗</a> : <span>{launch.image_license || t.imageLicenseUnknown}</span>}
-        <span className="photo-reference-note">{t.referencePhotoNote}</span>
+        {" "}<InfoDisclosure label={t.imageCredit}>{t.referencePhotoNote}</InfoDisclosure>
       </> : <span>{t.imageUnavailable}</span>}
     </figcaption>
   </figure>;

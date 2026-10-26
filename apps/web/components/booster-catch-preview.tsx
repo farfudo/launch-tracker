@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { Locale } from "../lib/i18n";
 import { Spinner } from "./pending-feedback";
+import { InfoDisclosure } from "./info-disclosure";
 
 type Player = {
   mute():void; playVideo():void; pauseVideo():void; destroy():void;
@@ -114,7 +115,7 @@ export function BoosterCatchPreview({locale}:{locale:Locale}) {
     <div className="booster-catch-screen"><div ref={host} className="booster-catch-player"/>
       {!ready && <div className="booster-catch-placeholder">{enabled && !failed ? <span role="status"><Spinner/>{t.loading}</span> : <span>{failed ? t.error : reduced ? t.reduced : t.loading}</span>}</div>}
     </div>
-    <figcaption><strong>{t.title}</strong><span>{t.caption}</span><small>{t.detail}</small></figcaption>
+    <figcaption><strong>{t.title} <InfoDisclosure label={t.title}>{t.detail}</InfoDisclosure></strong><span>{t.caption}</span></figcaption>
     <div className="booster-catch-actions"><button type="button" disabled={failed || (enabled && !ready)} onClick={() => {
       if (!enabled) {wantsPlay.current = true; setEnabled(true); return;}
       wantsPlay.current = !playing;

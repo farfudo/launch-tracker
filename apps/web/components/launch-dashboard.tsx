@@ -9,6 +9,7 @@ import { VehicleVisual } from "./vehicle-visual";
 import { MissionIcon } from "./mission-icon";
 import { HeroAction } from "./hero-action";
 import { LinkPending } from "./pending-feedback";
+import { InfoDisclosure } from "./info-disclosure";
 
 export function LaunchHero({ launch, locale }: { launch: (Launch & Partial<LaunchDetail>) | null; locale: Locale }) {
   const d = dashboardCopy[locale];
@@ -41,5 +42,5 @@ export function FeaturedLaunch({ launch, locale }: { launch: Launch; locale: Loc
       <p>{d.featuredNote}</p><Link className="pill-button" href={`/launches/${launch.id}`}>{d.fullDetails} →<LinkPending /></Link>
     </div>
     <Countdown date={launch.net} status={launch.status} />
-  </section>{launch.image_url ? <p className="dashboard-image-credit">{d.imagery}: {launch.image_credit || "Launch Library 2"} · {launch.image_license || dictionaries[locale].imageLicenseUnknown}. {d.reference} <Link href={`/launches/${launch.id}`}>{d.imageInfo} ↗</Link></p> : null}</>;
+  </section>{launch.image_url ? <p className="dashboard-image-credit">{d.imagery}: {launch.image_credit || "Launch Library 2"} · {launch.image_license || dictionaries[locale].imageLicenseUnknown} <InfoDisclosure label={d.imageInfo}>{d.reference} <Link href={`/launches/${launch.id}`}>{d.imageInfo} ↗</Link></InfoDisclosure></p> : null}</>;
 }

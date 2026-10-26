@@ -5,6 +5,7 @@ import type { Locale } from "../lib/i18n";
 import { explorerCopy, technologySources } from "../lib/discovery-explorers";
 import { TechnologyArt } from "./technology-art";
 import { sequenceCopy } from "../lib/technology-sequences";
+import { InfoDisclosure } from "./info-disclosure";
 
 function subscribeMotion(onChange:()=>void) {
   const media=matchMedia('(prefers-reduced-motion: reduce)');
@@ -53,7 +54,7 @@ export function TechnologyLab({locale}:{locale:Locale}) {
           {sequenced&&<>{!reduced&&<button type="button" className="technology-next" onClick={advance}>{s.next} →</button>}<button type="button" className="technology-reset" onClick={()=>{setStage(-1);setRunning(false);}} aria-label={s.reset}>↺</button></>}
         </div>
         {sequenced&&<p className="technology-progress">{stage<0?'00':`0${stage+1}`} / 04 <span>{stage<0?item.title:stages[stage].title}</span></p>}
-        <figcaption>{t.concept}<span className="technology-art-note">{sequenced?(selected===0?s.engineNote:s.dockingNote):illustrationNotes[locale][selected]}</span></figcaption></figure>
+        <figcaption><InfoDisclosure label={t.concept}>{t.concept}<span className="technology-art-note">{sequenced?(selected===0?s.engineNote:s.dockingNote):illustrationNotes[locale][selected]}</span></InfoDisclosure></figcaption></figure>
       <div className="technology-explainer"><span className="technology-stage">{selected===0?'SpaceX · Raptor 3':item.tag}</span><h3>{selected===0?s.engineTitle:item.title}</h3><p>{item.body}</p><p>{selected===0?s.version3:item.why}</p>
         <p className="technology-state" role="status">{sequenced&&stage>=0?<><strong>{stages[stage].title}</strong>{stages[stage].body}</>:item.states[active?1:0]}</p>
         <details className="technology-limits"><summary>{t.challenge}</summary><p>{item.limit}</p><div>{technologySources[selected].map(source=><a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer">{t.source} · {source.name} ↗</a>)}</div></details>
