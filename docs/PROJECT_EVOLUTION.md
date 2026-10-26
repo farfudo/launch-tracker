@@ -1,5 +1,11 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## A02 — CI numa branch isolada, sem deploy (26/10/2026)
+
+Utilizador autorizou worktree/branch codex/a02-e2e-validation, commit/push apenas dessa branch e execução manual de ci.yml, condicionados à ausência de deploy. Base b5791d7; copiados só os dois testes A02, sem alterações a backend/Worker/sync. Checkout original e todos os seus rascunhos A01/documentos preservados. Proteção Vercel apenas desta branch em apps/web/vercel.json desde o primeiro envio, conforme Root Directory confirmado; Render acompanha main/services/api e previews Off. Sem alteração global nos fornecedores.
+
+Pipeline web temporária da branch: build necessário ao servidor de teste, E2E afetados sem retries, lint, unitários e E2E completos sem retries. Outros jobs mantêm bases/mocks isolados; nenhum segredo ou comando de produção. A dificuldade local de leitura/arranque não foi repetida; a CI fornece instalação limpa. Resultado ainda por verificar; não inferir aprovação de testes ou ausência de deploy do simples envio. Sem PR/merge/main. Detalhes em A02_CI_VALIDATION.
+
 ## Corrigir expectativas dos testes de navegador após A01.1 (26/10/2026, rascunho)
 
 O utilizador aprovou a correção e autorizou commit e push deste lote. O envio pode acionar as integrações automáticas existentes; resultado da nova CI e deploy devem ser confirmados separadamente. Não autoriza ativação do cron Cloudflare. Roadmap, auditoria geral e documentos de partilha permanecem locais.

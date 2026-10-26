@@ -8,31 +8,32 @@ test('curated discovery topics filter without duplicating sources and support th
   await expect(page.locator('.section-navigation a')).toHaveCount(3);
   await expect(page.locator('.section-navigation a[href="/discoveries/artemis"]')).toHaveText('Artemis');
   await expect(page.locator('.discovery-source-card')).toHaveCount(6);
-  if (test.info().project.name === 'desktop-chromium') {
-    await page.evaluate(() => document.fonts.ready);
-    // Protect the compact reading path, independently of footer/credit height.
-    const height = page.viewportSize()!.height;
-    const bottom = (selector: string) => page.locator(selector)
-      .evaluate(element => element.getBoundingClientRect().bottom + window.scrollY);
-    const top = (selector: string) => page.locator(selector)
-      .evaluate(element => element.getBoundingClientRect().top + window.scrollY);
-    expect(await bottom('.discovery-start')).toBeLessThan(height);
-    expect(await top('#technology-lab')).toBeLessThan(height);
-    expect(await top('#artemis-feature')).toBeLessThan(height * 2);
-    expect(await bottom('.discovery-library')).toBeLessThan(height * 3);
-  }
-  await expect(page.locator('.discovery-library')).not.toHaveAttribute('open');
-  await page.locator('.discovery-library > summary').click();
+  // Compact overview is a content/disclosure contract, not a document-height budget.
+  expect(await page.locator('.discoveries-page > section, .discoveries-page > details')
+    .evaluateAll(elements => elements.map(element => element.getAttribute('aria-labelledby') || element.className)))
+    .toEqual(['discovery-hook-title', 'lab-title', 'artemis-feature-title', 'discovery-library']);
+  const library = page.locator('.discovery-library');
+  await expect(library).not.toHaveAttribute('open');
+  await expect(page.locator('#discovery-results')).toBeHidden();
+  await library.locator('summary').press('Enter');
+  await expect(library).toHaveAttribute('open');
+  await expect(page.locator('#discovery-results')).toBeVisible();
   await expect(page.locator('.discovery-topics')).toHaveCount(0);
   const question = page.locator('.discovery-first-question');
   await expect(page.getByRole('heading',{name:'What if a rocket could fly again?',exact:true})).toBeVisible();
   await expect(question).not.toHaveAttribute('open');
+  await expect(question.locator('p')).toBeHidden();
   await question.locator('summary').press('Enter');
   await expect(question.locator('p')).toBeVisible();
   await expect(question.locator('p')).toContainText('Recovery means');
   await question.locator('summary').press('Enter');
+  await expect(question.locator('p')).toBeHidden();
+  await page.locator('.discovery-hook-actions a[href="#artemis-feature"]').click();
+  await expect(page).toHaveURL(/#artemis-feature$/);
+  await expect(page.locator('#artemis-feature-title')).toBeInViewport();
   await page.locator('.discovery-hook-actions .pill-button').click();
   await expect(page).toHaveURL(/#technology-lab/);
+  await expect(page.locator('#lab-title')).toBeInViewport();
   await expect(page.locator('.technology-panel')).toBeVisible();
   await expect(page.locator('.artemis-feature-photo')).toContainText('Artemis I');
   await expect(page.locator('.artemis-feature-photo')).toContainText('NASA / JSC');
