@@ -9,8 +9,17 @@ test('curated discovery topics filter without duplicating sources and support th
   await expect(page.locator('.section-navigation a[href="/discoveries/artemis"]')).toHaveText('Artemis');
   await expect(page.locator('.discovery-source-card')).toHaveCount(6);
   if (test.info().project.name === 'desktop-chromium') {
-    expect(await page.locator('.discovery-start').evaluate(element=>element.getBoundingClientRect().bottom)).toBeLessThan(720);
-    expect(await page.evaluate(()=>document.documentElement.scrollHeight)).toBeLessThan(1900);
+    await page.evaluate(() => document.fonts.ready);
+    // Protect the compact reading path, independently of footer/credit height.
+    const height = page.viewportSize()!.height;
+    const bottom = (selector: string) => page.locator(selector)
+      .evaluate(element => element.getBoundingClientRect().bottom + window.scrollY);
+    const top = (selector: string) => page.locator(selector)
+      .evaluate(element => element.getBoundingClientRect().top + window.scrollY);
+    expect(await bottom('.discovery-start')).toBeLessThan(height);
+    expect(await top('#technology-lab')).toBeLessThan(height);
+    expect(await top('#artemis-feature')).toBeLessThan(height * 2);
+    expect(await bottom('.discovery-library')).toBeLessThan(height * 3);
   }
   await expect(page.locator('.discovery-library')).not.toHaveAttribute('open');
   await page.locator('.discovery-library > summary').click();

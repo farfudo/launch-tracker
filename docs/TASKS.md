@@ -1,5 +1,9 @@
 # Próximas tarefas
 
+- [x] Preparar correção local das expectativas E2E de navegação/compactação que falharam em CI após A01.1; 28 passaram sem retries e dois casos desktop ignorados em mobile. Interface preservada e dificuldades documentadas em PROJECT_EVOLUTION.
+- [x] Rever e autorizar commit/push desta correção.
+- [ ] Confirmar nova CI antes de considerar a publicação validada; ativação do cron continua dependente de aprovação própria.
+
 ## A01.1 — estabilização da sincronização (26/10/2026)
 
 - [x] Preparar localmente cooldown global 45 min e elegibilidade GitHub 90 min separados, preservando reservas/locks/Retry-After e contrato anterior.

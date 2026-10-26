@@ -1,5 +1,13 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## Corrigir expectativas dos testes de navegador após A01.1 (26/10/2026, rascunho)
+
+O utilizador aprovou a correção e autorizou commit e push deste lote. O envio pode acionar as integrações automáticas existentes; resultado da nova CI e deploy devem ser confirmados separadamente. Não autoriza ativação do cron Cloudflare. Roadmap, auditoria geral e documentos de partilha permanecem locais.
+
+A execução CI `40356048948` do commit `92416eb` passou API, PostgreSQL, Worker, testes unitários web e build, mas falhou em três casos de navegador. Histórico ainda esperava dois separadores, apesar da navegação aprovada já incluir Artemis; Descobertas media 1935 px contra um teto antigo de 1900 px. Correção local apenas nos testes: verificar nomes/ligações/estado ativo da navegação atual e medir o percurso compacto por ecrãs (hook/laboratório no primeiro, Artemis até ao segundo, biblioteca até ao terceiro), após as fontes carregarem. Não se aumentou simplesmente o teto global nem se alterou a interface para satisfazer o teste.
+
+Dificuldade de validação: primeira execução reutilizou o servidor de fixtures da preview e apresentou uma indisponibilidade transitória no Histórico, passando na repetição; causa dessa indisponibilidade não confirmada. Para isolar a verificação final, arrancaram-se servidores próprios em portas 3340/3341, sem alterar a preview aberta, e desativaram-se repetições. Resultado: 28 testes passaram e dois casos exclusivos de desktop foram ignorados em mobile, conforme configuração preexistente; nenhum falhou ou precisou de retry. Lint e diff sem erros. Sem consultas LL2, sincronizações, alterações de produção, commit ou push.
+
 ## A01.1 — separar idade do fallback e orçamento global (26/10/2026, rascunho)
 
 Após revisão da prontidão e do risco de timeout no Render Free, o utilizador autorizou commit e push deste lote. O envio pode acionar as integrações automáticas existentes; não autoriza ativar o cron Cloudflare. CI, deploy e importação natural precisam de confirmação própria. Documentos locais de partilha, FEATURES_ROADMAP e auditoria geral ficam fora deste lote; o diagnóstico A01 acompanha a revisão.
