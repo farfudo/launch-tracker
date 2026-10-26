@@ -38,7 +38,7 @@ test('shared footer appears once across routes and follows the selected language
     await expect(page.locator('.site-footer')).toHaveCount(1);
     await expect(page.getByRole('link',{name:'farfudo ↗',exact:true})).toHaveCount(1);
     await expect(page.locator('.site-footer')).toContainText('Space, right on time.');
-    await expect(page.locator('.site-footer a').last()).toHaveAttribute('href','https://github.com/farfudo/launch-tracker');
+    await expect(page.locator('.site-footer a[href="https://github.com/farfudo/launch-tracker"]')).toHaveCount(1);
   }
   await page.getByRole('combobox',{name:'Language',exact:true}).selectOption('pt-PT');
   await expect(page.locator('.site-footer')).toContainText('O espaço, no momento certo.');

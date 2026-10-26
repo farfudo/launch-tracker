@@ -657,3 +657,31 @@ Suite completa: 24 E2E passaram, dois cenários exclusivos desktop omitidos em m
 Revisão visual identificou contraste insuficiente no hover do novo botão de avanço por herdar estilo global; aplicada regra específica e teste de cor/fundo. Separadas cores dos fluidos na admissão e afastada a legenda dos pré-queimadores da identificação do metano. Evidência visual de câmara/impulso, captura sem fluxo e transferência após ligação, em desktop/mobile.
 
 Utilizador autorizou o push do conjunto revisto: explicações Raptor 3/Starship por fases, controlos sob as ilustrações, remoção dos cartões de passos e fotografia real Artemis I. Inclui também o commit local anterior `6078c07` (canvas mobile e repetição do vídeo). Documentação/testes acompanham o código; FEATURES_ROADMAP e documentos locais de partilha continuam excluídos. A autorização de push não constitui confirmação do resultado de CI ou deploy.
+
+### Fundos fotográficos contextuais — rascunho de 26/10/2026
+
+Pedido: remover a frase «Escolhe uma tecnologia e experimenta a ilustração. Sem precisares de ser engenheiro.» e cobrir o fundo das páginas com imagens relacionadas, sem comprometer o conteúdo. Frase retirada da interface em todos os idiomas; informação explicativa das tecnologias preservada.
+
+Fundos selecionados: lançamento Artemis I/SLS (NASA/Joel Kowsky) para home/calendário e detalhe de lançamento; laboratório orbital ISS/painéis solares/Terra (NASA) para Descobertas; Orion/Terra/Lua da Artemis I (NASA/JSC) para o guia Artemis. Fontes e títulos históricos ficam em `page-backgrounds.ts`, com crédito discreto no rodapé e ligação oficial. São contexto editorial, não a fotografia de cada missão listada. Imagens oficiais obtidas e convertidas mecanicamente em WebP local: 55 946, 56 256 e 61 776 bytes, respetivamente. Só a secção ativa monta uma imagem, sem carregar os três fundos em simultâneo nem depender da NASA a cada visita.
+
+Implementação: camada decorativa fixa com pointer-events none/aria-hidden e recorte ao viewport, atrás do conteúdo num stacking context isolado. Sem background-attachment fixed, parallax, transições ou dimensões que aumentem o documento. Falha da imagem mantém o fundo sólido. Máscara clara/escura protege texto; cartões mantêm superfícies opacas. Texto secundário claro escurecido e ligações soltas relevantes recebem tom mais escuro para compensar fotografias. Teste conservador calcula contraste do texto do rodapé sobre extremos preto/branco da imagem à menor opacidade da máscara, alvo 4,5:1; não equivale a auditoria completa WCAG. Ligação de fonte de código testada pelo href, não pela posição de último link (agora há crédito adicional).
+
+Build, 102 testes unitários e lint passaram. Rascunho local para aprovação, sem commit/push e sem alteração da publicação atual.
+
+Suite E2E completa: 26 cenários passaram e dois exclusivos desktop omitidos no mobile, incluindo correspondência rota/imagem, carregamento local, máscara/contraste em ambos os temas, largura mobile e comportamento do cabeçalho sticky. `git diff --check` sem erros.
+
+Revisão visual com imagens reais carregadas: home, Descobertas e guia Artemis em desktop; Artemis em modo escuro após terminar a transição de cor; Descobertas em mobile. Cartões e tipografia mantêm-se à frente, fundo visível nas áreas livres. Proposta inicial discreta para aprovação; intensidade pode ser afinada sem mudar as imagens nem introduzir movimento. Sem commit/push.
+
+### Ajuste de intensidade dos fundos após feedback
+
+Utilizador gostou da direção, mas considerou as fotografias demasiado esbatidas. Reduzida a máscara central de 86–87% para 78%, e das extremidades de 94% para 86%, em ambos os temas. As imagens ganham presença sem alterar os cartões opacos, ficheiros ou comportamento de scroll. Para manter leitura nas zonas transparentes do tema claro, texto secundário e ligações relevantes escurecidos ligeiramente. Testes de contraste continuam a usar os extremos preto/branco da imagem na zona menos protegida, sem afirmar auditoria integral WCAG. Rascunho continua sem commit/push.
+
+Build, quatro E2E de fundos/limites mobile e `git diff --check` passaram após este ajuste. Capturas de Descobertas e Artemis confirmam a nova intensidade; preview local reaberta para aprovação.
+
+Novo ajuste fino pedido pelo utilizador: máscara central de 78% para 75% e extremidades de 86% para 83%. Apenas três pontos percentuais adicionais de imagem, sem alterar cores de texto, cartões, ficheiros ou scroll. Mantido como rascunho local sem commit/push.
+
+O extremo branco no teste conservador de contraste do modo escuro ficou em 4,48:1 com máscara de 75%; afinado apenas o centro escuro para 76%, mantendo 75% no claro e 83% nas extremidades. Assim aumenta a presença sem reduzir o alvo de contraste nem alterar a tipografia.
+
+Build e dois testes E2E de fundos/contraste (desktop e mobile) passaram; preview local atualizada. Sem commit/push.
+
+Utilizador aprovou a intensidade final e autorizou commit dos fundos contextuais e remoção da frase. Commit local autorizado; push não autorizado neste pedido. Nova alteração de navegação Artemis será preparada separadamente.

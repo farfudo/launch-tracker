@@ -15,6 +15,7 @@ import "./dashboard.css";
 import { SectionNavigation } from "../components/section-navigation";
 import { ScrollHeader } from "../components/scroll-header";
 import { SiteFooter } from "../components/site-footer";
+import { PageBackground } from "../components/page-background";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = dictionaries[await getLocale()];
@@ -33,6 +34,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body>
         <ThemeScript />
         <LocaleProvider locale={locale}>
+          <PageBackground/>
           <a className="skip-link" href="#main-content">{d.skip}</a>
           <ScrollHeader>
             <Link href="/" className="home-brand" aria-label="NextRocketLaunch home"><BrandMark /><LinkPending /></Link>

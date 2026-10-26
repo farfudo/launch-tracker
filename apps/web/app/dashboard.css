@@ -3,7 +3,15 @@ html { scroll-behavior: smooth; scroll-padding-top: 100px; }
 :root { font-family: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif; background: var(--surface); overflow-x: clip; overscroll-behavior-x: none; }
 /* Clip on the body as well: Safari can expose descendant visual overflow
    during pinch gestures even when the root canvas is clipped. Keep Y free. */
-body { width:100%; min-width:0; overflow-x:clip; background: var(--surface); }
+body { width:100%; min-width:0; overflow-x:clip; background: var(--surface); isolation:isolate; }
+.site-background { --wash-rgb:242 241 236; --wash-min:.75; position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden; background:var(--surface); }
+.site-background img { object-fit:cover; }
+.site-background::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgb(var(--wash-rgb) / .83),rgb(var(--wash-rgb) / var(--wash-min)) 48%,rgb(var(--wash-rgb) / .83)); }
+html[data-theme="dark"] .site-background { --wash-rgb:16 27 33; --wash-min:.76; }
+.background-credit { font-size:.85em; }
+:root:not([data-theme="dark"]) { --text-soft:#304650; }
+:root:not([data-theme="dark"]) :is(.site-footer a,.discoveries-intro .eyebrow,.discovery-section-heading .eyebrow,.artemis-guide > .back-link,.artemis-guide footer a) { color:#054d4b; }
+.guide-contents a { background:var(--surface-raised); }
 html { scroll-padding-top:calc(var(--site-header-height,100px) + 12px); }
 .scroll-header { position:sticky; top:0; z-index:60; transform:translateY(0); transition:transform .22s cubic-bezier(.22,.61,.36,1); }
 .scroll-header[data-hidden="true"] { transform:translateY(-100%); }

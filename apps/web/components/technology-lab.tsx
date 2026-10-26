@@ -40,7 +40,7 @@ export function TechnologyLab({locale}:{locale:Locale}) {
   const t = explorerCopy[locale];
   const item = t.technologies[selected];
   return <section id="technology-lab" className="technology-lab" aria-labelledby="lab-title">
-    <div className="discovery-section-heading"><div><p className="eyebrow">{t.lab}</p><h2 id="lab-title">{t.labTitle}</h2></div><p>{t.labIntro}</p></div>
+    <div className="discovery-section-heading"><div><p className="eyebrow">{t.lab}</p><h2 id="lab-title">{t.labTitle}</h2></div></div>
     <div className="technology-picker" role="group" aria-label={t.labTitle}>{t.tabs.map((label,index)=><button key={label} type="button" aria-pressed={selected===index} aria-controls="technology-panel" onClick={()=>{setSelected(index);setActive(false);setStage(-1);setRunning(false);}}><span aria-hidden="true">0{index+1}</span>{label}</button>)}</div>
     <div id="technology-panel" className="technology-panel">
       <figure><TechnologyArt key={selected} index={selected} active={sequenced?stage>=0:active} stage={stage} paused={sequenced&&!running} parts={s.parts} labels={item.labels}/>

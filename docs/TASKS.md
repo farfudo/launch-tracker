@@ -107,3 +107,4 @@
 - [x] Guardar correções de zoom/canvas mobile e repetição do excerto no commit 6078c07; envio autorizado juntamente com o lote de Descobertas.
 - [x] Rever e autorizar envio da explicação por fases Raptor 3 e encontro/alinhamento/acoplagem/transferência entre Starships V3, com fontes oficiais e limitações explícitas.
 - [x] Aprovar controlos sob a ilustração, remoção dos cartões de passos e fotografia oficial Artemis I; documentação e envio autorizados.
+- [ ] Rever fundos contextuais de Lançamentos, Descobertas e Artemis em ambos os temas/mobile, contraste e remoção da frase introdutória do laboratório; só fazer commit/push com autorização.
