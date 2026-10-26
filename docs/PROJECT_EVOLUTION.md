@@ -685,3 +685,13 @@ O extremo branco no teste conservador de contraste do modo escuro ficou em 4,48:
 Build e dois testes E2E de fundos/contraste (desktop e mobile) passaram; preview local atualizada. Sem commit/push.
 
 Utilizador aprovou a intensidade final e autorizou commit dos fundos contextuais e remoção da frase. Commit local autorizado; push não autorizado neste pedido. Nova alteração de navegação Artemis será preparada separadamente.
+
+### Artemis como separador principal — rascunho
+
+Fundos aprovados guardados em `d813258`, sem push. Pedido adicional: Artemis ao lado de Descobertas na navegação, preservando o destaque/«glance» e o conteúdo atual de Descobertas. Retirada a apresentação subordinada «↳ Artemis» e adicionada ligação de primeiro nível em todas as páginas. Só o separador correspondente à rota fica ativo, com aria-current page. URL do guia continua `/discoveries/artemis`, evitando quebrar ligações existentes; o destaque e o regresso a Descobertas mantêm-se.
+
+Em mobile, três separadores partilham a linha; ajuste pontual até 360 px mantém texto e alvos táteis sem transbordo. Navegação tem nome acessível próprio PT/EN/ES. Testes de teclado atualizados para a nova ordem (Artemis antes dos controlos de tema/idioma). Alteração de navegação ainda sem commit/push, para aprovação visual.
+
+Verificação: build, lint, 12 testes E2E de Descobertas, cabeçalho e larguras 320/390/430 passaram; `git diff --check` sem erros. Conteúdo/destaque de Descobertas preservados.
+
+Utilizador aprovou o envio da navegação Artemis ao lado de Descobertas e do commit local dos fundos `d813258`. Commit/push autorizados; documentação e testes acompanham as alterações. Documentos locais de partilha e FEATURES_ROADMAP permanecem excluídos. Resultado de CI/deploy requer verificação própria e não é inferido do push.

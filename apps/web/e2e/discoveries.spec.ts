@@ -5,7 +5,8 @@ test('curated discovery topics filter without duplicating sources and support th
   await page.goto('/discoveries');
   await expect(page.getByRole('heading',{level:1})).toHaveText('Space discoveries and advances');
   await expect(page.locator('.section-navigation a[aria-current="page"]')).toHaveText('Discoveries');
-  await expect(page.locator('.section-navigation-child')).toHaveCount(0);
+  await expect(page.locator('.section-navigation a')).toHaveCount(3);
+  await expect(page.locator('.section-navigation a[href="/discoveries/artemis"]')).toHaveText('Artemis');
   await expect(page.locator('.discovery-source-card')).toHaveCount(6);
   if (test.info().project.name === 'desktop-chromium') {
     expect(await page.locator('.discovery-start').evaluate(element=>element.getBoundingClientRect().bottom)).toBeLessThan(720);
@@ -150,10 +151,8 @@ test('visual technology lab explains concepts and links to a dated Artemis deep 
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('link',{name:'Explore the Artemis guide →',exact:true}).click();
   await expect(page).toHaveURL(/\/discoveries\/artemis/);
-  await expect(page.locator('.section-navigation a[aria-current]')).toHaveText('Discoveries');
-  await expect(page.locator('.section-navigation-branch > a')).toHaveAttribute('aria-current','location');
-  await expect(page.locator('.section-navigation-child')).toHaveText('↳ Artemis');
-  await expect(page.locator('.section-navigation-child')).toHaveAttribute('aria-current','page');
+  await expect(page.locator('.section-navigation a[aria-current]')).toHaveText('Artemis');
+  await expect(page.locator('.section-navigation a[href="/discoveries"]')).not.toHaveAttribute('aria-current');
   await expect(page.locator('.guide-role-grid article')).toHaveCount(4);
   await expect(page.locator('.guide-missions article')).toHaveCount(3);
   await expect(page.locator('.guide-missions article').last()).toContainText('Low Earth orbit');
@@ -164,8 +163,8 @@ test('visual technology lab explains concepts and links to a dated Artemis deep 
   await page.screenshot({path:test.info().outputPath('artemis-guide.png'),fullPage:true});
   await page.getByRole('combobox',{name:'Language',exact:true}).selectOption('pt-PT');
   await expect(page.locator('h1')).toHaveText('Artemis: as peças de um regresso à Lua');
-  await expect(page.locator('.section-navigation-child')).toHaveText('↳ Artemis');
-  await page.locator('.section-navigation-branch > a').click();
+  await expect(page.locator('.section-navigation a[aria-current]')).toHaveText('Artemis');
+  await page.locator('.section-navigation a[href="/discoveries"]').click();
   await expect(page).toHaveURL(/\/discoveries$/);
-  await expect(page.locator('.section-navigation-child')).toHaveCount(0);
+  await expect(page.locator('#artemis-feature')).toBeVisible();
 });

@@ -510,10 +510,7 @@ html[data-theme="dark"] .date-uncertain { background: #3b321a; color: #ffdf89; b
 .section-navigation { display:flex; align-items:center; gap:1rem; }
 .section-navigation a { min-height:44px; display:inline-flex; align-items:center; gap:.3rem; text-decoration:none; color:var(--text-soft); font-size:.9rem; border-bottom:2px solid transparent; }
 .section-navigation a[aria-current] { color:var(--accent-strong); border-color:var(--accent-strong); font-weight:700; }
-.section-navigation-branch { display:flex; flex-direction:column; align-items:flex-start; gap:.15rem; }
-.section-navigation-branch:has(.section-navigation-child) > a { min-height:28px; padding-bottom:.15rem; }
-.section-navigation-child { display:inline-flex; align-items:center; gap:.35rem; padding-left:.35rem; font-size:.75rem; color:var(--text-soft); line-height:1.4; }
-.section-navigation-child > span { color:var(--accent-strong); }
+@media(max-width:360px) { .site-toolbar .section-navigation { gap:.35rem; } .site-toolbar .section-navigation a { font-size:.875rem; } }
 .discoveries-page { width:min(1180px,calc(100% - 3rem)); padding:2.5rem 0; }
 .discoveries-intro { max-width:780px; margin:0 0 2rem; }
 .discoveries-intro h1 { font-size:clamp(2.2rem,5vw,4rem); line-height:1.08; margin:.8rem 0 1rem; letter-spacing:-.05em; }
@@ -583,7 +580,7 @@ html[data-theme="dark"] .date-uncertain { background: #3b321a; color: #ffdf89; b
 @media(max-width:1000px) { .discovery-source-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .section-navigation { gap:.65rem; } }
 @media(max-width:800px) {
   .section-navigation { grid-column:1 / -1; grid-row:3; border-top:1px solid var(--border); padding-top:.2rem; }
-  .section-navigation a { font-size:1rem; }
+  .section-navigation a { font-size:1rem; flex:1; justify-content:center; text-align:center; }
   .discoveries-page { width:calc(100% - 2rem); padding:1.5rem 0; }
   .discovery-topics,.discovery-source-grid { grid-template-columns:1fr; }
   .discovery-start { grid-template-columns:1fr; padding:1.2rem; gap:1rem; }

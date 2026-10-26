@@ -10,11 +10,10 @@ export function SectionNavigation() {
   const {locale} = useLocale();
   const t = discoveriesCopy[locale];
   const artemis = pathname === "/discoveries/artemis";
-  return <nav className="section-navigation" aria-label={t.nav}>
+  const label={'pt-PT':'Secções principais','en-GB':'Main sections','es-ES':'Secciones principales'}[locale];
+  return <nav className="section-navigation" aria-label={label}>
     <Link href="/" aria-current={pathname === "/" || pathname.startsWith("/launches/") ? "page" : undefined}>{t.launches}<LinkPending /></Link>
-    <div className="section-navigation-branch">
-      <Link href="/discoveries" aria-current={artemis ? "location" : pathname === "/discoveries" ? "page" : undefined}>{t.nav}<LinkPending /></Link>
-      {artemis && <span className="section-navigation-child" aria-current="page"><span aria-hidden="true">↳</span> Artemis</span>}
-    </div>
+    <Link href="/discoveries" aria-current={pathname === "/discoveries" ? "page" : undefined}>{t.nav}<LinkPending /></Link>
+    <Link href="/discoveries/artemis" aria-current={artemis ? "page" : undefined}>Artemis<LinkPending /></Link>
   </nav>;
 }
