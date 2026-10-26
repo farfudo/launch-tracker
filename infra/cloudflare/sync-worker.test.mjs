@@ -5,6 +5,31 @@ import worker, { runSync, executeScheduled } from "./sync-worker.mjs";
 const env = { SYNC_TOKEN: "test-only-".padEnd(64, "0") };
 const response = value => new Response(JSON.stringify(value));
 
+test("90 second timeout aborts one POST with safe correlated failure and no retry", async t => {
+  const controller = new AbortController();
+  t.mock.method(AbortSignal, "timeout", milliseconds => {
+    assert.equal(milliseconds, 90_000);
+    return controller.signal;
+  });
+  const logs = [];
+  let calls = 0;
+  await assert.rejects(executeScheduled({ scheduledTime: 0 }, env, {
+    newId: () => "timeout-test", log: entry => logs.push(entry),
+    request: async (_url, { signal }) => {
+      calls++;
+      assert.equal(signal, controller.signal);
+      return new Promise((_resolve, reject) => {
+        signal.addEventListener("abort", () => reject(signal.reason), { once: true });
+        controller.abort(new Error(env.SYNC_TOKEN));
+      });
+    }
+  }), /inspect API logs before retrying/);
+  assert.equal(calls, 1);
+  assert.deepEqual(logs.map(entry => entry.phase), ["started", "failed"]);
+  assert.equal(logs[1].error, "transport_failed");
+  assert.ok(!JSON.stringify(logs).includes(env.SYNC_TOKEN));
+});
+
 for (const result of [{ imported: 100, skipped: false, reason: null },
   { imported: 0, skipped: true, reason: "in_progress" },
   { imported: 0, skipped: true, reason: "recently_updated" }]) {

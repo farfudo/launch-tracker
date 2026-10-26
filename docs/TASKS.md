@@ -1,5 +1,12 @@
 # Próximas tarefas
 
+## A01.1 — estabilização da sincronização (26/10/2026)
+
+- [x] Preparar localmente cooldown global 45 min e elegibilidade GitHub 90 min separados, preservando reservas/locks/Retry-After e contrato anterior.
+- [x] Verificar API, PostgreSQL isolado e contrato/timeout do Worker com fontes simuladas; documentar dificuldades e configuração em `A01_1_SYNC_REVIEW.md` e PROJECT_EVOLUTION.
+- [ ] Aprovar rascunho antes de commit/push/publicação; produção permanece inalterada.
+- [ ] Com autorização própria, ativar principal e validar cadência natural, causalidade das importações e orçamento; A01 permanece aberto.
+
 ## Tarefa recorrente — documentação da evolução
 
 - [ ] Em cada incremento, atualizar `docs/PROJECT_EVOLUTION.md` com o que mudou, a decisão e o motivo, as verificações realizadas e as limitações ainda existentes.

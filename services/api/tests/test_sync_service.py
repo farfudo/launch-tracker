@@ -6,12 +6,119 @@ import pytest
 from app.clients.launch_library import LaunchLibraryError, LaunchSummary
 from app.models import Launch, SyncControl
 from app.repositories import upsert_launches
-from app.sync_service import acquire_sync_lock, retry_deadline, sync_cache
+from app.sync_service import acquire_sync_lock, retry_deadline, sync_cache, utc
+
+
+@pytest.fixture
+def clock(monkeypatch):
+    class Clock(datetime):
+        value = datetime(2026, 10, 26, 12, tzinfo=UTC)
+
+        @classmethod
+        def now(cls, tz=None):
+            return cls.value.astimezone(tz) if tz else cls.value.replace(tzinfo=None)
+
+    monkeypatch.setattr("app.sync_service.datetime", Clock)
+    monkeypatch.setattr("app.repositories.datetime", Clock)
+    monkeypatch.setenv("SYNC_MIN_INTERVAL_SECONDS", "2700")
+    monkeypatch.delenv("SYNC_FALLBACK_MIN_AGE_SECONDS", raising=False)
+    return Clock
+
+
+def saved_mission(db, at):
+    upsert_launches(db, [LaunchSummary(
+        id="primary", name="Test", status="Go", net="2099-01-01T12:00:00Z"
+    )])
+    db.get(Launch, "primary").source_updated_at = at
+    db.commit()
+
+
+@pytest.mark.parametrize("age,eligible", [(5399, False), (5400, True)])
+def test_fallback_age_boundary_and_shared_budget(db_session, lock, clock, monkeypatch,
+                                                age, eligible):
+    monkeypatch.setenv("SYNC_FALLBACK_MIN_AGE_SECONDS", "5400")
+    previous = clock.value - timedelta(seconds=age)
+    saved_mission(db_session, previous)
+    fetch = Mock(return_value=[LaunchSummary(
+        id="primary", name="Test", status="Go", net="2099-01-01T12:00:00Z"
+    )])
+    result = sync_cache(db_session, fetch)
+    if not eligible:
+        assert result.reason == "recently_updated"
+        fetch.assert_not_called()
+        assert db_session.get(SyncControl, 1) is None
+        assert utc(db_session.get(Launch, "primary").source_updated_at) == previous
+        return
+    assert result.imported == 1
+    assert utc(db_session.get(SyncControl, 1).next_attempt_at) == (
+        clock.value + timedelta(minutes=45))
+    monkeypatch.delenv("SYNC_FALLBACK_MIN_AGE_SECONDS")
+    clock.value += timedelta(seconds=2699)
+    assert sync_cache(db_session, fetch).reason == "recently_updated"
+    assert fetch.call_count == 1
+    clock.value += timedelta(seconds=1)
+    assert sync_cache(db_session, fetch).imported == 1
+    assert fetch.call_count == 2
+
+
+@pytest.mark.parametrize("value", ["", "invalid", "0", "2699", "86401"])
+def test_invalid_fallback_configuration_fails_before_lock(db_session, lock, clock,
+                                                         monkeypatch, value):
+    monkeypatch.setenv("SYNC_FALLBACK_MIN_AGE_SECONDS", value)
+    fetch = Mock()
+    with pytest.raises(ValueError):
+        sync_cache(db_session, fetch)
+    lock.assert_not_called()
+    fetch.assert_not_called()
+    assert db_session.get(SyncControl, 1) is None
+
+
+@pytest.mark.parametrize("retry_after,wait", [(None, 2700), ("7200", 7200),
+    ("Mon, 26 Oct 2026 14:00:00 GMT", 7200)])
+def test_fallback_failure_budget_is_shared_with_primary(db_session, lock, clock,
+                                                       monkeypatch, retry_after, wait):
+    monkeypatch.setenv("SYNC_FALLBACK_MIN_AGE_SECONDS", "5400")
+    with pytest.raises(LaunchLibraryError):
+        sync_cache(db_session, Mock(side_effect=LaunchLibraryError(
+            "limited", retry_after=retry_after)))
+    deadline = clock.value + timedelta(seconds=wait)
+    assert utc(db_session.get(SyncControl, 1).next_attempt_at) == deadline
+    monkeypatch.delenv("SYNC_FALLBACK_MIN_AGE_SECONDS")
+    clock.value = deadline - timedelta(seconds=1)
+    fetch = Mock(return_value=[LaunchSummary(
+        id="recovered", name="Test", status="Go", net="2099-01-01T12:00:00Z"
+    )])
+    assert sync_cache(db_session, fetch).reason == "retry_wait"
+    fetch.assert_not_called()
+    clock.value = deadline
+    assert sync_cache(db_session, fetch).imported == 1
+
+
+def test_legacy_deadline_is_not_shortened(db_session, lock, clock):
+    deadline = clock.value + timedelta(minutes=90)
+    db_session.add(SyncControl(id=1, last_attempt_at=clock.value,
+                               next_attempt_at=deadline, outcome="success"))
+    db_session.commit()
+    fetch = Mock()
+    assert sync_cache(db_session, fetch).reason == "recently_updated"
+    fetch.assert_not_called()
+    assert utc(db_session.get(SyncControl, 1).next_attempt_at) == deadline
 
 
 def test_lock_requires_postgresql(db_session):
     with pytest.raises(RuntimeError, match="PostgreSQL"):
         acquire_sync_lock(db_session)
+
+
+def test_legacy_interval_without_override_still_reserves_ninety_minutes(
+        db_session, lock, clock, monkeypatch):
+    monkeypatch.setenv("SYNC_MIN_INTERVAL_SECONDS", "5400")
+    fetch = Mock(return_value=[LaunchSummary(
+        id="legacy", name="Test", status="Go", net="2099-01-01T12:00:00Z"
+    )])
+    assert sync_cache(db_session, fetch).imported == 1
+    assert utc(db_session.get(SyncControl, 1).next_attempt_at) == (
+        clock.value + timedelta(minutes=90))
 
 
 @pytest.fixture

@@ -48,6 +48,11 @@ def acquire_sync_lock(db: Session) -> bool:
 
 def sync_cache(db: Session, fetch_launches=get_upcoming_launches) -> SyncResponse:
     interval = sync_interval()
+    # Eligibility belongs to this caller; the persisted budget remains shared.
+    # Omission preserves the previous single-interval configuration contract.
+    minimum_age = int(os.getenv("SYNC_FALLBACK_MIN_AGE_SECONDS", str(interval)))
+    if not interval <= minimum_age <= 86400:
+        raise ValueError("Fallback minimum age must be between sync interval and 86400 seconds.")
     control = None
     reserved = False
     try:
@@ -64,7 +69,7 @@ def sync_cache(db: Session, fetch_launches=get_upcoming_launches) -> SyncRespons
         if last is not None:
             if last.tzinfo is None:
                 last = last.replace(tzinfo=UTC)
-            if (now - last).total_seconds() < interval:
+            if (now - last).total_seconds() < minimum_age:
                 db.rollback()
                 return SyncResponse(imported=0, skipped=True, reason="recently_updated")
         if control is None:

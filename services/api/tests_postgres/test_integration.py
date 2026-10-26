@@ -19,6 +19,34 @@ def mission():
                          mission_links=[{"kind": "agency", "url": "https://example.com"}])
 
 
+def test_fallback_skip_preserves_expired_reservation_then_primary_can_import(
+        pg_database, monkeypatch):
+    monkeypatch.setenv("SYNC_MIN_INTERVAL_SECONDS", "2700")
+    monkeypatch.setenv("SYNC_FALLBACK_MIN_AGE_SECONDS", "5400")
+    engine, _ = pg_database
+    previous = datetime.now(UTC) - timedelta(minutes=60)
+    deadline = previous + timedelta(minutes=45)
+    with Session(engine) as db:
+        upsert_launches(db, [mission()])
+        db.get(Launch, "test-mission").source_updated_at = previous
+        db.add(SyncControl(id=1, last_attempt_at=previous,
+                           next_attempt_at=deadline, outcome="success"))
+        db.commit()
+    with Session(engine) as db:
+        fetch = Mock()
+        assert sync_cache(db, fetch).reason == "recently_updated"
+        fetch.assert_not_called()
+    with Session(engine) as db:
+        assert db.get(SyncControl, 1).next_attempt_at == deadline
+        assert db.get(SyncControl, 1).last_attempt_at == previous
+        assert db.get(Launch, "test-mission").source_updated_at == previous
+    monkeypatch.delenv("SYNC_FALLBACK_MIN_AGE_SECONDS")
+    with Session(engine) as db:
+        fetch = Mock(return_value=[mission()])
+        assert sync_cache(db, fetch).imported == 1
+        fetch.assert_called_once_with(limit=100)
+
+
 def test_real_migration_chain_is_repeatable_and_preserves_launch(pg_database):
     engine, migrate = pg_database
     with Session(engine) as db:
@@ -45,7 +73,9 @@ def test_postgresql_lock_blocks_overlapping_session(pg_database):
         assert acquire_sync_lock(second)
 
 
-def test_persisted_reservation_blocks_second_sync_during_network_wait(pg_database):
+def test_persisted_reservation_blocks_second_sync_during_network_wait(pg_database, monkeypatch):
+    monkeypatch.setenv("SYNC_MIN_INTERVAL_SECONDS", "2700")
+    monkeypatch.setenv("SYNC_FALLBACK_MIN_AGE_SECONDS", "5400")
     engine, _ = pg_database
     started, release = Event(), Event()
 
@@ -63,6 +93,9 @@ def test_persisted_reservation_blocks_second_sync_during_network_wait(pg_databas
         future = pool.submit(run_first)
         try:
             assert started.wait(timeout=10)
+            # First caller has captured its policy and committed its reservation.
+            # The HTTP/primary caller uses no fallback eligibility override.
+            monkeypatch.delenv("SYNC_FALLBACK_MIN_AGE_SECONDS")
             with Session(engine) as db:
                 other_fetch = Mock()
                 assert sync_cache(db, other_fetch).reason == "retry_wait"
@@ -72,10 +105,14 @@ def test_persisted_reservation_blocks_second_sync_during_network_wait(pg_databas
         assert future.result(timeout=10).imported == 1
     with Session(engine) as db:
         assert db.get(SyncControl, 1).outcome == "success"
+        control = db.get(SyncControl, 1)
+        assert 2700 <= (control.next_attempt_at - control.last_attempt_at).total_seconds() < 2710
         assert sync_cache(db, Mock()).reason == "recently_updated"
 
 
-def test_failure_preserves_saved_data_and_retry_after_in_another_session(pg_database):
+def test_failure_preserves_saved_data_and_retry_after_in_another_session(pg_database, monkeypatch):
+    monkeypatch.setenv("SYNC_MIN_INTERVAL_SECONDS", "2700")
+    monkeypatch.setenv("SYNC_FALLBACK_MIN_AGE_SECONDS", "5400")
     engine, _ = pg_database
     previous = datetime.now(UTC) - timedelta(hours=2)
     with Session(engine) as db:
@@ -87,6 +124,7 @@ def test_failure_preserves_saved_data_and_retry_after_in_another_session(pg_data
         before = datetime.now(UTC)
         with pytest.raises(LaunchLibraryError):
             sync_cache(db, failure)
+    monkeypatch.delenv("SYNC_FALLBACK_MIN_AGE_SECONDS")
     with Session(engine) as db:
         saved = db.get(Launch, "test-mission")
         assert saved.name == "Saved mission"

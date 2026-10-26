@@ -36,6 +36,8 @@ A interface foi publicada em https://launch-tracker-beryl.vercel.app/ e a API em
 
 ## Sincronização horária gratuita
 
+Revisão A01.1 local, ainda não ativada: API com SYNC_MIN_INTERVAL_SECONDS=2700 (ou omisso) e sem SYNC_FALLBACK_MIN_AGE_SECONDS; GitHub com intervalo 2700 e SYNC_FALLBACK_MIN_AGE_SECONDS=5400. Assim, elegibilidade do fallback não prolonga o cooldown global. Não definir o override de fallback no Render. Ver `A01_1_SYNC_REVIEW.md` para ativação coordenada, critérios e rollback; não executar sync manual para validar este lote. O diagnóstico de 26/10 encontrou o Worker sem cron ativo: o código local por si só não resolve essa configuração.
+
 O workflow `Sync launches` corre `python -m app.sync` num runner do GitHub e escreve diretamente na base Neon, sem depender do processo Render. Faz uma consulta por execução; não repete automaticamente uma resposta 429. O limite gratuito documentado pela Launch Library é 15 consultas por hora: https://ll.thespacedevs.com/docs.
 
 Configuração no repositório GitHub:

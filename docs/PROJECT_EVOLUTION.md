@@ -1,5 +1,13 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## A01.1 — separar idade do fallback e orçamento global (26/10/2026, rascunho)
+
+Após revisão da prontidão e do risco de timeout no Render Free, o utilizador autorizou commit e push deste lote. O envio pode acionar as integrações automáticas existentes; não autoriza ativar o cron Cloudflare. CI, deploy e importação natural precisam de confirmação própria. Documentos locais de partilha, FEATURES_ROADMAP e auditoria geral ficam fora deste lote; o diagnóstico A01 acompanha a revisão.
+
+Implementação local autorizada: a CLI GitHub só fica elegível com dados de pelo menos 90 minutos, mas reserva o mesmo intervalo de 45 minutos da API. Nova variável opcional SYNC_FALLBACK_MIN_AGE_SECONDS herda o intervalo anterior quando omitida. Locks PostgreSQL, reserva durável antes da rede, Retry-After e prazos antigos preservados; skips não renovam a reserva. Workflow conserva cron/serialização; Worker de execução inalterado após verificar contrato e timeout de 90 s. Sem migração, consultas reais, commit, push, deploy ou alterações Cloudflare/Render.
+
+Dificuldade: PostgreSQL temporário criado inicialmente em SQL_ASCII devolveu bytes na identificação do servidor, causando cinco erros de preparação. Recriação apenas da base descartável em UTF-8 resolveu o ambiente, sem alterar a aplicação/dependências. Verificação final: 67 testes API, 12 PostgreSQL isolado e 27 Worker; Ruff e diff sem erros. Aviso Starlette/httpx preexistente. Os testes exercitam concorrência entre sessões, limiares exatos, skip sem escrita, compatibilidade e Retry-After. Não comprovam cadência nem orçamento de cold start em produção. Configuração, aceitação e rollback: `A01_1_SYNC_REVIEW.md`. A01 não está encerrado e ativação depende de aprovação.
+
 Documento de apoio à apresentação do projeto final. Atualizado em 23 de outubro de 2026 a partir do histórico Git, do código e dos registos de trabalho disponíveis. Abrange os 31 commits até `77dac29` e descreve a revisão de sincronização entregue com este documento. Não é uma certificação de disponibilidade, segurança ou cumprimento de requisitos comerciais. Atualizar este ficheiro em cada incremento, incluindo dificuldades, solução, evidência e pendências; não declarar um push ou deploy antes de o confirmar.
 
 ## 1. Objetivo e âmbito
