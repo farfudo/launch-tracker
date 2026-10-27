@@ -1,5 +1,9 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## A01 — observabilidade do limite LL2 (27/10/2026, integração autorizada)
+
+Preparados registos estruturados para tentativas reais, motivo de bloqueio, Retry-After normalizado, prazo efetivo e resultado, sem registar credenciais nem respostas arbitrárias. A dificuldade anterior era distinguir 429, reservas e pedidos efetivos; a contagem é isolada por contexto e não acrescenta chamadas. Mantidos os locks e a política de espera. Validação PostgreSQL 17.11 isolado: 15 testes passaram, incluindo migrações, locks reais, reserva persistente, Retry-After numérico/data, bloqueio entre sessões, contagem de tentativas e cooldown. Fornecedor simulado; nenhum pedido LL2 real. A base descartável foi criada com UTF8 após um problema inicial de codificação. Os 57 testes SQLite anteriores não foram repetidos na validação PostgreSQL local. CI isolada verde no commit 9a870a7: 71 testes API, 15 PostgreSQL 17 e 27 Worker, com Ruff aprovado. Integração em main autorizada; o incremento inclui o timeout de 180 s do Worker, sem alterar cron ou publicar código Cloudflare. Configurações temporárias de CI e bloqueio de deploy excluídas.
+
 ## Estabilização A02, A03 e A14 (27/10/2026, rascunho)
 
 Os testes de navegação e Descobertas foram alinhados com o comportamento aprovado. O InfoDisclosure passou a usar HTML válido, com interação por toque, ponteiro e teclado, Escape, fecho ao tocar fora e reposicionamento; as etiquetas do excerto foram clarificadas em PT, EN e ES. Os testes identificaram HTML temporário oculto transmitido pelo servidor: a verificação foi circunscrita à página visível, mantendo a associação única entre botão e painel.

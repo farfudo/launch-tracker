@@ -1,4 +1,5 @@
 const SYNC_URL = "https://launch-tracker-ie09.onrender.com/api/v1/launches/sync";
+const SYNC_TIMEOUT_MS = 180_000; // Allow cold start plus import, without retrying the POST.
 const FAILURE_MESSAGES = Object.freeze({
   configuration_invalid: "SYNC_TOKEN missing or invalid.",
   request_setup_failed: "Sync request could not be prepared.",
@@ -17,7 +18,7 @@ class SyncFailure extends Error {
 }
 
 export async function runSync(env, request = fetch,
-  makeSignal = () => AbortSignal.timeout(90_000)) {
+  makeSignal = () => AbortSignal.timeout(SYNC_TIMEOUT_MS)) {
   if (typeof env?.SYNC_TOKEN !== "string" || env.SYNC_TOKEN.length < 32
     || !/^[\x21-\x7e]+$/.test(env.SYNC_TOKEN)) {
     throw new SyncFailure("configuration_invalid");
@@ -56,7 +57,7 @@ export async function runSync(env, request = fetch,
 
 export async function executeScheduled(event, env, {
   request = fetch, log = entry => console.log(JSON.stringify(entry)),
-  newId = () => crypto.randomUUID(), makeSignal = () => AbortSignal.timeout(90_000)
+  newId = () => crypto.randomUUID(), makeSignal = () => AbortSignal.timeout(SYNC_TIMEOUT_MS)
 } = {}) {
   const context = {
     source: "cloudflare-worker", run_id: newId(),

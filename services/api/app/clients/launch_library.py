@@ -1,5 +1,6 @@
 import logging
 import time
+from contextvars import ContextVar
 from datetime import datetime
 from typing import Any
 from urllib.parse import urlsplit
@@ -9,6 +10,7 @@ from pydantic import BaseModel, Field
 
 UPCOMING_LAUNCHES_URL = "https://ll.thespacedevs.com/2.3.0/launches/upcoming/"
 logger = logging.getLogger(__name__)
+request_count: ContextVar[int] = ContextVar("launch_provider_request_count", default=0)
 
 
 class LaunchLibraryError(Exception):
@@ -156,6 +158,7 @@ def parse_entity_links(provider, configuration, pad, mission, payload) -> list[d
 
 def _get_upcoming_launches_once(limit: int) -> list[LaunchSummary]:
     try:
+        request_count.set(request_count.get() + 1)
         response = httpx.get(
             UPCOMING_LAUNCHES_URL,
             params={"format": "json", "mode": "detailed", "ordering": "net", "limit": limit},

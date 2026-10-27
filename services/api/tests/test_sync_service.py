@@ -245,3 +245,76 @@ def test_exhausted_provider_retry_preserves_data_and_shared_budget(db_session, l
     assert db_session.get(SyncControl, 1).outcome == "failed"
     assert sync_cache(db_session, get_upcoming_launches).reason == "retry_wait"
     assert len(attempts) == 2
+
+
+def test_observability_records_safe_retry_after_and_skip(db_session, lock, clock, monkeypatch, caplog):
+    import json
+
+    import httpx
+
+    from app.clients.launch_library import get_upcoming_launches
+
+    def get(url, **kwargs):
+        return httpx.Response(429, headers={"Retry-After": "7200"},
+                              request=httpx.Request("GET", url))
+
+    monkeypatch.setattr("app.clients.launch_library.httpx.get", get)
+    with pytest.raises(LaunchLibraryError):
+        sync_cache(db_session, get_upcoming_launches)
+    assert sync_cache(db_session, get_upcoming_launches).reason == "retry_wait"
+    records = [json.loads(r.message.split("sync_observation ", 1)[1])
+               for r in caplog.records if r.message.startswith("sync_observation ")]
+    assert records[0] == {"outcome": "failed", "ll2_requests": 1, "category": "rate_limited",
+                          "http_status": 429, "retry_after": 7200,
+                          "blocked_until": "2026-10-26T14:00:00+00:00"}
+    assert records[1]["reason"] == "retry_wait"
+    assert records[1]["block"] == "retry_wait"
+    assert records[1]["ll2_requests"] == 0
+
+
+def test_observability_counts_actual_retries_without_leaking_header(db_session, lock, monkeypatch, caplog):
+    import json
+
+    import httpx
+
+    from app.clients.launch_library import get_upcoming_launches
+    from app.sync_service import safe_retry_after
+
+    monkeypatch.setattr("app.clients.launch_library.httpx.get",
+                        Mock(side_effect=httpx.ReadTimeout("secret")))
+    monkeypatch.setattr("app.clients.launch_library.time.sleep", lambda _: None)
+    with pytest.raises(LaunchLibraryError):
+        sync_cache(db_session, get_upcoming_launches)
+    record = next(json.loads(r.message.split("sync_observation ", 1)[1])
+                  for r in caplog.records if r.message.startswith("sync_observation "))
+    assert record["ll2_requests"] == 2
+    assert record["outcome"] == "failed"
+    assert "secret" not in caplog.text
+    assert safe_retry_after("secret-token") == "invalid"
+
+
+def test_observability_distinguishes_reservation_and_cooldown(db_session, lock, clock, caplog):
+    import json
+
+    db_session.add(SyncControl(id=1, last_attempt_at=clock.value,
+                               next_attempt_at=clock.value + timedelta(minutes=45),
+                               outcome="attempting"))
+    db_session.commit()
+    assert sync_cache(db_session, Mock()).reason == "retry_wait"
+    record = next(json.loads(r.message.split("sync_observation ", 1)[1])
+                  for r in caplog.records if r.message.startswith("sync_observation "))
+    assert record["block"] == "reservation"
+    assert record["ll2_requests"] == 0
+
+
+def test_observability_reports_committed_import(db_session, lock, caplog):
+    import json
+
+    result = sync_cache(db_session, Mock(return_value=[LaunchSummary(
+        id="observed", name="Test", status="Go", net="2099-01-01T12:00:00Z"
+    )]))
+    record = next(json.loads(r.message.split("sync_observation ", 1)[1])
+                  for r in caplog.records if r.message.startswith("sync_observation "))
+    assert result.imported == record["imported"] == 1
+    assert record["outcome"] == "success"
+    assert record["ll2_requests"] == 0  # Injected provider makes no real HTTP requests.
