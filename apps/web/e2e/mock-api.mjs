@@ -3,6 +3,7 @@ import { createServer } from 'node:http';
 import { setTimeout as delay } from 'node:timers/promises';
 
 const base = {
+  net_precision: { id: 0, name: 'Second', abbrev: 'SEC', description: 'The T-0 is accurate to the second.' },
   status: 'Go for Launch', net: '2099-01-01T12:00:00Z', agency: 'SpaceX', vehicle: 'Falcon 9',
   source_url: 'https://example.com/mission', source_updated_at: '2098-12-31T12:00:00Z',
   launch_timezone: 'America/Los_Angeles', mission_description: 'Controlled mission for browser tests.',

@@ -23,7 +23,8 @@ const record = (value: unknown): value is Record<string, unknown> => !!value && 
 const date = (value: unknown) => typeof value === "string" && Number.isFinite(Date.parse(value));
 const nullableText = (value: unknown) => value === null || typeof value === "string";
 const optionalText = (value: unknown) => value === undefined || nullableText(value);
-const launch = (value: unknown): value is Launch => record(value) && typeof value.id === "string" && /^[a-zA-Z0-9-]{1,128}$/.test(value.id) && typeof value.name === "string" && typeof value.status === "string" && date(value.net) && date(value.source_updated_at) && ["agency", "vehicle", "source_url", "launch_timezone"].every(key => nullableText(value[key])) && ["image_url", "image_credit", "image_license", "image_license_url", "image_title"].every(key => optionalText(value[key])) && [undefined, null, "vehicle", "launch"].includes(value.image_kind as string | null | undefined);
+const precision = (value: unknown) => value === undefined || value === null || (record(value) && Number.isInteger(value.id) && ["name", "abbrev", "description"].every(key => optionalText(value[key])));
+const launch = (value: unknown): value is Launch => record(value) && typeof value.id === "string" && /^[a-zA-Z0-9-]{1,128}$/.test(value.id) && typeof value.name === "string" && typeof value.status === "string" && date(value.net) && precision(value.net_precision) && date(value.source_updated_at) && ["agency", "vehicle", "source_url", "launch_timezone"].every(key => nullableText(value[key])) && ["image_url", "image_credit", "image_license", "image_license_url", "image_title"].every(key => optionalText(value[key])) && [undefined, null, "vehicle", "launch"].includes(value.image_kind as string | null | undefined);
 export function validateLaunches(value: unknown): asserts value is Launch[] {
   if (!Array.isArray(value) || value.length > 100 || !value.every(launch)) throw new InvalidApiDataError("Invalid launch list");
 }

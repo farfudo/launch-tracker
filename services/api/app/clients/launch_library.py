@@ -6,7 +6,7 @@ from typing import Any
 from urllib.parse import urlsplit
 
 import httpx
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StrictInt, ValidationError
 
 UPCOMING_LAUNCHES_URL = "https://ll.thespacedevs.com/2.3.0/launches/upcoming/"
 logger = logging.getLogger(__name__)
@@ -24,11 +24,28 @@ class LaunchLibraryError(Exception):
         self.http_status = http_status
 
 
+class NetPrecision(BaseModel):
+    id: StrictInt
+    name: str | None = None
+    abbrev: str | None = None
+    description: str | None = None
+
+
+def parse_precision(value: Any) -> NetPrecision | None:
+    if not isinstance(value, dict):
+        return None
+    try:
+        return NetPrecision.model_validate(value)
+    except ValidationError:
+        return None
+
+
 class LaunchSummary(BaseModel):
     id: str
     name: str
     status: str
     net: datetime
+    net_precision: NetPrecision | None = None
     agency: str | None = None
     vehicle: str | None = None
     source_url: str | None = None
@@ -126,6 +143,7 @@ def parse_launch(payload: dict[str, Any]) -> LaunchSummary:
         name=payload["name"],
         status=status.get("name", "Unknown"),
         net=payload["net"],
+        net_precision=parse_precision(payload.get("net_precision")),
         agency=provider.get("name"),
         vehicle=configuration.get("full_name"),
         source_url=payload.get("url"),

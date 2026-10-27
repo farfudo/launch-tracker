@@ -2,7 +2,7 @@ import { expect, it } from "vitest";
 import type { LaunchDetail } from "../lib/api";
 import { calendarEvent, canExportCalendar } from "../lib/calendar";
 
-const launch = { id: "real-id", name: "Mission, one; test", status: "Go", net: "2026-11-01T02:30:00+01:00", window_start: "2026-11-01T01:00:00Z", window_end: "2026-11-01T02:00:00Z", pad_name: "Pad", location_name: "Site" } as LaunchDetail;
+const launch = { id: "real-id", name: "Mission, one; test", status: "Go", net_precision: {id:0}, net: "2026-11-01T02:30:00+01:00", window_start: "2026-11-01T01:00:00Z", window_end: "2026-11-01T02:00:00Z", pad_name: "Pad", location_name: "Site" } as LaunchDetail;
 it("rejects unconfirmed, invalid, missing and inconsistent schedules", () => {
   expect(canExportCalendar(launch)).toBe(true);
   for (const patch of [{status:"TBD"},{status:"TBC"},{status:"Hold"},{status:"Success"},{net:"invalid"},{net:"2026-11-01T01:30:00"},{window_start:null},{window_end:null},{window_end:"2026-10-01T00:00:00Z"}]) {

@@ -6,7 +6,7 @@ import type { LaunchDetail } from "../lib/api";
 import { LocaleProvider } from "../components/locale-provider";
 import { MissionSelectionProvider, MissionDetailPanel, useMissionSelection } from "../components/mission-selection";
 
-const initial: LaunchDetail = { id: "first", name: "First mission", status: "Go", net: "2099-01-01T12:00:00Z", agency: "Agency", vehicle: "Rocket", source_url: null, source_updated_at: "2026-10-22T12:00:00Z", launch_timezone: "UTC", mission_name: "First mission", mission_description: "First description", pad_name: null, location_name: null, window_start: null, window_end: null, image_url: null, image_credit: null, image_license: null, image_license_url: null, image_kind: null, image_title: null };
+const initial: LaunchDetail = { id: "first", name: "First mission", status: "Go", net_precision: {id:0}, net: "2099-01-01T12:00:00Z", agency: "Agency", vehicle: "Rocket", source_url: null, source_updated_at: "2026-10-22T12:00:00Z", launch_timezone: "UTC", mission_name: "First mission", mission_description: "First description", pad_name: null, location_name: null, window_start: null, window_end: null, image_url: null, image_credit: null, image_license: null, image_license_url: null, image_kind: null, image_title: null };
 const second = {...initial, id: "second", name: "Second mission", mission_name: "Second mission", mission_description: "Second description"};
 const third = {...initial, id: "third", name: "Third mission", mission_name: "Third mission", mission_description: "Third description"};
 let root: Root;

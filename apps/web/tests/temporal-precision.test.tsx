@@ -1,0 +1,63 @@
+// @vitest-environment jsdom
+import React from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { expect, it } from "vitest";
+import { formatTemporalDate, exactPrecision, precisionId, temporalCopy } from "../lib/temporal-precision";
+import { LocalLaunchDate } from "../components/local-launch-date";
+import { Countdown } from "../components/countdown";
+import { LaunchTimes } from "../components/launch-times";
+import { LocaleProvider } from "../components/locale-provider";
+import { canExportCalendar } from "../lib/calendar";
+import type { LaunchDetail } from "../lib/api";
+const date="2026-10-25T00:30:59Z";
+const mission={status:"Go",net:date,window_start:date,window_end:date} as LaunchDetail;
+
+it("recognises all 17 source IDs, including zero, without inferring missing or new values", () => {
+  for(let id=0;id<17;id++) {
+    expect(precisionId({id})).toBe(id);
+    expect(exactPrecision({id})).toBe(id===0);
+    for(const locale of ["pt-PT","en-GB","es-ES"] as const) {
+      const text=formatTemporalDate(date,{id},locale,"America/Los_Angeles");
+      expect(text).not.toBe(temporalCopy[locale].unknown);
+      if(id>=3) {
+        expect(text).toBe(formatTemporalDate("2026-12-31T23:59:59Z",{id},locale,"Pacific/Kiritimati"));
+        expect(text).not.toMatch(/2026|00:|23:/);
+      }
+    }
+  }
+  for(const precision of [null,undefined,{id:99},{id:-1},{id:0.5}]) expect(precisionId(precision)).toBeNull();
+});
+it("formats supported units only across midnight and DST; broad dates never shift", () => {
+  expect(formatTemporalDate(date,{id:0},"en-GB","America/Los_Angeles")).toContain("17:30:59");
+  expect(formatTemporalDate(date,{id:1},"en-GB","America/Los_Angeles")).toContain("17:30");
+  expect(formatTemporalDate(date,{id:1},"en-GB")).not.toContain(":59");
+  expect(formatTemporalDate(date,{id:2},"en-GB")).not.toMatch(/\d{2}:\d{2}/);
+  expect(formatTemporalDate("2026-07-20T12:30:59Z",{id:0},"pt-PT","Europe/Lisbon")).toContain("13:30:59");
+  expect(formatTemporalDate("2026-12-20T12:30:59Z",{id:0},"pt-PT","Europe/Lisbon")).toContain("12:30:59");
+  expect(formatTemporalDate("invalid",{id:0},"en-GB")).toBe(temporalCopy["en-GB"].unknown);
+  expect(formatTemporalDate("2026-10-27T00:00:00",{id:0},"en-GB")).toBe(temporalCopy["en-GB"].unknown);
+});
+it("gates exact calendar and countdown independently of Go and preserves terminal states", () => {
+  for(const id of [null,...Array.from({length:17},(_,i)=>i),99]) {
+    const precision=id===null?null:{id};
+    expect(canExportCalendar({...mission,net_precision:precision})).toBe(id===0);
+    const html=renderToStaticMarkup(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T00:00:00Z" status="Go" precision={precision}/></LocaleProvider>);
+    expect(html.includes('role="timer"')).toBe(id===0);
+    for(const status of ["Success","Failure","Cancelled","TBC","TBD","Hold","In Flight"]) {
+      const html=renderToStaticMarkup(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T00:00:00Z" status={status} precision={precision}/></LocaleProvider>);
+      expect(html).not.toContain('role="timer"');
+      expect(canExportCalendar({...mission,status,net_precision:precision})).toBe(false);
+    }
+  }
+});
+it("keeps source uncertainty accessible and hides false instants for broad and legacy dates", () => {
+  for(const locale of ["pt-PT","en-GB","es-ES"] as const) {
+    for(const precision of [null,{id:5},{id:6},{id:7},{id:15},{id:16}]) {
+      const html=renderToStaticMarkup(<LocaleProvider locale={locale}><LocalLaunchDate date="2000-01-01T00:00:00Z" status="TBC" precision={precision}/><LaunchTimes isoDate={date} precision={precision}/></LocaleProvider>);
+      expect(html).not.toContain("<time");
+      expect(html).toContain("date-uncertain");
+      expect(html).not.toContain("2000");
+      expect(html).not.toContain("2026");
+    }
+  }
+});
