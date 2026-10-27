@@ -27,7 +27,8 @@ export function precisionNotice(precision: NetPrecision | null | undefined, loca
 }
 export function formatTemporalDate(date: string, precision: NetPrecision | null | undefined, locale: Locale, zone = "UTC"): string {
   const id = precisionId(precision);
-  if (id === null || !Number.isFinite(Date.parse(date)) || !/(?:Z|[+-]\d{2}:\d{2})$/.test(date)) return temporalCopy[locale].unknown;
+  if (!Number.isFinite(Date.parse(date)) || !/(?:Z|[+-]\d{2}:\d{2})$/.test(date)) return temporalCopy[locale].unknown;
+  if (id === null) return new Intl.DateTimeFormat(locale, { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(date));
   // Broad precision labels deliberately do not extract day/month/year from NET:
   // the provider catalogue does not define the reference calendar/time zone.
   if (id >= 3) return labels[locale][id];

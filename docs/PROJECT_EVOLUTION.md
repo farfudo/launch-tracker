@@ -1,5 +1,9 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## A07 — correção de apresentação (rascunho local)
+
+A API pública consultada devolveu precisão nula nos primeiros três lançamentos e a última importação observada antecedia o deploy A07; isto não prova falha de propagação. A interface volta a mostrar a data de referência em UTC para precisão desconhecida, com um único aviso, sem assumir hora exata. Contagens para SEC/MIN/HR deixam visíveis apenas as unidades suportadas e períodos amplos continuam sem contagem; estados operacionais continuam a prevalecer. Não foram efetuadas sincronizações manuais. Testes dirigidos preparados para três idiomas; Vitest local bloqueou e exige validação por CI isolada.
+
 ## A07 — precisão temporal (27/10/2026, rascunho local)
 
 Propagado o objeto net_precision da LL2 2.3.0 pelo cliente, persistência JSON anulável, upsert, schemas e frontend. Catálogo dos 17 IDs confirmado em duas consultas de configuração lldev previamente autorizadas, documentado em A07_TEMPORAL_PRECISION_CONTRACT.md; nenhuma consulta LL2 foi feita nesta implementação. Migração 20261027_08 adiciona campo sem backfill: registos antigos ficam desconhecidos. IDs futuros são preservados, mas não interpretados como exatos. Clientes antigos podem ignorar o novo campo; o frontend aceita respostas antigas sem precisão.
