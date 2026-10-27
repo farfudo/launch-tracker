@@ -1,5 +1,9 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## A04 — estado, data e contagem (27/10/2026, validação isolada)
+
+Preparada distinção entre missões concluídas, em voo, suspensas, com hora incerta ou data por determinar e missões Go. Estados terminais não apresentam contagem ou aviso de hora por confirmar. Estimativas fornecidas para datas incertas permanecem visíveis e identificadas como provisórias; datas inválidas não são formatadas. O calendário explica a indisponibilidade para missões concluídas ou em voo. Acrescentados testes de regressão. Dificuldade: testes locais ficaram bloqueados; validação preparada em CI isolada, sem alterar A01.
+
 ## Estabilização A02, A03 e A14 (27/10/2026, rascunho)
 
 Os testes de navegação e Descobertas foram alinhados com o comportamento aprovado. O InfoDisclosure passou a usar HTML válido, com interação por toque, ponteiro e teclado, Escape, fecho ao tocar fora e reposicionamento; as etiquetas do excerto foram clarificadas em PT, EN e ES. Os testes identificaram HTML temporário oculto transmitido pelo servidor: a verificação foi circunscrita à página visível, mantendo a associação única entre botão e painel.

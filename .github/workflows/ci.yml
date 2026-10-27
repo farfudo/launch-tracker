@@ -100,17 +100,30 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm run test
-
       - name: Build production application
         run: npm run build
 
       - name: Install browser for end-to-end tests
         run: npx playwright install --with-deps chromium
 
-      - name: Run isolated browser journeys
-        run: npm run test:e2e
+      # Temporary isolated validation; do not merge into main.
+      - name: Run affected A02 browser journeys without retries
+        run: npm run test:e2e -- e2e/history.spec.ts e2e/discoveries.spec.ts --retries=0
+
+      - name: Run information disclosure browser journeys without retries
+        run: npm run test:e2e -- e2e/info-disclosure.spec.ts --retries=0
+
+      - name: Run A04 focused regression tests
+        run: npx vitest run tests/countdown-status.test.tsx tests/countdown-compact.test.tsx tests/date-certainty.test.tsx tests/mission-calendar.test.tsx tests/calendar.test.ts --maxWorkers=1
+
+      - name: Check web code style
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Run complete isolated browser journeys without retries
+        run: npm run test:e2e -- --retries=0
 
       - name: Save browser test evidence
         if: always()

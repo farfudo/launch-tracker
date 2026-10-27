@@ -36,3 +36,15 @@ export const statusFilters = {go:"statusGo", tbc:"statusTbc", tbd:"statusTbd", s
 export function uncertainLaunchDate(status?: string): boolean {
   return !!status && ["statusTbc", "statusTbd", "statusHold"].includes(statusKeys[status]);
 }
+
+/** Interpret source status conservatively; NET alone does not prove an actual launch time. */
+export function launchTimingStatus(status?: string): "scheduled" | "uncertain" | "unknown-date" | "held" | "in-flight" | "terminal" | "unknown" {
+  const value=(status || "").trim().toLowerCase();
+  if (["go", "go for launch"].includes(value)) return "scheduled";
+  if (["tbc", "to be confirmed"].includes(value)) return "uncertain";
+  if (["tbd", "to be determined"].includes(value)) return "unknown-date";
+  if (["hold", "on hold", "delayed", "postponed"].includes(value)) return "held";
+  if (["launch in flight", "in flight"].includes(value)) return "in-flight";
+  if (["launch successful", "success", "launch failure", "failure", "launch was a partial failure", "partial failure", "cancelled", "canceled", "launch cancelled", "launch canceled"].includes(value)) return "terminal";
+  return "unknown";
+}
