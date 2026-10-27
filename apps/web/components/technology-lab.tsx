@@ -51,7 +51,6 @@ export function TechnologyLab({locale}:{locale:Locale}) {
     <div className="technology-picker" role="group" aria-label={t.labTitle}>{t.tabs.map((label,index)=><button key={label} type="button" aria-pressed={selected===index} aria-controls="technology-panel" onClick={()=>{setSelected(index);setActive(false);setStage(-1);setRunning(false);}}><span aria-hidden="true">0{index+1}</span>{label}</button>)}</div>
     <div id="technology-panel" className="technology-panel">
       <figure><TechnologyArt key={selected} index={selected} active={sequenced?stage>=0:active} stage={stage} paused={sequenced&&!running} parts={s.parts} labels={item.labels}/>
-        <ul className="technology-diagram-legend" aria-label={t.labTitle}>{(selected === 0 ? s.parts : item.labels).map(label => <li key={label}>{label}</li>)}</ul>
         <div className="technology-playback">
           <button className="technology-action" type="button" aria-pressed={sequenced?running:active} aria-controls="technology-illustration" onClick={()=>{
             if(!sequenced) {setActive(!active);return;}
@@ -60,6 +59,7 @@ export function TechnologyLab({locale}:{locale:Locale}) {
           }}><span aria-hidden="true">{(sequenced?running:active)?'Ⅱ':'▶'} </span>{sequenced?(reduced?s.next:running?s.pause:stage===3?s.replay:s.play):active?t.reset:item.action}</button>
           {sequenced&&<>{!reduced&&<button type="button" className="technology-next" onClick={advance}>{s.next} →</button>}<button type="button" className="technology-reset" onClick={()=>{setStage(-1);setRunning(false);}} aria-label={s.reset}>↺</button></>}
         </div>
+        <ul className="technology-diagram-legend" aria-label={t.labTitle}>{(selected === 0 ? s.parts : item.labels).map(label => <li key={label}>{label}</li>)}</ul>
         {sequenced&&<p className="technology-progress">{stage<0?'00':`0${stage+1}`} / 04 <span>{stage<0?item.title:stages[stage].title}</span></p>}
         <figcaption><InfoDisclosure label={t.concept}>{t.concept}<span className="technology-art-note">{sequenced?(selected===0?s.engineNote:s.dockingNote):illustrationNotes[locale][selected]}</span></InfoDisclosure></figcaption></figure>
       <div className="technology-explainer"><span className="technology-stage">{selected===0?'SpaceX · Raptor 3':item.tag}</span><h3>{selected===0?s.engineTitle:item.title}</h3><p>{item.body}</p><p>{selected===0?s.version3:item.why}</p><p className="technology-conclusion">{conclusions[locale][selected]}</p>
