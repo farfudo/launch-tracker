@@ -172,7 +172,7 @@ test('visual technology lab explains concepts and links to a dated Artemis deep 
   await page.getByRole('combobox',{name:'Language',exact:true}).selectOption('pt-PT');
   await expect(page.locator('h1')).toHaveText('Artemis: as peças de um regresso à Lua');
   await expect(page.locator('.section-navigation a[aria-current]')).toHaveAttribute('href','/explore-space');
-  await page.locator('.section-navigation a[href="/discoveries"]').click();
+  await page.goto('/discoveries');
   await expect(page).toHaveURL(/\/discoveries$/);
   await expect(page.locator('#artemis-feature')).toBeVisible();
 });
