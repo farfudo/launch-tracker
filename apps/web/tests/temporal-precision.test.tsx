@@ -42,7 +42,7 @@ it("gates exact calendar and countdown independently of Go and preserves termina
     const precision=id===null?null:{id};
     expect(canExportCalendar({...mission,net_precision:precision})).toBe(id===0);
     const html=renderToStaticMarkup(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T00:00:00Z" status="Go" precision={precision}/></LocaleProvider>);
-    expect(html.includes('role="timer"')).toBe(id===0);
+    expect(html.includes('role="timer"')).toBe(id !== null && id <= 2);
     for(const status of ["Success","Failure","Cancelled","TBC","TBD","Hold","In Flight"]) {
       const html=renderToStaticMarkup(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T00:00:00Z" status={status} precision={precision}/></LocaleProvider>);
       expect(html).not.toContain('role="timer"');
@@ -52,12 +52,28 @@ it("gates exact calendar and countdown independently of Go and preserves termina
 });
 it("keeps source uncertainty accessible and hides false instants for broad and legacy dates", () => {
   for(const locale of ["pt-PT","en-GB","es-ES"] as const) {
-    for(const precision of [null,{id:5},{id:6},{id:7},{id:15},{id:16}]) {
+    for(const precision of [{id:5},{id:6},{id:7},{id:15},{id:16}]) {
       const html=renderToStaticMarkup(<LocaleProvider locale={locale}><LocalLaunchDate date="2000-01-01T00:00:00Z" status="TBC" precision={precision}/><LaunchTimes isoDate={date} precision={precision}/></LocaleProvider>);
       expect(html).not.toContain("<time");
       expect(html).toContain("date-uncertain");
       expect(html).not.toContain("2000");
       expect(html).not.toContain("2026");
     }
+  }
+});
+
+it("shows a reference date once for missing precision and limits countdown units in all languages", () => {
+  for (const locale of ["pt-PT", "en-GB", "es-ES"] as const) {
+    const missing = renderToStaticMarkup(<LocaleProvider locale={locale}><LocalLaunchDate date={date} status="TBC" precision={null} /></LocaleProvider>);
+    expect(missing).toContain("2026");
+    expect(missing).toContain("UTC");
+    expect(missing.split("date-uncertainty-note")).toHaveLength(2);
+    for (const id of [0, 1, 2]) {
+      const html = renderToStaticMarkup(<LocaleProvider locale={locale}><Countdown date="2099-01-01T00:00:00Z" status="Go" precision={{id}} /></LocaleProvider>);
+      expect(html).toContain('role="timer"');
+      expect((html.match(/<strong>/g) ?? []).length).toBe(4-id);
+    }
+    const html = renderToStaticMarkup(<LocaleProvider locale={locale}><Countdown date={date} status="Go" precision={null} /></LocaleProvider>);
+    expect(html).toBe("");
   }
 });
