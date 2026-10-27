@@ -12,6 +12,7 @@ export function InfoDisclosure({label, children}: {label:string; children:ReactN
   const timer=useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const openedByPointer=useRef(false);
   const restoringFocus=useRef(false);
+  const pointerDown=useRef(false);
   const hoverOnly=useRef(false);
   const position=()=>{
     const element=panel.current, button=trigger.current;
@@ -37,7 +38,7 @@ export function InfoDisclosure({label, children}: {label:string; children:ReactN
   function show(){clearTimeout(timer.current); setOpen(true);}
   function leave(){clearTimeout(timer.current); timer.current=setTimeout(()=>{if(!wrapper.current?.contains(document.activeElement)) setOpen(false);},200);}
   return <span ref={wrapper} className="info-disclosure" onPointerEnter={event=>{if(event.pointerType==='mouse'){openedByPointer.current=true; if(!open) hoverOnly.current=true; show();}}} onPointerLeave={event=>{if(event.pointerType==='mouse'){openedByPointer.current=false; leave();}}} onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget)) leave();}}>
-    <button ref={trigger} type="button" className="info-trigger" aria-label={label} aria-controls={id} aria-expanded={open} aria-haspopup="dialog" onClick={()=>{clearTimeout(timer.current); if(hoverOnly.current){hoverOnly.current=false; setOpen(true);} else setOpen(value=>!value);}} onFocus={event=>{if(!restoringFocus.current && event.currentTarget.matches(':focus-visible') && !openedByPointer.current)show();}}>ⓘ</button>
+    <button ref={trigger} type="button" className="info-trigger" aria-label={label} aria-controls={id} aria-expanded={open} aria-haspopup="dialog" onPointerDown={()=>{pointerDown.current=true;}} onPointerCancel={()=>{pointerDown.current=false;}} onClick={()=>{pointerDown.current=false; clearTimeout(timer.current); if(hoverOnly.current){hoverOnly.current=false; setOpen(true);} else setOpen(value=>!value);}} onFocus={()=>{if(!restoringFocus.current && !pointerDown.current)show();}}>ⓘ</button>
     <span ref={panel} id={id} role="dialog" aria-label={label} className="info-panel" hidden={!open} onPointerEnter={()=>clearTimeout(timer.current)} onPointerLeave={leave}>{children}</span>
   </span>;
 }
