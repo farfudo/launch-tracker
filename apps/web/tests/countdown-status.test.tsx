@@ -30,7 +30,7 @@ it("shows timing consistent with source status without inventing a date", async 
     await render("TBC");
     expect(container.textContent).toContain("Provisional date");
     await render("TBD");
-    expect(container.textContent).toContain("Date to be determined");
+    expect(container.textContent).toContain("Launch date to be determined");
     expect(container.textContent).toContain("Provisional date");
     await render("Go", "invalid");
     expect(container.querySelector('[role="timer"]')).toBeNull();
