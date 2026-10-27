@@ -1,5 +1,9 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## A07 — countdown estimado com precisão desconhecida
+
+A pedido do utilizador, regressa a contagem baseada no horário de referência quando a precisão da fonte é desconhecida, identificada como estimativa com hora não confirmada. Missões concluídas, sem data, em voo e suspensas preservam o seu tratamento; períodos amplos não recebem countdown. Prévia visual demonstrativa com dados fictícios; validação da aplicação real pendente.
+
 ## A07 — correção de apresentação (rascunho local)
 
 A API pública consultada devolveu precisão nula nos primeiros três lançamentos e a última importação observada antecedia o deploy A07; isto não prova falha de propagação. A interface volta a mostrar a data de referência em UTC para precisão desconhecida, com um único aviso, sem assumir hora exata. Contagens para SEC/MIN/HR deixam visíveis apenas as unidades suportadas e períodos amplos continuam sem contagem; estados operacionais continuam a prevalecer. Não foram efetuadas sincronizações manuais. Testes dirigidos preparados para três idiomas; Vitest local bloqueou e exige validação por CI isolada.

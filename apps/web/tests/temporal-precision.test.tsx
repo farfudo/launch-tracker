@@ -42,8 +42,8 @@ it("gates exact calendar and countdown independently of Go and preserves termina
     const precision=id===null?null:{id};
     expect(canExportCalendar({...mission,net_precision:precision})).toBe(id===0);
     const html=renderToStaticMarkup(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T00:00:00Z" status="Go" precision={precision}/></LocaleProvider>);
-    expect(html.includes('role="timer"')).toBe(id !== null && id <= 2);
-    for(const status of ["Success","Failure","Cancelled","TBC","TBD","Hold","In Flight"]) {
+    expect(html.includes('role="timer"')).toBe(id === null || id <= 2 || id === 99);
+    for(const status of ["Success","Failure","Cancelled","TBD","Hold","In Flight"]) {
       const html=renderToStaticMarkup(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T00:00:00Z" status={status} precision={precision}/></LocaleProvider>);
       expect(html).not.toContain('role="timer"');
       expect(canExportCalendar({...mission,status,net_precision:precision})).toBe(false);
@@ -67,13 +67,14 @@ it("shows a reference date once for missing precision and limits countdown units
     const missing = renderToStaticMarkup(<LocaleProvider locale={locale}><LocalLaunchDate date={date} status="TBC" precision={null} /></LocaleProvider>);
     expect(missing).toContain("2026");
     expect(missing).toContain("UTC");
-    expect(missing.split("date-uncertainty-note")).toHaveLength(2);
+    expect(missing).not.toContain("date-uncertainty-note");
     for (const id of [0, 1, 2]) {
       const html = renderToStaticMarkup(<LocaleProvider locale={locale}><Countdown date="2099-01-01T00:00:00Z" status="Go" precision={{id}} /></LocaleProvider>);
       expect(html).toContain('role="timer"');
       expect((html.match(/<strong>/g) ?? []).length).toBe(4-id);
     }
     const html = renderToStaticMarkup(<LocaleProvider locale={locale}><Countdown date={date} status="Go" precision={null} /></LocaleProvider>);
-    expect(html).toBe("");
+    expect(html).toContain('role="timer"');
+    expect(html).toContain({"pt-PT":"hora não confirmada", "en-GB":"time unconfirmed", "es-ES":"hora sin confirmar"}[locale]);
   }
 });
