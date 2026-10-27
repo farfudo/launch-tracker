@@ -812,3 +812,9 @@ Validação local: 3 ficheiros unitários, 7 testes direcionados e `git diff --c
 ### A18 — correções após validação da CI (27/10/2026)
 
 A primeira CI isolada detetou uma comparação de estado inalcançável no countdown após a guarda de estados incertos; removida essa redundância. A CI seguinte passou TypeScript, build e testes unitários, mas o E2E desktop/mobile assumia que o cabeçalho Artemis ainda tinha uma ligação direta para /discoveries. Com o novo hub há apenas o separador Explore Space; a rota antiga continua compatível e deve ser validada por navegação direta. O teste foi ajustado para abrir /discoveries e verificar o conteúdo, sem alterar a navegação do produto. Sem mudanças fora de A18.
+
+### A18 — Fase 3: ligações contextuais a lançamentos
+
+As páginas Descobertas e Artemis ligam agora a lançamentos futuros apenas através de campos específicos já devolvidos pela API: nomes exatos de veículos aprovados editorialmente e títulos exatos das missões Artemis I–VI. A mesma regra alimenta ligações de regresso educativo nos detalhes da missão; IDs de lançamento da API permanecem os destinos estáveis. Padrões genéricos de texto deixam de criar associações. Cartões usam nome, agência, veículo, data/precisão e estado reais da API, sem countdown próprio nem pedido à LL2. Há no máximo um cartão por tema, na ordem editorial, com missões deduplicadas.
+
+Carregamento tem estado acessível; falha de leitura é indicada sem fingir ausência de correspondências. Sem relação confirmada, não é apresentada a secção Related Launches. Limitação: apenas o conjunto de até 100 lançamentos futuros já disponível na cache pode ser associado; missões históricas e veículos sem nome exato aprovado ficam de fora. Não foi alterado o contrato da API nem a lógica de calendário.

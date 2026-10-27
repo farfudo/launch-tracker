@@ -24,6 +24,7 @@ import { LocalLaunchDate } from "../../../components/local-launch-date";
 import { Countdown } from "../../../components/countdown";
 import { freshnessCopy } from "../../../lib/freshness";
 import { MissionFreshness } from "../../../components/mission-freshness";
+import { RelatedEducationLinks } from "../../../components/related-missions";
 export const maxDuration = 60;
 
 type RouteParams = Promise<{ id: string }>;
@@ -98,6 +99,7 @@ export default async function LaunchDetail({ params, searchParams }: {
             <div className="mission-panel-heading"><span className="panel-icon"><MissionIcon name="orbit" /></span><h2 id="mission-heading">{t.aboutMission}</h2><span className="panel-index" aria-hidden="true">01</span></div>
             <p className="mission-description">{launch.mission_description || t.descriptionPending}</p>
             {launch.mission_description ? <p className="launch-meta">{t.originalDescription}</p> : null}
+            <RelatedEducationLinks launch={launch} locale={locale} />
           </section>
 
           <section className="mission-panel mission-clock-panel" aria-labelledby="launch-times-heading">

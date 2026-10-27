@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { RelatedMissions } from "../../../components/related-missions";
+import { RelatedMissions, RelatedLaunchesLoading } from "../../../components/related-missions";
 import { getLocale } from "../../../lib/locale-server";
 import { artemisSources, explorerCopy } from "../../../lib/discovery-explorers";
 import { MissionIcon } from "../../../components/mission-icon";
@@ -27,7 +27,7 @@ export default async function ArtemisGuide() {
       <aside className="guide-update"><h3>{t.current}</h3><p>{t.currentBody}</p><a href={artemisSources.landers} target="_blank" rel="noopener noreferrer">NASA · 23/10/2026 ↗</a></aside>
     </section>
     <section id="guide-3" className="guide-section"><h2>{t.next}</h2><div className="guide-challenges">{t.questions.map((question,index)=><article key={question.title}><h3>{question.title}</h3><p>{question.body}</p><a href={nextSources[index]} target="_blank" rel="noopener noreferrer">{t.source} ↗</a></article>)}</div></section>
-    <p className="guide-note">{conclusion}</p><Suspense fallback={null}><RelatedMissions locale={locale} topics={["artemis"]}/></Suspense>
+    <p className="guide-note">{conclusion}</p><Suspense fallback={<RelatedLaunchesLoading locale={locale} />}><RelatedMissions locale={locale} topics={["artemis"]}/></Suspense>
     <details className="guide-faq"><summary>{t.faqQuestion}</summary><p>{t.faqAnswer}</p><a href={artemisSources.landers} target="_blank" rel="noopener noreferrer">{t.source} ↗</a></details>
     <footer className="discovery-footer"><p>{t.reviewed}</p><Link href="/discoveries#artemis-feature">← {t.back}<LinkPending/></Link></footer>
   </main>;

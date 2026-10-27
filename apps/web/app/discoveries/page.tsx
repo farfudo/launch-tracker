@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { RelatedMissions } from "../../components/related-missions";
+import { RelatedMissions, RelatedLaunchesLoading } from "../../components/related-missions";
 import { InfoDisclosure } from "../../components/info-disclosure";
 import { getLocale } from "../../lib/locale-server";
 import { discoveriesCopy, discoverySources, discoveryTopics, resolveTopic } from "../../lib/discoveries";
@@ -30,7 +30,7 @@ export default async function Discoveries({searchParams}:{searchParams:Promise<{
       <BoosterCatchPreview key={locale} locale={locale}/>
     </section>
     <TechnologyLab locale={locale}/>
-    <Suspense fallback={null}><RelatedMissions locale={locale} topics={["reusable", "starship"]}/></Suspense>
+    <Suspense fallback={<RelatedLaunchesLoading locale={locale} />}><RelatedMissions locale={locale} topics={["reuse", "starship"]}/></Suspense>
     <section id="artemis-feature" className="artemis-feature" aria-labelledby="artemis-feature-title">
       <div className="artemis-feature-copy"><p className="eyebrow">{e.featureLabel}</p><h2 id="artemis-feature-title">{e.featureTitle}</h2><p>{e.featureBody}</p><Link href="/discoveries/artemis" className="pill-button">{e.featureAction} →<LinkPending/></Link></div>
       <ArtemisFeaturePhoto locale={locale}/>
