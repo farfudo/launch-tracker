@@ -27,7 +27,7 @@ export function Countdown({ date, status, precision, compact = false }: { date: 
   if (timing === "unknown") return <p className="countdown-note">{{"pt-PT":"Estado do lançamento por confirmar", "en-GB":"Launch status to be confirmed", "es-ES":"Estado del lanzamiento por confirmar"}[locale]}</p>;
   const precisionLevel = precisionId(precision);
   if (precisionLevel !== null && precisionLevel > 2) return null;
-  const estimated = precisionLevel === null || timing === "uncertain";
+  const estimated = precisionLevel === null;
   const estimateLabel = estimated ? {"pt-PT":"Estimativa · hora não confirmada", "en-GB":"Estimate · time unconfirmed", "es-ES":"Estimación · hora sin confirmar"}[locale] : d.estimate;
   const quantum = precisionLevel === null || precisionLevel === 0 ? 1000 : precisionLevel === 1 ? 60000 : 3600000;
   const start = Math.floor(target / quantum) * quantum;
