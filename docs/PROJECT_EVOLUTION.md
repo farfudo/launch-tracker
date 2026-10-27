@@ -1,5 +1,15 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## A18 — Descobertas e Artemis (rascunho local)
+
+Acrescentadas conclusões educativas curtas nos três temas e no guia Artemis, legendas de texto legível sob as ilustrações e ligações a lançamentos apenas quando os dados da API contêm uma correspondência explícita. A leitura reutiliza a cache pública; falhas ou ausência de correspondência não criam uma ligação. Testes direcionados: cinco passaram; prévia local bloqueou no carregamento, pelo que desktop/mobile continuam por rever.
+
+### A18 — Fase 1: hub Explore Space (rascunho local)
+
+Criada uma entrada única «Explore Space» no cabeçalho, com landing page educativa e quatro cartões: Discoveries & Advances, Space Programs, How Rockets Work e Space Milestones. Cada cartão aponta para conteúdo real já disponível: biblioteca de descobertas, guia Artemis completo, laboratório tecnológico ou calendário de lançamentos. Não foram criadas páginas vazias nem marcos fictícios. As rotas `/discoveries` e `/discoveries/artemis` continuam acessíveis e mantêm o separador Explore Space ativo; o fundo contextual de Descobertas também é reutilizado no hub.
+
+Textos e metadata PT/EN/ES; layout adaptável, foco visível e respeito por redução de movimento. Testes E2E atualizados para a navegação e rotas legadas, com novo percurso do hub e largura mobile de 320 px. Esta alteração limita-se a navegação/conteúdo frontend; calendário, filtros, favoritos, detalhes, API, sincronização e infraestrutura não foram alterados. Sem commit/push/deploy.
+
 ## A07 — countdown estimado com precisão desconhecida
 
 A pedido do utilizador, regressa a contagem baseada no horário de referência quando a precisão da fonte é desconhecida, identificada como estimativa com hora não confirmada. Missões concluídas, sem data, em voo e suspensas preservam o seu tratamento; períodos amplos não recebem countdown. Prévia visual demonstrativa com dados fictícios; validação da aplicação real pendente.

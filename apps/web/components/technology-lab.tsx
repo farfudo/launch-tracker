@@ -14,6 +14,12 @@ function subscribeMotion(onChange:()=>void) {
 }
 const getReduced=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+const conclusions = {
+  "pt-PT": ["Em resumo: as bombas alimentam a combustão e os gases expulsos produzem impulso.", "Em resumo: detetar e reparar danos pode prolongar a vida dos materiais; esta tecnologia ainda está em estudo.", "Em resumo: reabastecer em órbita poderá permitir viagens mais longas, mas a transferência entre naves ainda precisa de demonstração."],
+  "en-GB": ["In short: pumps feed combustion and expelled gases produce thrust.", "In short: detecting and repairing damage could extend material life; the technology is still being studied.", "In short: orbital refuelling could enable longer journeys, but transfer between ships still needs demonstration."],
+  "es-ES": ["En resumen: las bombas alimentan la combustión y los gases expulsados producen empuje.", "En resumen: detectar y reparar daños podría prolongar la vida de los materiales; esta tecnología sigue en estudio.", "En resumen: repostar en órbita podría permitir viajes más largos, pero la transferencia entre naves aún debe demostrarse."]
+};
+
 const illustrationNotes = {
   'pt-PT': ['Inspirado no Raptor. Circuitos internos simplificados.', '', 'Conceito planeado entre Starships; posição e ligação ilustrativas.'],
   'en-GB': ['Raptor-inspired. Simplified internal plumbing.', '', 'Planned Starship concept; illustrative positions and connections.'],
@@ -45,6 +51,7 @@ export function TechnologyLab({locale}:{locale:Locale}) {
     <div className="technology-picker" role="group" aria-label={t.labTitle}>{t.tabs.map((label,index)=><button key={label} type="button" aria-pressed={selected===index} aria-controls="technology-panel" onClick={()=>{setSelected(index);setActive(false);setStage(-1);setRunning(false);}}><span aria-hidden="true">0{index+1}</span>{label}</button>)}</div>
     <div id="technology-panel" className="technology-panel">
       <figure><TechnologyArt key={selected} index={selected} active={sequenced?stage>=0:active} stage={stage} paused={sequenced&&!running} parts={s.parts} labels={item.labels}/>
+        <ul className="technology-diagram-legend" aria-label={t.labTitle}>{(selected === 0 ? s.parts : item.labels).map(label => <li key={label}>{label}</li>)}</ul>
         <div className="technology-playback">
           <button className="technology-action" type="button" aria-pressed={sequenced?running:active} aria-controls="technology-illustration" onClick={()=>{
             if(!sequenced) {setActive(!active);return;}
@@ -55,7 +62,7 @@ export function TechnologyLab({locale}:{locale:Locale}) {
         </div>
         {sequenced&&<p className="technology-progress">{stage<0?'00':`0${stage+1}`} / 04 <span>{stage<0?item.title:stages[stage].title}</span></p>}
         <figcaption><InfoDisclosure label={t.concept}>{t.concept}<span className="technology-art-note">{sequenced?(selected===0?s.engineNote:s.dockingNote):illustrationNotes[locale][selected]}</span></InfoDisclosure></figcaption></figure>
-      <div className="technology-explainer"><span className="technology-stage">{selected===0?'SpaceX · Raptor 3':item.tag}</span><h3>{selected===0?s.engineTitle:item.title}</h3><p>{item.body}</p><p>{selected===0?s.version3:item.why}</p>
+      <div className="technology-explainer"><span className="technology-stage">{selected===0?'SpaceX · Raptor 3':item.tag}</span><h3>{selected===0?s.engineTitle:item.title}</h3><p>{item.body}</p><p>{selected===0?s.version3:item.why}</p><p className="technology-conclusion">{conclusions[locale][selected]}</p>
         <p className="technology-state" role="status">{sequenced&&stage>=0?<><strong>{stages[stage].title}</strong>{stages[stage].body}</>:item.states[active?1:0]}</p>
         <details className="technology-limits"><summary>{t.challenge}</summary><p>{item.limit}</p><div>{technologySources[selected].map(source=><a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer">{t.source} · {source.name} ↗</a>)}</div></details>
       </div>

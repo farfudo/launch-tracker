@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { Suspense } from "react";
+import { RelatedMissions } from "../../../components/related-missions";
 import { getLocale } from "../../../lib/locale-server";
 import { artemisSources, explorerCopy } from "../../../lib/discovery-explorers";
 import { MissionIcon } from "../../../components/mission-icon";
@@ -10,7 +12,9 @@ export async function generateMetadata() {
 }
 
 export default async function ArtemisGuide() {
-  const t = explorerCopy[await getLocale()];
+  const locale = await getLocale();
+  const t = explorerCopy[locale];
+  const conclusion = {"pt-PT":"Em resumo: Artemis combina foguetão, nave e módulos lunares para levar pessoas à Lua; cada etapa exige testes e coordenação.","en-GB":"In short: Artemis combines a rocket, spacecraft and lunar landers to bring people to the Moon; each step requires testing and coordination.","es-ES":"En resumen: Artemis combina cohete, nave y módulos lunares para llevar personas a la Luna; cada etapa requiere pruebas y coordinación."}[locale];
   const roleSources = [artemisSources.sls,artemisSources.orion,artemisSources.landers,artemisSources.esa];
   const nextSources = [artemisSources.landers,artemisSources.third,artemisSources.orion];
   return <main id="main-content" className="artemis-guide discoveries-page">
@@ -23,6 +27,7 @@ export default async function ArtemisGuide() {
       <aside className="guide-update"><h3>{t.current}</h3><p>{t.currentBody}</p><a href={artemisSources.landers} target="_blank" rel="noopener noreferrer">NASA · 23/10/2026 ↗</a></aside>
     </section>
     <section id="guide-3" className="guide-section"><h2>{t.next}</h2><div className="guide-challenges">{t.questions.map((question,index)=><article key={question.title}><h3>{question.title}</h3><p>{question.body}</p><a href={nextSources[index]} target="_blank" rel="noopener noreferrer">{t.source} ↗</a></article>)}</div></section>
+    <p className="guide-note">{conclusion}</p><Suspense fallback={null}><RelatedMissions locale={locale} topics={["artemis"]}/></Suspense>
     <details className="guide-faq"><summary>{t.faqQuestion}</summary><p>{t.faqAnswer}</p><a href={artemisSources.landers} target="_blank" rel="noopener noreferrer">{t.source} ↗</a></details>
     <footer className="discovery-footer"><p>{t.reviewed}</p><Link href="/discoveries#artemis-feature">← {t.back}<LinkPending/></Link></footer>
   </main>;

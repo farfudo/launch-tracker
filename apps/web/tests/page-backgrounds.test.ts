@@ -6,6 +6,7 @@ it('maps every page to its context without losing the Artemis child route',()=>{
   expect(getBackgroundSection('/')).toBe('launches');
   expect(getBackgroundSection('/launches/example')).toBe('launches');
   expect(getBackgroundSection('/discoveries')).toBe('discoveries');
+  expect(getBackgroundSection('/explore-space')).toBe('discoveries');
   expect(getBackgroundSection('/discoveries/artemis')).toBe('artemis');
   expect(getBackgroundSection('/discoveries/artemis/')).toBe('artemis');
 });

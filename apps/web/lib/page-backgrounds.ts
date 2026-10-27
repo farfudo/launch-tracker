@@ -20,6 +20,7 @@ export const pageBackgrounds = {
 } as const;
 
 export function getBackgroundSection(pathname:string) {
+  if(pathname==='/explore-space'||pathname.startsWith('/explore-space/')) return 'discoveries';
   if(pathname==='/discoveries/artemis'||pathname.startsWith('/discoveries/artemis/')) return 'artemis';
   if(pathname==='/discoveries'||pathname.startsWith('/discoveries/')) return 'discoveries';
   return 'launches';

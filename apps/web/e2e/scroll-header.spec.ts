@@ -19,12 +19,12 @@ test("header hides down, reveals up and stays accessible without shifting the pa
   await page.screenshot({path:test.info().outputPath("header-revealed.png")});
   await page.mouse.wheel(0,250);
   await expect(header).toHaveAttribute("data-hidden","true");
-  await page.locator('.section-navigation a[href="/discoveries/artemis"]').focus();
-  await page.locator('.section-navigation a[href="/discoveries/artemis"]').press("Tab");
+  await page.locator('.section-navigation a[href="/explore-space"]').focus();
+  await page.locator('.section-navigation a[href="/explore-space"]').press("Tab");
   await expect(header).toHaveAttribute("data-hidden","false");
   await expect(page.locator(".theme-toggle")).toBeFocused();
-  await page.locator('.section-navigation a[href="/discoveries"]').click();
-  await expect(page).toHaveURL(/\/discoveries$/);
+  await page.locator('.section-navigation a[href="/explore-space"]').click();
+  await expect(page).toHaveURL(/\/explore-space$/);
   await expect(header).toHaveAttribute("data-hidden","false");
   await page.emulateMedia({reducedMotion:"reduce"});
   await expect(header).toHaveCSS("transition-duration","0s");
