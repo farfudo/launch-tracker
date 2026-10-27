@@ -21,6 +21,7 @@ export function Countdown({ date, status, precision, compact = false }: { date: 
   const timing = launchTimingStatus(status);
   if (timing === "terminal") return null;
   if (timing === "in-flight" || timing === "held") return <p className="countdown-note">{formatLaunchStatus(status!, locale)}</p>;
+  if (timing === "uncertain") return null;
   if (timing === "unknown-date" || (!Number.isFinite(target) || !/(?:Z|[+-]\d{2}:\d{2})$/.test(date))) return <p className="countdown-note">{{"pt-PT":"Data de lançamento por determinar", "en-GB":"Launch date to be determined", "es-ES":"Fecha de lanzamiento por determinar"}[locale]}</p>;
 
   if (timing === "unknown") return <p className="countdown-note">{{"pt-PT":"Estado do lançamento por confirmar", "en-GB":"Launch status to be confirmed", "es-ES":"Estado del lanzamiento por confirmar"}[locale]}</p>;
