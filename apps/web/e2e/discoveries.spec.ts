@@ -84,7 +84,7 @@ test('hero catch repeats muted at double speed, can pause and respects reduced m
       getCurrentTime() {return 125;}
       seekTo(seconds:number) {calls.push(`seek:${seconds}`);}
       destroy() {this.frame.remove();}
-    }}});
+    }}}); 
   });
   await page.goto('/discoveries');
   await page.locator('.booster-catch').scrollIntoViewIfNeeded();
@@ -160,7 +160,7 @@ test('visual technology lab explains concepts and links to a dated Artemis deep 
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('link',{name:'Explore the Artemis guide →',exact:true}).click();
   await expect(page).toHaveURL(/\/discoveries\/artemis/);
-  await expect(page.locator('.section-navigation a[aria-current]')).toHaveText('Explore Space');
+  await expect(page.locator('.section-navigation a[aria-current]')).toHaveAttribute('href','/explore-space');
   await expect(page.locator('.guide-role-grid article')).toHaveCount(4);
   await expect(page.locator('.guide-missions article')).toHaveCount(3);
   await expect(page.locator('.guide-missions article').last()).toContainText('Low Earth orbit');
@@ -171,7 +171,7 @@ test('visual technology lab explains concepts and links to a dated Artemis deep 
   await page.screenshot({path:test.info().outputPath('artemis-guide.png'),fullPage:true});
   await page.getByRole('combobox',{name:'Language',exact:true}).selectOption('pt-PT');
   await expect(page.locator('h1')).toHaveText('Artemis: as peças de um regresso à Lua');
-  await expect(page.locator('.section-navigation a[aria-current]')).toHaveText('Explore Space');
+  await expect(page.locator('.section-navigation a[aria-current]')).toHaveAttribute('href','/explore-space');
   await page.locator('.section-navigation a[href="/discoveries"]').click();
   await expect(page).toHaveURL(/\/discoveries$/);
   await expect(page.locator('#artemis-feature')).toBeVisible();
