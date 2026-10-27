@@ -786,5 +786,24 @@ html[data-theme="dark"] .is-planned { background:#483b18; color:#ffe29a; }
 .technology-diagram-legend { display:flex; flex-wrap:wrap; gap:.4rem .9rem; list-style:none; margin:.6rem 0; padding:0; color:var(--text-soft); font-size:.875rem; line-height:1.5; }
 .technology-diagram-legend li::before { content:"• "; color:var(--accent); }
 .technology-conclusion { font-weight:600; }
-.discovery-related { display:flex; flex-wrap:wrap; gap:.75rem 1.25rem; padding:1rem; }
-.discovery-related a { color:var(--accent); font-weight:700; }
+.related-launches { margin:1rem 0 1.5rem; }
+.related-launches > h2 { margin:0 0 .85rem; font-size:clamp(1.2rem,2vw,1.55rem); }
+.related-launch-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr)); gap:.8rem; }
+.related-launch-card { display:grid; grid-template-columns:4.5rem minmax(0,1fr); align-items:start; gap:.8rem; padding:1rem; }
+.related-launch-card .launch-thumbnail { width:4.5rem; height:5.2rem; overflow:hidden; border-radius:.7rem; }
+.related-launch-card .launch-card-link { min-width:0; }
+.related-launch-card .launch-card-link h3 { margin:.25rem 0; font-size:1rem; line-height:1.35; }
+.related-launch-card .launch-agency,.related-launch-card .launch-date { margin:.25rem 0; font-size:.85rem; }
+.related-launch-card .launch-status-tag { grid-column:2; justify-self:start; }
+.related-launch-card .row-detail-link { grid-column:2; }
+.related-launch-topics { grid-column:1/-1; display:flex; flex-wrap:wrap; gap:.4rem; list-style:none; margin:0; padding:0; }
+.related-launch-topics li { border-radius:999px; background:var(--accent-soft); color:var(--text); padding:.2rem .55rem; font-size:.78rem; }
+.related-launches-loading,.related-launches-error { margin:.8rem 0; color:var(--text-soft); }
+.related-launches-loading { display:flex; align-items:center; gap:.5rem; }
+.related-launches-error { border-inline-start:3px solid var(--border); padding-inline-start:.75rem; }
+.mission-related-education { margin-top:1.25rem; padding:1rem; border:1px solid var(--border); border-radius:1rem; background:var(--surface-raised); }
+.mission-related-education h3 { margin:0 0 .55rem; font-size:1rem; }
+.mission-related-education ul { display:flex; flex-wrap:wrap; gap:.5rem 1rem; list-style:none; margin:0; padding:0; }
+.mission-related-education a { color:var(--accent); font-weight:700; text-underline-offset:.18em; }
+.mission-related-education a:focus-visible { outline:3px solid var(--accent); outline-offset:3px; border-radius:.2rem; }
+@media(max-width:480px) { .related-launch-card { grid-template-columns:3.5rem minmax(0,1fr); gap:.65rem; padding:.85rem; }.related-launch-card .launch-thumbnail { width:3.5rem; height:4.5rem; } }
