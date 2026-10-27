@@ -1,3 +1,4 @@
+import { globalFreshnessConfirmed } from "./freshness";
 import { unstable_cache } from "next/cache";
 import { after } from "next/server";
 import { getDataStatus, getFilterOptions, getLaunch, getUpcomingLaunches, LaunchNotFoundError, type Launch, type LaunchDetail, type LaunchFilters, type FilterOptions, type DataStatus } from "./api";
@@ -82,7 +83,7 @@ export async function getCachedLaunch(id: string) {
 export async function getCachedStatus() {
   const result = await readStatus();
   const last = result.value.last_updated_at;
-  return { ...result, value: { ...result.value, stale: !last || Date.now() - Date.parse(last) >= 21600000 } };
+  return { ...result, freshnessConfirmed: globalFreshnessConfirmed(result.cache, Date.now()), value: { ...result.value, stale: !last || Date.now() - Date.parse(last) >= 21600000 } };
 }
 export async function getCachedLaunches(limit = 100, filters: LaunchFilters = {}): Promise<CachedResult<Launch[]>> {
   const period = filters.period === "past" ? "past" : "upcoming";

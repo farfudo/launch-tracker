@@ -1,4 +1,4 @@
-import { freshnessCopy, globalFreshnessConfirmed } from "../lib/freshness";
+import { freshnessCopy } from "../lib/freshness";
 import Link from "next/link";
 import { InfoDisclosure } from "../components/info-disclosure";
 import { RetryButton } from "../components/retry-button";
@@ -52,7 +52,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const nextCandidates = nextCandidatesPromise ? nextResult?.value ?? [] : launches;
   const statusResult = await dataStatusPromise;
   const dataStatus = statusResult?.value ?? null;
-  const statusConfirmed = globalFreshnessConfirmed(statusResult?.cache, Date.now());
+  const statusConfirmed = statusResult?.freshnessConfirmed ?? false;
   const nextLaunch = nextCandidates[0] ?? null;
   const cacheEntries = [...cache, ...(nextResult ? [nextResult.cache] : []), ...(statusResult ? [statusResult.cache] : [])];
   const agencies = new Set(launches.map(launch => launch.agency).filter(Boolean));
