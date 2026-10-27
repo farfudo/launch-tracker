@@ -107,6 +107,9 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       # Temporary isolated validation; do not merge into main.
+      - name: Run affected scroll browser journey without retries
+        run: npm run test:e2e -- e2e/ui-review.spec.ts --project=desktop-chromium --grep 'desktop list scroll chains' --retries=0
+
       - name: Run affected A02 browser journeys without retries
         run: npm run test:e2e -- e2e/history.spec.ts e2e/discoveries.spec.ts --retries=0
 
