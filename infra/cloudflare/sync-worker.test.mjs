@@ -5,10 +5,10 @@ import worker, { runSync, executeScheduled } from "./sync-worker.mjs";
 const env = { SYNC_TOKEN: "test-only-".padEnd(64, "0") };
 const response = value => new Response(JSON.stringify(value));
 
-test("90 second timeout aborts one POST with safe correlated failure and no retry", async t => {
+test("180 second timeout aborts one POST with safe correlated failure and no retry", async t => {
   const controller = new AbortController();
   t.mock.method(AbortSignal, "timeout", milliseconds => {
-    assert.equal(milliseconds, 90_000);
+    assert.equal(milliseconds, 180_000);
     return controller.signal;
   });
   const logs = [];

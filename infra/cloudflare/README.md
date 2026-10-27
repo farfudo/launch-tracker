@@ -1,5 +1,7 @@
 # Worker de sincronização — revisão local de diagnóstico
 
+Atualização do incremento conjunto A01.1/observabilidade: o ficheiro versionado passa a refletir o timeout de 180 s já verificado no Worker publicado. Mantém POST único e os contratos existentes; esta validação isolada não publica Worker nem altera cron. Os testes de timeout são simulados. As referências a 90 s abaixo descrevem a revisão anterior.
+
 Revisão A01.1 (26/10/2026): execução do Worker inalterada. Contrato verificado inclui skip `retry_wait`, além de `in_progress` e `recently_updated`. 27 testes simulados passaram, incluindo argumento de timeout 90000 ms, aborto sanitizado e ausência de novo POST. Esse teste não comprova que 90 s chegam para cold start + importação real, nem que desconexão cancela o servidor. API deverá usar intervalo global 2700/sem override; só GitHub define idade mínima 5400. Ativação/configuração e validação natural continuam pendentes: `docs/A01_1_SYNC_REVIEW.md`. As secções abaixo preservam o histórico dos ensaios.
 
 Ficheiro para o editor Cloudflare: `sync-worker.mjs`. Testes locais, sem rede ou token real:

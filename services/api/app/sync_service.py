@@ -1,4 +1,6 @@
 """Shared PostgreSQL transaction lock for HTTP and scheduled CLI synchronizations."""
+import json
+import logging
 import os
 from datetime import UTC, datetime, timedelta
 from email.utils import parsedate_to_datetime
@@ -6,10 +8,30 @@ from email.utils import parsedate_to_datetime
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from app.clients.launch_library import LaunchLibraryError, get_upcoming_launches
+from app.clients.launch_library import LaunchLibraryError, get_upcoming_launches, request_count
 from app.models import SyncControl
 from app.repositories import get_data_status, upsert_launches
 from app.schemas import SyncResponse
+
+logger = logging.getLogger(__name__)
+
+
+def log_sync(**fields):
+    logger.warning("sync_observation %s", json.dumps(fields, sort_keys=True))
+
+
+def safe_retry_after(value):
+    if not value:
+        return None
+    try:
+        seconds = int(value)
+        return seconds if 0 <= seconds <= 31536000 else "invalid"
+    except (ValueError, OverflowError):
+        try:
+            return utc(parsedate_to_datetime(value)).isoformat()
+        except (ValueError, TypeError, OverflowError):
+            return "invalid"
+
 
 LOCK_ID = 684923175
 MIN_INTERVAL_SECONDS = 2700  # 45 minutes: primary hourly, fallback only when older.
@@ -55,15 +77,20 @@ def sync_cache(db: Session, fetch_launches=get_upcoming_launches) -> SyncRespons
         raise ValueError("Fallback minimum age must be between sync interval and 86400 seconds.")
     control = None
     reserved = False
+    count_token = request_count.set(0)
     try:
         if not acquire_sync_lock(db):
             db.rollback()
+            log_sync(outcome="skipped", reason="in_progress", block="lock", ll2_requests=0)
             return SyncResponse(imported=0, skipped=True, reason="in_progress")
         now = datetime.now(UTC)
         control = db.get(SyncControl, 1)
         if control is not None and utc(control.next_attempt_at) > now:
             reason = "recently_updated" if control.outcome == "success" else "retry_wait"
+            deadline = utc(control.next_attempt_at).isoformat()
+            block = {"attempting": "reservation", "failed": "retry_wait", "success": "cooldown"}.get(control.outcome, "reservation")
             db.rollback()
+            log_sync(outcome="skipped", reason=reason, block=block, blocked_until=deadline, ll2_requests=0)
             return SyncResponse(imported=0, skipped=True, reason=reason)
         last = get_data_status(db).last_updated_at
         if last is not None:
@@ -71,6 +98,7 @@ def sync_cache(db: Session, fetch_launches=get_upcoming_launches) -> SyncRespons
                 last = last.replace(tzinfo=UTC)
             if (now - last).total_seconds() < minimum_age:
                 db.rollback()
+                log_sync(outcome="skipped", reason="recently_updated", block="minimum_age", ll2_requests=0)
                 return SyncResponse(imported=0, skipped=True, reason="recently_updated")
         if control is None:
             control = SyncControl(id=1)
@@ -87,7 +115,10 @@ def sync_cache(db: Session, fetch_launches=get_upcoming_launches) -> SyncRespons
             raise ValueError("Empty upstream result; existing cache preserved.")
         control.outcome = "success"
         control.next_attempt_at = datetime.now(UTC) + timedelta(seconds=interval)
-        return SyncResponse(imported=upsert_launches(db, launches))
+        imported = upsert_launches(db, launches)
+        log_sync(outcome="success", imported=imported, ll2_requests=request_count.get(),
+                 blocked_until=utc(control.next_attempt_at).isoformat())
+        return SyncResponse(imported=imported)
     except Exception as error:
         db.rollback()
         if reserved:
@@ -98,4 +129,12 @@ def sync_cache(db: Session, fetch_launches=get_upcoming_launches) -> SyncRespons
                 datetime.now(UTC), interval,
             )
             db.commit()
+            provider_error = error if isinstance(error, LaunchLibraryError) else None
+            log_sync(outcome="failed", ll2_requests=request_count.get(),
+                     category=provider_error.category if provider_error else "sync_error",
+                     http_status=provider_error.http_status if provider_error else None,
+                     retry_after=safe_retry_after(provider_error.retry_after if provider_error else None),
+                     blocked_until=utc(control.next_attempt_at).isoformat())
         raise
+    finally:
+        request_count.reset(count_token)
