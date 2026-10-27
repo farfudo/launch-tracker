@@ -32,9 +32,9 @@ function loadApi():Promise<YouTube> {
 }
 const clip = {videoId:"hI9HQfCAw64",startSeconds:125,endSeconds:145};
 const copy = {
-  "pt-PT":{title:"Super Heavy: captura pela torre",caption:"Voo 5 · 13/10/2024 · SpaceX",detail:"Excerto de 20 s a até 2× (cerca de 10 s), sem som, em repetição. Leitor externo YouTube.",play:"Reproduzir excerto",pause:"Pausar excerto",loading:"A carregar a captura…",source:"Vídeo original",error:"O leitor não está disponível. Abre o vídeo original.",reduced:"Movimento reduzido: reprodução automática desativada."},
-  "en-GB":{title:"Super Heavy: caught by the tower",caption:"Flight 5 · 13 Oct 2024 · SpaceX",detail:"20 s excerpt at up to 2× (about 10 s), muted, on repeat. External YouTube player.",play:"Play excerpt",pause:"Pause excerpt",loading:"Loading the catch…",source:"Original video",error:"The player is unavailable. Open the original video.",reduced:"Reduced motion: automatic playback disabled."},
-  "es-ES":{title:"Super Heavy: captura por la torre",caption:"Vuelo 5 · 13/10/2024 · SpaceX",detail:"Fragmento de 20 s a hasta 2× (unos 10 s), sin sonido, en bucle. Reproductor externo YouTube.",play:"Reproducir fragmento",pause:"Pausar fragmento",loading:"Cargando la captura…",source:"Vídeo original",error:"El reproductor no está disponible. Abre el vídeo original.",reduced:"Movimiento reducido: reproducción automática desactivada."},
+  "pt-PT":{title:"Super Heavy: captura pela torre",info:"Informação do excerto",caption:"Voo 5 · 13/10/2024 · SpaceX",detail:"Excerto de 20 s a até 2× (cerca de 10 s), sem som, em repetição. Leitor externo YouTube.",play:"Reproduzir excerto",pause:"Pausar excerto",loading:"A carregar a captura…",source:"Vídeo original",error:"O leitor não está disponível. Abre o vídeo original.",reduced:"Movimento reduzido: reprodução automática desativada."},
+  "en-GB":{title:"Super Heavy: caught by the tower",info:"Excerpt information",caption:"Flight 5 · 13 Oct 2024 · SpaceX",detail:"20 s excerpt at up to 2× (about 10 s), muted, on repeat. External YouTube player.",play:"Play excerpt",pause:"Pause excerpt",loading:"Loading the catch…",source:"Original video",error:"The player is unavailable. Open the original video.",reduced:"Reduced motion: automatic playback disabled."},
+  "es-ES":{title:"Super Heavy: captura por la torre",info:"Información del fragmento",caption:"Vuelo 5 · 13/10/2024 · SpaceX",detail:"Fragmento de 20 s a hasta 2× (unos 10 s), sin sonido, en bucle. Reproductor externo YouTube.",play:"Reproducir fragmento",pause:"Pausar fragmento",loading:"Cargando la captura…",source:"Vídeo original",error:"El reproductor no está disponible. Abre el vídeo original.",reduced:"Movimiento reducido: reproducción automática desactivada."},
 };
 
 export function BoosterCatchPreview({locale}:{locale:Locale}) {
@@ -115,7 +115,7 @@ export function BoosterCatchPreview({locale}:{locale:Locale}) {
     <div className="booster-catch-screen"><div ref={host} className="booster-catch-player"/>
       {!ready && <div className="booster-catch-placeholder">{enabled && !failed ? <span role="status"><Spinner/>{t.loading}</span> : <span>{failed ? t.error : reduced ? t.reduced : t.loading}</span>}</div>}
     </div>
-    <figcaption><strong>{t.title} <InfoDisclosure label={t.title}>{t.detail}</InfoDisclosure></strong><span>{t.caption}</span></figcaption>
+    <figcaption><strong>{t.title} <InfoDisclosure label={t.info}>{t.detail}</InfoDisclosure></strong><span>{t.caption}</span></figcaption>
     <div className="booster-catch-actions"><button type="button" disabled={failed || (enabled && !ready)} onClick={() => {
       if (!enabled) {wantsPlay.current = true; setEnabled(true); return;}
       wantsPlay.current = !playing;
