@@ -14,6 +14,8 @@ import { Spinner, LinkPending } from "./pending-feedback";
 import { CacheNotice } from "./cache-notice";
 import { Countdown } from "./countdown";
 
+import { MissionFreshness } from "./mission-freshness";
+
 type Selection = {
   selected: Launch | null;
   detail: LaunchDetail | null;
@@ -110,6 +112,7 @@ export function MissionDetailPanel() {
     </div> : null}
     <div className="selected-mission-actions"><Link className="pill-button" href={`/launches/${selected.id}`}>{d.fullDetails} →<LinkPending /></Link><FavoriteButton id={selected.id} name={selected.name} /></div>
     <div className="summary-secondary">
+    <MissionFreshness launch={detail || selected} />
     <p className="mission-summary-hint">{summaryCopy.hint}</p>
     {detail?.frontend_cache ? <CacheNotice entries={[detail.frontend_cache]} autoRefresh={false} onRetry={() => select(selected)} /> : null}
     </div>

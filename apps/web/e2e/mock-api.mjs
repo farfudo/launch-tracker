@@ -37,7 +37,8 @@ createServer(async (req, res) => {
   const url = new URL(req.url, 'http://127.0.0.1:3301');
   let result;
   if (req.method !== 'GET') { res.writeHead(405).end(); return; }
-  if (url.pathname === '/api/v1/launches/e2e-unavailable'
+  if ((process.env.FIXTURE_STATUS_FAILURE === 'true' && url.pathname === '/api/v1/data-status')
+    || url.pathname === '/api/v1/launches/e2e-unavailable'
     || (process.env.FIXTURE_FILTER_FAILURE === 'true' && url.pathname === '/api/v1/launches/filter-options')) {
     res.writeHead(503, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ detail: 'Simulated outage; local fixture only' }));
@@ -60,7 +61,9 @@ createServer(async (req, res) => {
       && (!url.searchParams.get('q') || `${l.name} ${l.agency} ${l.vehicle}`.toLowerCase().includes(url.searchParams.get('q').toLowerCase())))
       .sort((a, b) => (Date.parse(a.net) - Date.parse(b.net)) * (period === 'past' ? -1 : 1))
       .slice(0, Number(url.searchParams.get('limit') || 100));
-  } else result = [...launches, ...scrollLaunches].find(l => url.pathname === `/api/v1/launches/${l.id}`);
+  } else if (url.pathname === '/api/v1/launches/freshness-old') result = { ...launches[0], id: 'freshness-old', source_updated_at: '2020-01-01T00:00:00Z' };
+  else if (url.pathname === '/api/v1/launches/freshness-history') result = { ...launches[3], id: 'freshness-history', source_updated_at: '2020-01-01T00:00:00Z' };
+  else result = [...launches, ...scrollLaunches].find(l => url.pathname === `/api/v1/launches/${l.id}`);
   res.writeHead(result === undefined ? 404 : 200, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify(result ?? { detail: 'Not found' }));
 }).listen(3301, '127.0.0.1');

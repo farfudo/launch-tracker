@@ -7,6 +7,7 @@ export type Launch = {
   agency: string | null;
   vehicle: string | null;
   source_url: string | null;
+  /** Local import observation time; not the provider modification time. */
   source_updated_at: string;
   launch_timezone: string | null;
   image_url?: string | null;
