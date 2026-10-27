@@ -67,9 +67,9 @@ export default async function LaunchDetail({ params, searchParams }: {
             <span className="mission-status" data-tone={launchStatusTone(launch.status)}><span aria-hidden="true" />{formatLaunchStatus(launch.status, locale)}</span>
             <div className="mission-target">
               <span className="mission-target-icon"><MissionIcon name="clock" /></span>
-              <div><p>{t.expectedDate}</p><LocalLaunchDate date={launch.net} status={launch.status} /></div>
+              <div><p>{t.expectedDate}</p><LocalLaunchDate date={launch.net} precision={launch.net_precision} status={launch.status} /></div>
             </div>
-            <div className="mission-countdown"><Countdown date={launch.net} status={launch.status} /></div>
+            <div className="mission-countdown"><Countdown date={launch.net} precision={launch.net_precision} status={launch.status} /></div>
             <MissionStreams launch={launch} />
             <div className="mission-secondary-actions">
             <FavoriteButton id={launch.id} name={launch.name} />
@@ -102,7 +102,7 @@ export default async function LaunchDetail({ params, searchParams }: {
 
           <section className="mission-panel mission-clock-panel" aria-labelledby="launch-times-heading">
             <div className="mission-panel-heading"><span className="panel-icon"><MissionIcon name="clock" /></span><h2 id="launch-times-heading">{t.timeReferences}</h2><span className="panel-index" aria-hidden="true">02</span></div>
-            <LaunchTimes isoDate={launch.net} launchTimeZone={launch.launch_timezone} />
+            <LaunchTimes isoDate={launch.net} launchTimeZone={launch.launch_timezone} precision={launch.net_precision} />
             <p className="launch-meta">{t.timezoneNotice}</p>
           </section>
         </div>
@@ -117,14 +117,14 @@ export default async function LaunchDetail({ params, searchParams }: {
             ].map((point, index) => <li key={point.label} className={index === 1 ? "target-point" : ""}>
               <span className="window-track-dot" aria-hidden="true" />
               <p>{point.label}</p>
-              {point.date ? <time dateTime={point.date}>{formatLaunchDate(point.date, locale)}</time> : <span>{t.pending}</span>}
+              {point.date ? <LocalLaunchDate date={point.date} precision={launch.net_precision} status={launch.status} /> : <span>{t.pending}</span>}
             </li>)}
           </ol>
           <details className="window-time-details">
             <summary>{t.fullWindowTimes}</summary>
             <div className="window-times">
-              <div><h3 className="time-heading">{t.windowStart}</h3>{launch.window_start ? <LaunchTimes isoDate={launch.window_start} launchTimeZone={launch.launch_timezone} /> : <p>{t.pending}</p>}</div>
-              <div><h3 className="time-heading">{t.windowEnd}</h3>{launch.window_end ? <LaunchTimes isoDate={launch.window_end} launchTimeZone={launch.launch_timezone} /> : <p>{t.pending}</p>}</div>
+              <div><h3 className="time-heading">{t.windowStart}</h3>{launch.window_start ? <LaunchTimes isoDate={launch.window_start} launchTimeZone={launch.launch_timezone} precision={launch.net_precision} /> : <p>{t.pending}</p>}</div>
+              <div><h3 className="time-heading">{t.windowEnd}</h3>{launch.window_end ? <LaunchTimes isoDate={launch.window_end} launchTimeZone={launch.launch_timezone} precision={launch.net_precision} /> : <p>{t.pending}</p>}</div>
             </div>
           </details>
           <p className="launch-meta">{t.windowNotice}</p>

@@ -11,7 +11,7 @@ it("shows timing consistent with source status without inventing a date", async 
   const container = document.createElement("div");
   const root = createRoot(container);
   const render = async (status: string, date = "2099-01-01T12:00:00Z") => {
-    await act(async () => root.render(<LocaleProvider locale="en-GB"><Countdown date={date} status={status}/><LocalLaunchDate date={date} status={status}/></LocaleProvider>));
+    await act(async () => root.render(<LocaleProvider locale="en-GB"><Countdown precision={{id:0}} date={date} status={status}/><LocalLaunchDate precision={{id:0}} date={date} status={status}/></LocaleProvider>));
   };
   try {
     await render("Go");

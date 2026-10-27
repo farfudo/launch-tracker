@@ -1,3 +1,4 @@
+import { exactPrecision } from "./temporal-precision";
 import type { LaunchDetail } from "./api";
 
 function timestamp(value: string | null) {
@@ -8,7 +9,7 @@ export function canExportCalendar(launch: LaunchDetail) {
   const start = timestamp(launch.net);
   const from = timestamp(launch.window_start);
   const to = timestamp(launch.window_end);
-  return /^(go|go for launch)$/i.test(launch.status) && Number.isFinite(start)
+  return exactPrecision(launch.net_precision) && /^(go|go for launch)$/i.test(launch.status) && Number.isFinite(start)
     && Number.isFinite(from) && Number.isFinite(to) && from <= start && start <= to;
 }
 

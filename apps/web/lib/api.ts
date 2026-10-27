@@ -1,9 +1,11 @@
+export type NetPrecision = { id: number; name?: string | null; abbrev?: string | null; description?: string | null };
 export type Launch = {
   frontend_cache?: { checkedAt: string; revalidateSeconds: number };
   id: string;
   name: string;
   status: string;
   net: string;
+  net_precision?: NetPrecision | null;
   agency: string | null;
   vehicle: string | null;
   source_url: string | null;

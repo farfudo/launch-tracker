@@ -37,7 +37,7 @@ afterEach(async () => {
 describe("launch time references", () => {
   it("hydrates UTC and site times before detecting the visitor's zone", async () => {
     const content = <LocaleProvider locale="en-GB">
-      <LaunchTimes isoDate="2026-10-23T01:45:00Z" launchTimeZone="America/Los_Angeles" />
+      <LaunchTimes precision={{id:0}} isoDate="2026-10-23T01:45:00Z" launchTimeZone="America/Los_Angeles" />
     </LocaleProvider>;
     const html = renderToString(content);
     expect(html).toContain("Detecting your time zone");
@@ -67,7 +67,7 @@ describe("launch time references", () => {
     await act(async () => {
       root = createRoot(container);
       root.render(<LocaleProvider locale="es-ES">
-        <LaunchTimes isoDate="2026-10-23T01:45:00Z" launchTimeZone="Invalid/Location" />
+        <LaunchTimes precision={{id:0}} isoDate="2026-10-23T01:45:00Z" launchTimeZone="Invalid/Location" />
       </LocaleProvider>);
     });
     expect(container.textContent).toContain("Zona horaria del lugar no disponible");

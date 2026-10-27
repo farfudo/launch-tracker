@@ -3,6 +3,8 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.clients.launch_library import NetPrecision
+
 
 class MissionLinkResponse(BaseModel):
     kind: Literal["agency", "vehicle", "pad", "mission"] | None = None
@@ -23,6 +25,7 @@ class LaunchResponse(BaseModel):
     name: str
     status: str
     net: datetime
+    net_precision: NetPrecision | None = None
     agency: str | None
     vehicle: str | None
     source_url: str | None

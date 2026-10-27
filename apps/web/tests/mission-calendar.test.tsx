@@ -6,7 +6,7 @@ import { MissionCalendar } from "../components/mission-calendar";
 import { LocaleProvider } from "../components/locale-provider";
 import type { LaunchDetail } from "../lib/api";
 
-const launch = { id:"mission", name:"Mission", status:"Go", net:"2026-11-01T01:00:00Z", window_start:"2026-11-01T01:00:00Z", window_end:"2026-11-01T02:00:00Z" } as LaunchDetail;
+const launch = { id:"mission", name:"Mission", status:"Go", net_precision:{id:0}, net:"2026-11-01T01:00:00Z", window_start:"2026-11-01T01:00:00Z", window_end:"2026-11-01T02:00:00Z" } as LaunchDetail;
 beforeEach(() => { globalThis.IS_REACT_ACT_ENVIRONMENT = true; });
 it("offers accessible links and a local ICS download without navigating externally", async () => {
   const container = document.createElement("div");

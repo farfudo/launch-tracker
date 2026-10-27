@@ -104,6 +104,7 @@ def upsert_launches(db: Session, launches: list[LaunchSummary]) -> int:
         launch.name = summary.name
         launch.status = summary.status
         launch.net = summary.net
+        launch.net_precision = summary.net_precision.model_dump() if summary.net_precision else None
         launch.agency = summary.agency
         launch.vehicle = summary.vehicle
         launch.source_url = summary.source_url

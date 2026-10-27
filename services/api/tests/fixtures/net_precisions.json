@@ -1,0 +1,104 @@
+[
+  {
+    "id": 0,
+    "name": "Second",
+    "abbrev": "SEC",
+    "description": "The T-0 is accurate to the second."
+  },
+  {
+    "id": 1,
+    "name": "Minute",
+    "abbrev": "MIN",
+    "description": "The T-0 is accurate to the minute."
+  },
+  {
+    "id": 2,
+    "name": "Hour",
+    "abbrev": "HR",
+    "description": "The T-0 is accurate to the hour."
+  },
+  {
+    "id": 3,
+    "name": "Morning",
+    "abbrev": "AM",
+    "description": "The T-0 is expected in the morning (local time)."
+  },
+  {
+    "id": 4,
+    "name": "Afternoon",
+    "abbrev": "PM",
+    "description": "The T-0 is expected in the afternoon (local time)."
+  },
+  {
+    "id": 5,
+    "name": "Day",
+    "abbrev": "DAY",
+    "description": "The T-0 is expected on the given day."
+  },
+  {
+    "id": 6,
+    "name": "Week",
+    "abbrev": "WK",
+    "description": "The T-0 is expected in the given week (starting on Monday according to ISO 8601)."
+  },
+  {
+    "id": 7,
+    "name": "Month",
+    "abbrev": "M",
+    "description": "The T-0 is expected in the given month."
+  },
+  {
+    "id": 8,
+    "name": "Quarter 1",
+    "abbrev": "Q1",
+    "description": "The T-0 is expected in the first quarter of the given year."
+  },
+  {
+    "id": 9,
+    "name": "Quarter 2",
+    "abbrev": "Q2",
+    "description": "The T-0 is expected in the second quarter of the given year."
+  },
+  {
+    "id": 10,
+    "name": "Quarter 3",
+    "abbrev": "Q3",
+    "description": "The T-0 is expected in the third quarter of the given year."
+  },
+  {
+    "id": 11,
+    "name": "Quarter 4",
+    "abbrev": "Q4",
+    "description": "The T-0 is expected in the fourth quarter of the given year."
+  },
+  {
+    "id": 12,
+    "name": "Year Half 1",
+    "abbrev": "H1",
+    "description": "The T-0 is expected in the first half of the given year."
+  },
+  {
+    "id": 13,
+    "name": "Year Half 2",
+    "abbrev": "H2",
+    "description": "The T-0 is expected in the second half of the given year."
+  },
+  {
+    "id": 14,
+    "name": "Year",
+    "abbrev": "Y",
+    "description": "The T-0 is expected in the given year."
+  },
+  {
+    "id": 15,
+    "name": "Fiscal Year",
+    "abbrev": "FY",
+    "description": "The T-0 is expected in the given fiscal year of the launch country."
+  },
+  {
+    "id": 16,
+    "name": "Decade",
+    "abbrev": "DEC",
+    "description": "The T-0 is expected in the given decade."
+  }
+]

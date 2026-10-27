@@ -52,14 +52,14 @@ def test_real_migration_chain_is_repeatable_and_preserves_launch(pg_database):
     with Session(engine) as db:
         upsert_launches(db, [mission()])
     migrate("upgrade", "head")
-    # Only the latest control-table migration is reversed; launch data must survive.
-    migrate("downgrade", "-1")
+    # Reverse through the control-table migration; launch data must survive.
+    migrate("downgrade", "20261022_06")
     assert "sync_control" not in inspect(engine).get_table_names()
     migrate("upgrade", "head")
     assert "sync_control" in inspect(engine).get_table_names()
     with Session(engine) as db:
         assert db.get(Launch, "test-mission").mission_links[0]["kind"] == "agency"
-        assert db.scalar(text("SELECT version_num FROM alembic_version")) == "20261023_07"
+        assert db.scalar(text("SELECT version_num FROM alembic_version")) == "20261027_08"
 
 
 def test_postgresql_lock_blocks_overlapping_session(pg_database):

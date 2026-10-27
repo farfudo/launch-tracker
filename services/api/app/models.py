@@ -22,6 +22,7 @@ class Launch(Base):
     name: Mapped[str] = mapped_column(String(300))
     status: Mapped[str] = mapped_column(String(100))
     net: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    net_precision: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     agency: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
     vehicle: Mapped[str | None] = mapped_column(String(200), nullable=True, index=True)
     source_url: Mapped[str | None] = mapped_column(String(500), nullable=True)

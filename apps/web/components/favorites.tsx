@@ -56,12 +56,12 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, histor
         }}>
         <p className="launch-agency" title={`${launch.agency ?? t.agencyPending} · ${launch.vehicle ?? t.vehiclePending}`}>{launch.agency ?? t.agencyPending} · {launch.vehicle ?? t.vehiclePending}</p>
         <h3 title={launch.name}>{launch.name}</h3>
-        <p className="launch-date"><LocalLaunchDate date={launch.net} status={launch.status} /></p>
+        <p className="launch-date"><LocalLaunchDate date={launch.net} precision={launch.net_precision} status={launch.status} /></p>
         <span className="launch-status-tag" data-tone={launchStatusTone(launch.status)}>{formatLaunchStatus(launch.status, locale)}</span>
         <span className="row-detail-link">{d.viewDetails} →<LinkPending /></span>
         {selection?.selected?.id === launch.id ? <span className="mission-selected-label">{d.selectedMission}</span> : null}
       </Link>
-      <div className="launch-row-actions">{historical ? null : <Countdown date={launch.net} status={launch.status} compact={index !== 0 && selection?.selected?.id !== launch.id} />}<FavoriteButton id={launch.id} name={launch.name} /></div>
+      <div className="launch-row-actions">{historical ? null : <Countdown date={launch.net} precision={launch.net_precision} status={launch.status} compact={index !== 0 && selection?.selected?.id !== launch.id} />}<FavoriteButton id={launch.id} name={launch.name} /></div>
     </article>)}</div> : <article className="launch-card">
       <h3>{favoritesOnly ? ids.length ? t.noFavoriteMatches : t.noFavorites : emptyCache ? t.emptyTitle : t.noResults}</h3>
       <p>{favoritesOnly ? t.favoriteEmptyBody : emptyCache ? t.emptyBody : t.noResultsBody}</p>

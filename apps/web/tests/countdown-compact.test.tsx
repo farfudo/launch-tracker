@@ -11,7 +11,7 @@ it("shows approximate compact time without seconds and cleans up its slower time
   const container = document.createElement('div');
   const root = createRoot(container);
   try {
-    await act(async () => root.render(<LocaleProvider locale="pt-PT"><Countdown date="2099-01-01T12:00:00Z" status="Go" compact /></LocaleProvider>));
+    await act(async () => root.render(<LocaleProvider locale="pt-PT"><Countdown precision={{id:0}} date="2099-01-01T12:00:00Z" status="Go" compact /></LocaleProvider>));
     expect(container.textContent).toContain('≈ dentro de 2 dias');
     expect(container.querySelector('.countdown')).toBeNull();
     expect(container.querySelector('[role="timer"]')?.getAttribute('aria-live')).toBe('off');
