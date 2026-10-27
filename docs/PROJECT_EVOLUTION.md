@@ -802,7 +802,18 @@ O crédito do fundo fica numa linha própria do rodapé, separado das ligações
 
 Utilizador aprovou a preview e autorizou commit e push. Revisão visual detetou ainda conflito com a cor global dos botões ao passar o cursor; estilo do «ⓘ» isolado para preservar contraste e alvo tátil de 44 px. Build final e verificação do diff passaram. Documentos locais de partilha e FEATURES_ROADMAP excluídos do envio. Sucesso do push não confirma, por si só, CI ou publicação.
 
-### A18 — Fase 3: ligações contextuais a lançamentos (rascunho)
+
+### Ajustes após a CI do Explore Space
+
+A CI de `2b3cf07` apontou três E2E: o botão Play estava afastado da ilustração pela legenda; missões `To Be Confirmed` recebiam countdown apesar da data provisória; e o teste de cartões esperava um único countdown entre resultados legítimos. O botão Play foi colocado imediatamente após o desenho e a legenda acessível passou para baixo dos controlos. Countdown agora é omitido para estado TBC, mantendo a data e o aviso provisório; o teste de regressão cobre essa regra. Os dois erros de contagem decorriam do countdown TBC indevido.
+
+Validação local: 3 ficheiros unitários, 7 testes direcionados e `git diff --check` passaram. Os E2E não puderam arrancar nesta sessão: o ambiente bloqueou portas loopback e, na cópia isolada, a resolução local do Next.js/dependências ficou fora da raiz reconhecida. Lint/build também excederam o limite local disponível. Correção permanece sem commit/push; requer validação da CI antes de integração.
+
+### A18 — correções após validação da CI (27/10/2026)
+
+A primeira CI isolada detetou uma comparação de estado inalcançável no countdown após a guarda de estados incertos; removida essa redundância. A CI seguinte passou TypeScript, build e testes unitários, mas o E2E desktop/mobile assumia que o cabeçalho Artemis ainda tinha uma ligação direta para /discoveries. Com o novo hub há apenas o separador Explore Space; a rota antiga continua compatível e deve ser validada por navegação direta. O teste foi ajustado para abrir /discoveries e verificar o conteúdo, sem alterar a navegação do produto. Sem mudanças fora de A18.
+
+### A18 — Fase 3: ligações contextuais a lançamentos
 
 As páginas Descobertas e Artemis ligam agora a lançamentos futuros apenas através de campos específicos já devolvidos pela API: nomes exatos de veículos aprovados editorialmente e títulos exatos das missões Artemis I–VI. A mesma regra alimenta ligações de regresso educativo nos detalhes da missão; IDs de lançamento da API permanecem os destinos estáveis. Padrões genéricos de texto deixam de criar associações. Cartões usam nome, agência, veículo, data/precisão e estado reais da API, sem countdown próprio nem pedido à LL2. Há no máximo um cartão por tema, na ordem editorial, com missões deduplicadas.
 
