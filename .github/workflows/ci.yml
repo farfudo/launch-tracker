@@ -110,6 +110,9 @@ jobs:
       - name: Run affected A02 browser journeys without retries
         run: npm run test:e2e -- e2e/history.spec.ts e2e/discoveries.spec.ts --retries=0
 
+      - name: Run information disclosure browser journeys without retries
+        run: npm run test:e2e -- e2e/info-disclosure.spec.ts --retries=0
+
       - name: Check web code style
         run: npm run lint
 

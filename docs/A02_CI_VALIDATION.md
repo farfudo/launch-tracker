@@ -19,3 +19,9 @@ Outros jobs CI mantêm PostgreSQL descartável, SQLite e mocks do Worker. A CI n
 ## Estado
 
 Rascunho preparado com autorização explícita de commit/push da branch e execução manual da CI, condicionados à confirmação das proteções acima. Resultado da CI e ausência de deploy devem ser verificados após o envio; não são inferidos do push. Sem validação local completa devido ao bloqueio de carregamento de dependências já documentado; não repetir esse diagnóstico neste worktree.
+
+## Falha adicional observada na CI
+
+Na execução 40397552395, os testes A02 passaram; a suite E2E completa falhou em `info-disclosure.spec.ts` no Chromium mobile: o seletor encontrou dois painéis, um com ID gerado no cliente e outro com ID do HTML inicial. O componente `InfoDisclosure` produz um `<div>` dentro de um `<span>` e, neste caso, dentro de `<strong>`, estrutura HTML inválida. A duplicação observada pode estar relacionada com correção do HTML pelo browser e hidratação; a causa exata da duplicação requer confirmação. Não limitar o seletor para esconder o problema. Investigar e corrigir a estrutura e hidratação no próximo incremento A03/A14, validando teclado, toque e ponteiro. Não se alterou o componente nesta branch A02.
+
+A execução 40428560414 repete a CI isolada existente; os testes A02 são executados antes da suite completa. O teste específico InfoDisclosure não tem etapa individual neste workflow e integra a suite completa.
