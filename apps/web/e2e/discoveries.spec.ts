@@ -10,7 +10,7 @@ test('curated discovery topics filter without duplicating sources and support th
   // Compact overview is a content/disclosure contract, not a document-height budget.
   expect(await page.locator('.discoveries-page > section, .discoveries-page > details')
     .evaluateAll(elements => elements.map(element => element.getAttribute('aria-labelledby') || element.className)))
-    .toEqual(['discovery-hook-title', 'lab-title', 'artemis-feature-title', 'discovery-library']);
+    .toEqual(['discovery-hook-title', 'lab-title', 'related-launches-heading', 'artemis-feature-title', 'discovery-library']);
   const library = page.locator('.discovery-library');
   await expect(library).not.toHaveAttribute('open');
   await expect(page.locator('#discovery-results')).toBeHidden();
