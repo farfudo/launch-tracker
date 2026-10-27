@@ -1,3 +1,4 @@
+import { freshnessCopy, globalFreshnessConfirmed } from "../lib/freshness";
 import Link from "next/link";
 import { InfoDisclosure } from "../components/info-disclosure";
 import { RetryButton } from "../components/retry-button";
@@ -51,6 +52,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const nextCandidates = nextCandidatesPromise ? nextResult?.value ?? [] : launches;
   const statusResult = await dataStatusPromise;
   const dataStatus = statusResult?.value ?? null;
+  const statusConfirmed = globalFreshnessConfirmed(statusResult?.cache, Date.now());
   const nextLaunch = nextCandidates[0] ?? null;
   const cacheEntries = [...cache, ...(nextResult ? [nextResult.cache] : []), ...(statusResult ? [statusResult.cache] : [])];
   const agencies = new Set(launches.map(launch => launch.agency).filter(Boolean));
@@ -73,13 +75,13 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <h2 id="next-launch-heading">{period === "past" ? t.history : t.upcoming}</h2>
           </div>
           <span className="status">
-            {!hasLaunchData ? t.dataUnavailable : dataStatus?.cached_launches === 0 ? t.awaitingData : dataStatus?.stale ? t.staleData : t.launchCalendar}
+            {!hasLaunchData ? t.dataUnavailable : !dataStatus || !statusConfirmed ? freshnessCopy[locale].unknown : dataStatus.cached_launches === 0 ? t.awaitingData : dataStatus?.stale ? t.staleData : t.launchCalendar}
           </span>
         </div>
         <CacheNotice entries={cacheEntries} compact>
         {hasLaunchData && dataStatus?.last_updated_at ? (
           <p className="launch-meta">
-            {t.source}: {dataStatus.source} · {t.lastUpdated}: {formatLaunchDate(dataStatus.last_updated_at, locale)}.
+            {t.source}: {dataStatus.source} · {freshnessCopy[locale].global}: {formatLaunchDate(dataStatus.last_updated_at, locale)}.
             {" "}{t.datesNotice}
           </p>
         ) : null}

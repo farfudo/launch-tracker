@@ -100,6 +100,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Temporary isolated validation only; do not merge this workflow diff.
+      - name: Check web code style
+        run: npm run lint
+
+      - name: Run A05 regression tests
+        run: npx vitest run tests/freshness.test.tsx tests/cache-notice.test.tsx tests/cached-api.test.ts --maxWorkers=1
+
       - name: Run tests
         run: npm run test
 
@@ -109,8 +116,14 @@ jobs:
       - name: Install browser for end-to-end tests
         run: npx playwright install --with-deps chromium
 
+      - name: Run A05 failed global status journeys
+        run: FIXTURE_STATUS_FAILURE=true npm run test:e2e -- e2e/freshness.spec.ts --grep 'global failure' --retries=0 --output=test-results-a05-failure
+
+      - name: Run A05 observation journeys
+        run: npm run test:e2e -- e2e/freshness.spec.ts --grep 'observation stays' --retries=0 --output=test-results-a05-observation
+
       - name: Run isolated browser journeys
-        run: npm run test:e2e
+        run: npm run test:e2e -- --retries=0
 
       - name: Save browser test evidence
         if: always()
@@ -120,4 +133,6 @@ jobs:
           path: |
             apps/web/playwright-report/
             apps/web/test-results/
+            apps/web/test-results-a05-failure/
+            apps/web/test-results-a05-observation/
           retention-days: 7

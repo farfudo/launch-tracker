@@ -1,5 +1,9 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## A05 — frescura por missão (27/10/2026, rascunho local)
+
+Separadas a última importação global, a observação individual na importação e a verificação da cópia da interface. O campo API source_updated_at mantém contrato e passa a ser descrito como observação local, sem o apresentar como alteração do fornecedor (timestamp indisponível). Missões não terminais com observação de pelo menos seis horas têm aviso; NET ultrapassado não prova conclusão. Estados terminais mostram aviso de histórico retido, sem promessa de reconciliação recente. Snapshot global ausente ou com revalidação vencida não certifica frescura. Refresh não modifica a idade da missão. Sem pedidos LL2, novos endpoints ou mudanças A01/A04. Acrescentados quatro testes de regressão para observação individual antiga, refresh/cópia recente, histórico terminal e passado sem resultado, datas inválidas/futuras, snapshot global indisponível/vencido e traduções PT/EN/ES. Verificação git diff --check aprovada. Vitest (forks e threads) e ESLint locais bloquearam sem resultados e foram interrompidos; não se declara aprovação. Validação por CI isolada e prévia visual pendentes, sem commit/push/deploy.
+
 ## A04 — estado, data e contagem (27/10/2026, integração autorizada)
 
 Preparada distinção entre missões concluídas, em voo, suspensas, com hora incerta ou data por determinar e missões Go. Estados terminais não apresentam contagem ou aviso de hora por confirmar. Estimativas fornecidas para datas incertas permanecem visíveis e identificadas como provisórias; datas inválidas não são formatadas. O calendário explica a indisponibilidade para missões concluídas ou em voo. Acrescentados testes de regressão. Dificuldade: testes locais ficaram bloqueados; validação preparada em CI isolada, sem alterar A01.

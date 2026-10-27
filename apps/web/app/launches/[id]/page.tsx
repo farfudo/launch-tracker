@@ -22,6 +22,8 @@ import { MissionShare } from "../../../components/mission-share";
 import { missionTitle } from "../../../lib/mission-title";
 import { LocalLaunchDate } from "../../../components/local-launch-date";
 import { Countdown } from "../../../components/countdown";
+import { freshnessCopy } from "../../../lib/freshness";
+import { MissionFreshness } from "../../../components/mission-freshness";
 export const maxDuration = 60;
 
 type RouteParams = Promise<{ id: string }>;
@@ -47,7 +49,7 @@ export default async function LaunchDetail({ params, searchParams }: {
       { label: t.status, value: formatLaunchStatus(launch.status, locale), icon: "status" },
       { label: t.launchSite, value: launch.location_name || t.pending, icon: "location" },
       { label: t.launchPad, value: launch.pad_name || t.pending, icon: "pad" },
-      { label: t.dataUpdated, value: formatLaunchDate(launch.source_updated_at, locale), icon: "clock" }
+      { label: freshnessCopy[locale].observed, value: formatLaunchDate(launch.source_updated_at, locale), icon: "clock" }
     ];
 
     return (
@@ -79,6 +81,7 @@ export default async function LaunchDetail({ params, searchParams }: {
         </section>
 
         <section className="mission-facts" aria-labelledby="mission-facts-heading">
+          <MissionFreshness launch={launch} showTimestamp={false} />
           <CacheNotice entries={[result.cache]} />
           <h2 id="mission-facts-heading" className="visually-hidden">{t.availableInfo}</h2>
           <dl className="mission-fact-grid">
