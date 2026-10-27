@@ -29,3 +29,15 @@ it("disables export with an explanation for an unconfirmed mission", async () =>
   expect(container.querySelector("a")).toBeNull();
   await act(async () => root.unmount());
 });
+
+it("explains why completed or cancelled missions cannot be exported", async () => {
+  const container = document.createElement("div");
+  const root = createRoot(container);
+  for (const status of ["Launch Successful", "Launch Failure", "Cancelled"]) {
+    await act(async () => root.render(<LocaleProvider locale="en-GB"><MissionCalendar launch={{...launch,status}} /></LocaleProvider>));
+    expect(container.querySelector("button")?.disabled).toBe(true);
+    expect(container.textContent).toContain("completed or cancelled");
+    expect(container.textContent).not.toContain("only for Go");
+  }
+  await act(async () => root.unmount());
+});

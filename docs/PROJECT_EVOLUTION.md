@@ -1,5 +1,11 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## A04 — estado, data e contagem (27/10/2026, integração autorizada)
+
+Preparada distinção entre missões concluídas, em voo, suspensas, com hora incerta ou data por determinar e missões Go. Estados terminais não apresentam contagem ou aviso de hora por confirmar. Estimativas fornecidas para datas incertas permanecem visíveis e identificadas como provisórias; datas inválidas não são formatadas. O calendário explica a indisponibilidade para missões concluídas ou em voo. Acrescentados testes de regressão. Dificuldade: testes locais ficaram bloqueados; validação preparada em CI isolada, sem alterar A01.
+
+Validação CI 40489077931 no commit f754a1e: build, lint, 104 testes unitários e E2E (34 aprovados, 2 ignorados), incluindo teste dirigido de scroll. Dificuldade adicional: o seletor global encontrava a cópia SSR temporária oculta em div#S:0 e a lista visível; o teste passou a exigir um único calendário visível, preservando as verificações de scroll. Integração seletiva exclui CI temporária e bloqueio de deploy, mantendo todas as entradas A01.
+
 ## A01 — observabilidade do limite LL2 (27/10/2026, integração autorizada)
 
 Preparados registos estruturados para tentativas reais, motivo de bloqueio, Retry-After normalizado, prazo efetivo e resultado, sem registar credenciais nem respostas arbitrárias. A dificuldade anterior era distinguir 429, reservas e pedidos efetivos; a contagem é isolada por contexto e não acrescenta chamadas. Mantidos os locks e a política de espera. Validação PostgreSQL 17.11 isolado: 15 testes passaram, incluindo migrações, locks reais, reserva persistente, Retry-After numérico/data, bloqueio entre sessões, contagem de tentativas e cooldown. Fornecedor simulado; nenhum pedido LL2 real. A base descartável foi criada com UTF8 após um problema inicial de codificação. Os 57 testes SQLite anteriores não foram repetidos na validação PostgreSQL local. CI isolada verde no commit 9a870a7: 71 testes API, 15 PostgreSQL 17 e 27 Worker, com Ruff aprovado. Integração em main autorizada; o incremento inclui o timeout de 180 s do Worker, sem alterar cron ou publicar código Cloudflare. Configurações temporárias de CI e bloqueio de deploy excluídas.

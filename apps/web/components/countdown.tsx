@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "./locale-provider";
 import { dashboardCopy } from "../lib/dashboard-i18n";
+import { formatLaunchStatus, launchTimingStatus } from "../lib/launch";
 
 export function Countdown({ date, status, compact = false }: { date: string; status?: string; compact?: boolean }) {
   const [now, setNow] = useState<number | null>(null);
@@ -15,7 +16,12 @@ export function Countdown({ date, status, compact = false }: { date: string; sta
     return () => window.clearInterval(timer);
   }, [compact]);
   const target = Date.parse(date);
-  if (!status || !/^(go|go for launch)$/i.test(status) || !Number.isFinite(target)) return <p className="countdown-note">{d.unconfirmed}</p>;
+  const timing = launchTimingStatus(status);
+  if (timing === "terminal") return null;
+  if (timing === "in-flight" || timing === "held") return <p className="countdown-note">{formatLaunchStatus(status!, locale)}</p>;
+  if (timing === "unknown-date" || !Number.isFinite(target)) return <p className="countdown-note">{{"pt-PT":"Data de lançamento por determinar", "en-GB":"Launch date to be determined", "es-ES":"Fecha de lanzamiento por determinar"}[locale]}</p>;
+  if (timing === "uncertain") return <p className="countdown-note">{d.unconfirmed}</p>;
+  if (timing === "unknown") return <p className="countdown-note">{{"pt-PT":"Estado do lançamento por confirmar", "en-GB":"Launch status to be confirmed", "es-ES":"Estado del lanzamiento por confirmar"}[locale]}</p>;
   if (now !== null && target <= now) return <p className="countdown-note">{d.elapsed}</p>;
   const seconds = now === null ? null : Math.floor((target - now) / 1000);
   if (compact) {

@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 import type { LaunchDetail } from "../lib/api";
 import { calendarEvent, canExportCalendar } from "../lib/calendar";
+import { launchTimingStatus } from "../lib/launch";
 import { useLocale } from "./locale-provider";
 
 const copy = {
@@ -19,7 +20,12 @@ export function MissionCalendar({ launch }: { launch: LaunchDetail }) {
   const t = copy[locale];
   const origin = useSyncExternalStore(subscribe, getOrigin, serverOrigin);
   const event = origin ? calendarEvent(launch, origin, t.notice) : null;
-  if (!canExportCalendar(launch)) return <div className="mission-calendar"><button type="button" disabled>{t.title}</button><p>{t.unavailable}</p></div>;
+  if (!canExportCalendar(launch)) {
+    const state=launchTimingStatus(launch.status);
+    const finished={"en-GB":"Calendar export is unavailable for completed or cancelled missions.","pt-PT":"A exportação para calendário não está disponível para missões concluídas ou canceladas.","es-ES":"La exportación al calendario no está disponible para misiones finalizadas o canceladas."}[locale];
+    const flying={"en-GB":"Calendar export is unavailable while the mission is in flight.","pt-PT":"A exportação para calendário não está disponível enquanto a missão está em voo.","es-ES":"La exportación al calendario no está disponible durante el vuelo."}[locale];
+    return <div className="mission-calendar"><button type="button" disabled>{t.title}</button><p>{state === "terminal" ? finished : state === "in-flight" ? flying : t.unavailable}</p></div>;
+  }
   return <details className="mission-calendar">
     <summary>{t.title}</summary>
     <p>{t.notice}</p>
