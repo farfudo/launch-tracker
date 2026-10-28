@@ -13,12 +13,12 @@ test('Explore Space hub links to existing guides and launch data in each locale'
     /Discoveries & Advances.*Technologies and ideas changing space exploration.*Explore discoveries/,
     /Space Programs.*Explore the Artemis programme.*Explore Artemis/,
     /How Rockets Work.*See how engines.*Explore the technology/,
-    /Space Milestones.*Browse scheduled launches.*View the launch calendar/
+    /Space Milestones.*Explore four moments that changed space exploration.*Explore the timeline/
   ]);
   await expect(cards.nth(0)).toHaveAttribute('href', '/discoveries');
   await expect(cards.nth(1)).toHaveAttribute('href', '/discoveries/artemis');
   await expect(cards.nth(2)).toHaveAttribute('href', '/discoveries#technology-lab');
-  await expect(cards.nth(3)).toHaveAttribute('href', '/#launch-calendar');
+  await expect(cards.nth(3)).toHaveAttribute('href', '/explore-space/milestones');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: test.info().outputPath('explore-space-desktop.png'), fullPage: true });
   await cards.nth(0).click();
@@ -35,8 +35,13 @@ test('Explore Space hub links to existing guides and launch data in each locale'
   await expect(page.locator('#lab-title')).toBeVisible();
   await page.goto('/explore-space');
   await cards.nth(3).click();
-  await expect(page).toHaveURL(/\/#launch-calendar$/);
-  await expect(page.locator('#launch-calendar')).toBeVisible();
+  await expect(page).toHaveURL(/\/explore-space\/milestones$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Space exploration milestones');
+  await expect(page.locator('.milestone-item')).toHaveCount(4);
+  await expect(page.locator('.milestone-date')).toHaveText(['4 October 1957', '12 April 1961', '20 July 1969', '21 December 2015']);
+  await expect(page.getByRole('link', { name: /Explore the Artemis guide/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: /See how rocket reuse works/ })).toBeVisible();
+  await page.screenshot({ path: test.info().outputPath('space-milestones-desktop.png'), fullPage: true });
 
 });
 
@@ -46,6 +51,25 @@ test('Explore Space cards remain usable on narrow mobile screens', async ({ page
   await page.goto('/explore-space');
   await expect(page.locator('.explore-space-card')).toHaveCount(4);
   await expect(page.getByRole('link', { name: /Explore Artemis/ })).toBeVisible();
+  await page.getByRole('link', { name: /Explore the timeline/ }).click();
+  await expect(page).toHaveURL(/\/explore-space\/milestones$/);
+  await expect(page.locator('.milestone-item')).toHaveCount(4);
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.screenshot({ path: test.info().outputPath('explore-space-mobile.png'), fullPage: true });
+  await page.screenshot({ path: test.info().outputPath('space-milestones-mobile.png'), fullPage: true });
+});
+
+test('Space Milestones title and categories are available in PT, EN and ES', async ({ page, context }) => {
+  await context.route('**/*', route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.abort());
+  for (const [locale, title, category] of [
+    ['pt-PT', 'Marcos da exploração espacial', 'Satélites'],
+    ['en-GB', 'Space exploration milestones', 'Satellites'],
+    ['es-ES', 'Hitos de la exploración espacial', 'Satélites']
+  ] as const) {
+    await context.addCookies([{ name: 'launchskyline_locale', value: locale, url: 'http://127.0.0.1:3300' }]);
+    await page.goto('/explore-space/milestones');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
+    await expect(page.locator('.milestone-category').first()).toHaveText(category);
+    await expect(page.locator('.milestone-item')).toHaveCount(4);
+  }
 });

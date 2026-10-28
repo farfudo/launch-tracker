@@ -10,6 +10,10 @@ Criada uma entrada única «Explore Space» no cabeçalho, com landing page educ
 
 Textos e metadata PT/EN/ES; layout adaptável, foco visível e respeito por redução de movimento. Testes E2E atualizados para a navegação e rotas legadas, com novo percurso do hub e largura mobile de 320 px. Esta alteração limita-se a navegação/conteúdo frontend; calendário, filtros, favoritos, detalhes, API, sincronização e infraestrutura não foram alterados. Sem commit/push/deploy.
 
+### A18 — Fase 4: Space Milestones (rascunho local, 27/10/2026)
+
+O cartão Space Milestones abre agora uma cronologia educativa separada do calendário futuro. Inclui Sputnik 1 (04/10/1957), Vostok 1 (12/04/1961), Apollo 11 (20/07/1969) e a aterragem orbital do primeiro estágio Falcon 9 (21/12/2015). Cada marco tem categoria, explicação e «Why it matters» em PT/EN/ES, data histórica civil sem hora/fuso, e fonte primária: NASA para Sputnik, Vostok e Apollo 11; SpaceX para a aterragem do Falcon 9. Não foram adicionadas imagens externas: a timeline usa elementos gráficos CSS originais. Ligações educativas aparecem apenas para Apollo 11 → guia Artemis e Falcon 9 → laboratório sobre reutilização; não foi inferida relação para Sputnik/Vostok. Vitest: 6/6 aprovados; Playwright desktop/mobile: 6/6 aprovados, incluindo as três línguas e ausência de overflow mobile. Prévia local em `/explore-space/milestones`. ESLint local não terminou nem apresentou resultado; validação de estilo fica pendente. Sem alterações ao calendário, API, base de dados ou sincronização. Sem commit/push/merge/deploy.
+
 ## A07 — countdown estimado com precisão desconhecida
 
 A pedido do utilizador, regressa a contagem baseada no horário de referência quando a precisão da fonte é desconhecida, identificada como estimativa com hora não confirmada. Missões concluídas, sem data, em voo e suspensas preservam o seu tratamento; períodos amplos não recebem countdown. Prévia visual demonstrativa com dados fictícios; validação da aplicação real pendente.

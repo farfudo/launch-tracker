@@ -15,7 +15,7 @@ export const exploreSpaceCopy = {
       ["Descobertas e avanços", "Tecnologias e ideias que estão a mudar a exploração espacial.", "Explorar descobertas", "/discoveries"],
       ["Programas espaciais", "Explora o programa Artemis e as peças necessárias para regressar à Lua.", "Conhecer o Artemis", "/discoveries/artemis"],
       ["Como funcionam os foguetões", "Vê, passo a passo, como motores, materiais e reabastecimento ajudam a chegar ao espaço.", "Explorar a tecnologia", "/discoveries#technology-lab"],
-      ["Marcos das missões", "Consulta os lançamentos previstos e acompanha as próximas etapas espaciais.", "Ver o calendário", "/#launch-calendar"]
+      ["Marcos espaciais", "Descobre quatro momentos que mudaram a exploração espacial.", "Explorar a cronologia", "/explore-space/milestones"]
     ],
     numbers: ["01", "02", "03", "04"],
     note: "Escolhe um caminho para começar. Cada ligação abre conteúdo existente no NextRocketLaunch."
@@ -28,7 +28,7 @@ export const exploreSpaceCopy = {
       ["Discoveries & Advances", "Technologies and ideas changing space exploration.", "Explore discoveries", "/discoveries"],
       ["Space Programs", "Explore the Artemis programme and the pieces needed to return to the Moon.", "Explore Artemis", "/discoveries/artemis"],
       ["How Rockets Work", "See how engines, materials and refuelling help rockets reach space.", "Explore the technology", "/discoveries#technology-lab"],
-      ["Space Milestones", "Browse scheduled launches and follow the next steps in spaceflight.", "View the launch calendar", "/#launch-calendar"]
+      ["Space Milestones", "Explore four moments that changed space exploration.", "Explore the timeline", "/explore-space/milestones"]
     ],
     numbers: ["01", "02", "03", "04"],
     note: "Choose a path to begin. Each link opens existing content in NextRocketLaunch."
@@ -41,7 +41,7 @@ export const exploreSpaceCopy = {
       ["Descubrimientos y avances", "Tecnologías e ideas que están cambiando la exploración espacial.", "Explorar descubrimientos", "/discoveries"],
       ["Programas espaciales", "Explora el programa Artemis y las piezas necesarias para volver a la Luna.", "Conocer Artemis", "/discoveries/artemis"],
       ["Cómo funcionan los cohetes", "Descubre cómo motores, materiales y repostaje ayudan a llegar al espacio.", "Explorar la tecnología", "/discoveries#technology-lab"],
-      ["Hitos espaciales", "Consulta los lanzamientos previstos y sigue los próximos pasos espaciales.", "Ver el calendario", "/#launch-calendar"]
+      ["Hitos espaciales", "Descubre cuatro momentos que cambiaron la exploración espacial.", "Explorar la cronología", "/explore-space/milestones"]
     ],
     numbers: ["01", "02", "03", "04"],
     note: "Elige un camino para empezar. Cada enlace abre contenido existente en NextRocketLaunch."
