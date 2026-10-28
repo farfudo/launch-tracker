@@ -13,14 +13,13 @@ test('status filter keeps provisional dates explicit and composes with favorites
   await expect(page).toHaveURL(/status=tbc/);
   await expect(page.locator('.launch-list .launch-card')).toHaveCount(1);
   await expect(page.locator('.launch-list [role="timer"]')).toBeVisible();
-  const warning = page.locator('.launch-list .countdown-warning button');
-  await warning.click();
-  await expect(page.locator('.launch-list [role="dialog"]')).toContainText('Precision:');
+  await expect(page.locator('.launch-list [role="timer"] strong')).toHaveCount(4);
+  await expect(page.locator('.launch-list .countdown-warning')).toHaveCount(0);
   await page.locator('.favorite-views a').filter({hasText:'My favorites'}).click();
   await expect(page).toHaveURL(/status=tbc/);
   await expect(page).toHaveURL(/favorites=1/);
   await page.locator('.favorite-views a').filter({hasText:/^All$/}).click();
-  await expect(page.locator('.launch-list .countdown-warning button')).toBeVisible();
+  await expect(page.locator('.launch-list [role="timer"]')).toBeVisible();
   await page.screenshot({path:test.info().outputPath('provisional-date-filter.png'),fullPage:true});
 });
 

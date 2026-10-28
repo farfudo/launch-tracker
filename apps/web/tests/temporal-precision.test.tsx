@@ -72,12 +72,22 @@ it("shows a reference date once for missing precision and labels reference count
       const html = renderToStaticMarkup(<LocaleProvider locale={locale}><Countdown date="2099-01-01T00:00:00Z" status="Go" precision={{id}} /></LocaleProvider>);
       expect(html).toContain('role="timer"');
       expect((html.match(/<strong>/g) ?? []).length).toBe(4);
-      if (id > 0) expect(html).toContain({"pt-PT":"referência não confirmada", "en-GB":"unconfirmed reference", "es-ES":"referencia no confirmada"}[locale]);
     }
     const html = renderToStaticMarkup(<LocaleProvider locale={locale}><Countdown date={date} status="Go" precision={null} /></LocaleProvider>);
     expect(html).toContain('role="timer"');
     expect((html.match(/<strong>/g) ?? []).length).toBe(4);
-    expect(html).toContain({"pt-PT":"referência não confirmada", "en-GB":"unconfirmed reference", "es-ES":"referencia no confirmada"}[locale]);
-    expect(html).toContain("info-trigger");
+    expect(html).not.toContain("info-trigger");
+    expect(html).not.toContain("countdown-heading");
+  }
+});
+
+it("shows the supplied reference date without a fabricated clock on clean launch cards", () => {
+  for (const locale of ["pt-PT","en-GB","es-ES"] as const) {
+    for (const id of [3,4,5,6,7,8,9,10,11,12,13,14,15,16]) {
+      const html=renderToStaticMarkup(<LocaleProvider locale={locale}><LocalLaunchDate date="2099-01-08T12:30:59Z" status="TBC" precision={{id}} showNotice={false}/></LocaleProvider>);
+      expect(html).toContain("2099");
+      expect(html).toContain("08");
+      expect(html).not.toMatch(/12:30|date-uncertainty-note|<time/);
+    }
   }
 });

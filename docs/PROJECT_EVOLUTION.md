@@ -924,3 +924,6 @@ O teste de MissionCalendar ainda exigia bloquear TBC e não foi incluído na val
 Isolada também a origem da API fictícia dos testes de navegador (3302) da prévia local (3301), para evitar reutilização de dados de precisão em cache durante testes do histórico. A prévia da interface mantém-se em 3345.
 
 Validação final desta correção: 145 testes unitários/componentes, build, 50 percursos de navegador e 6 percursos Starship passaram. As 8 exclusões condicionais existentes mantêm-se (cenários com falha global da API e verificações exclusivas de desktop). Nenhum teste foi desativado nesta correção.
+
+## Simplificação da data e contador — rascunho
+A lista, o resumo e a data principal da missão mostram a data de referência disponível em vez do rótulo genérico de precisão ampla, sem acrescentar hora. O contador apresenta apenas números e unidades, conforme revisão do utilizador. Informação detalhada de precisão e exportação permanece nos respetivos locais.

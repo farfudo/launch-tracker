@@ -30,7 +30,7 @@ it("shows timing consistent with source status without inventing a date", async 
     await render("TBC");
     expect(container.textContent).toContain("Provisional date");
     expect(container.querySelector('[role="timer"]')).not.toBeNull();
-    expect(container.querySelector('.countdown-warning button')).not.toBeNull();
+    expect(container.querySelector('.countdown-warning')).toBeNull();
     await render("TBD");
     expect(container.querySelector('[role="timer"]')).not.toBeNull();
     expect(container.textContent).toContain("Provisional date");
@@ -49,7 +49,8 @@ it("updates seconds for a broad reference and stops when it passes", async () =>
   const root = createRoot(container);
   try {
     await act(async () => root.render(<LocaleProvider locale="en-GB"><Countdown precision={{id:7}} date="2099-01-01T12:00:00Z" status="TBC" /></LocaleProvider>));
-    expect(container.textContent).toContain("Countdown to unconfirmed reference");
+    expect(container.querySelector("button")).toBeNull();
+    expect(container.querySelector(".countdown-heading")).toBeNull();
     expect(container.querySelectorAll('[role="timer"] strong')[3].textContent).toBe("02");
     await act(async () => vi.advanceTimersByTime(1000));
     expect(container.querySelectorAll('[role="timer"] strong')[3].textContent).toBe("01");
