@@ -13,7 +13,7 @@ export const exploreSpaceCopy = {
     intro: "Começa por uma pergunta. Descobre como os foguetões funcionam, que programas estão em curso e que missões se aproximam.",
     cards: [
       ["Descobertas e avanços", "Tecnologias e ideias que estão a mudar a exploração espacial.", "Explorar descobertas", "/discoveries"],
-      ["Programas espaciais", "Explora o programa Artemis e as peças necessárias para regressar à Lua.", "Conhecer o Artemis", "/discoveries/artemis"],
+      ["Programas espaciais", "Explora o programa Artemis e as peças necessárias para regressar à Lua.", "Explorar programas", "/explore-space/programs"],
       ["Como funcionam os foguetões", "Vê, passo a passo, como motores, materiais e reabastecimento ajudam a chegar ao espaço.", "Explorar a tecnologia", "/explore-space/how-rockets-work"],
       ["Marcos espaciais", "Descobre quatro momentos que mudaram a exploração espacial.", "Explorar a cronologia", "/explore-space/milestones"]
     ],
@@ -26,7 +26,7 @@ export const exploreSpaceCopy = {
     intro: "Start with a question. Discover how rockets work, which programmes are underway and which missions are coming up.",
     cards: [
       ["Discoveries & Advances", "Technologies and ideas changing space exploration.", "Explore discoveries", "/discoveries"],
-      ["Space Programs", "Explore the Artemis programme and the pieces needed to return to the Moon.", "Explore Artemis", "/discoveries/artemis"],
+      ["Space Programs", "Explore the Artemis programme and the pieces needed to return to the Moon.", "Explore programs", "/explore-space/programs"],
       ["How Rockets Work", "See how engines, materials and refuelling help rockets reach space.", "Explore the technology", "/explore-space/how-rockets-work"],
       ["Space Milestones", "Explore four moments that changed space exploration.", "Explore the timeline", "/explore-space/milestones"]
     ],
@@ -39,7 +39,7 @@ export const exploreSpaceCopy = {
     intro: "Empieza con una pregunta. Descubre cómo funcionan los cohetes, qué programas están en marcha y qué misiones se acercan.",
     cards: [
       ["Descubrimientos y avances", "Tecnologías e ideas que están cambiando la exploración espacial.", "Explorar descubrimientos", "/discoveries"],
-      ["Programas espaciales", "Explora el programa Artemis y las piezas necesarias para volver a la Luna.", "Conocer Artemis", "/discoveries/artemis"],
+      ["Programas espaciales", "Explora el programa Artemis y las piezas necesarias para volver a la Luna.", "Explorar programas", "/explore-space/programs"],
       ["Cómo funcionan los cohetes", "Descubre cómo motores, materiales y repostaje ayudan a llegar al espacio.", "Explorar la tecnología", "/explore-space/how-rockets-work"],
       ["Hitos espaciales", "Descubre cuatro momentos que cambiaron la exploración espacial.", "Explorar la cronología", "/explore-space/milestones"]
     ],

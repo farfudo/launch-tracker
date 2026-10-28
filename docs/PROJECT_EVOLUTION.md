@@ -842,3 +842,7 @@ Carregamento tem estado acessível; falha de leitura é indicada sem fingir aus�
 Criado um capítulo introdutório em PT/EN/ES sobre impulso, forças, vácuo e órbita, com diagrama interativo acessível, alternativa textual, miniquestionário e fontes NASA. O cartão How Rockets Work passa a abrir o capítulo, que mantém uma ligação ao laboratório de tecnologia existente. Sem associações especulativas a missões. Rascunho isolado sem publicação.
 
 Ajuste posterior: cabeçalho do capítulo usa toda a largura disponível e o exemplo de impulso fica ao lado do texto em desktop; em mobile permanece em coluna.
+
+## A18 — Space Programs, Fase 1 (rascunho)
+
+Criada uma landing com apresentação dos seis programas e destaque para o guia Artemis existente. Os restantes cartões são informativos e não simulam guias. Fotografias locais foram redimensionadas e convertidas para WebP; créditos e condições estão em `SPACE_PROGRAMS_IMAGE_CREDITS.md`. O cartão Explore Space passa a abrir a nova página; a rota antiga Artemis mantém-se. Sem alterações ao calendário ou à sincronização.

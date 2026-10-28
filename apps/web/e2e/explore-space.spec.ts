@@ -11,12 +11,12 @@ test('Explore Space hub links to existing guides and launch data in each locale'
   await expect(cards).toHaveCount(4);
   await expect(cards).toHaveText([
     /Discoveries & Advances.*Technologies and ideas changing space exploration.*Explore discoveries/,
-    /Space Programs.*Explore the Artemis programme.*Explore Artemis/,
+    /Space Programs.*Explore the Artemis programme.*Explore programs/,
     /How Rockets Work.*See how engines.*Explore the technology/,
     /Space Milestones.*Explore four moments that changed space exploration.*Explore the timeline/
   ]);
   await expect(cards.nth(0)).toHaveAttribute('href', '/discoveries');
-  await expect(cards.nth(1)).toHaveAttribute('href', '/discoveries/artemis');
+  await expect(cards.nth(1)).toHaveAttribute('href', '/explore-space/programs');
   await expect(cards.nth(2)).toHaveAttribute('href', '/explore-space/how-rockets-work');
   await expect(cards.nth(3)).toHaveAttribute('href', '/explore-space/milestones');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -26,6 +26,9 @@ test('Explore Space hub links to existing guides and launch data in each locale'
   await expect(page.locator('.discoveries-intro h1')).toHaveText('Space discoveries and advances');
   await page.goto('/explore-space');
   await cards.nth(1).click();
+  await expect(page).toHaveURL(/\/explore-space\/programs$/);
+  await expect(page.locator('.program-card')).toHaveCount(6);
+  await page.getByRole('link', { name: /Explore the Artemis guide/ }).click();
   await expect(page).toHaveURL(/\/discoveries\/artemis$/);
   await expect(page.locator('.guide-role-grid article')).toHaveCount(4);
   await expect(nav.locator('[aria-current="page"]')).toHaveAttribute('href', '/explore-space');
