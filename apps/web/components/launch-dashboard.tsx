@@ -21,15 +21,15 @@ export function LaunchHero({ launch, locale }: { launch: (Launch & Partial<Launc
       <p>{d.intro}</p>
       <HeroAction launch={launch} />
     </div>
-    {launch ? <Link href={`/launches/${launch.id}`} className="next-launch-panel">
+    {launch ? <div className="next-launch-panel">
       <span className="eyebrow">{d.nextLaunch}</span>
       <Countdown date={launch.net} precision={launch.net_precision} status={launch.status} />
       <h2>{launch.mission_name || launch.name}</h2>
       <p>{launch.agency}</p>
       {launch.location_name ? <p className="icon-line"><MissionIcon name="location" />{launch.location_name}</p> : null}
-      <p className="icon-line"><MissionIcon name="clock" /><LocalLaunchDate date={launch.net} precision={launch.net_precision} status={launch.status} /></p>
-      <span className="hero-detail-link">{d.explore} <span aria-hidden="true">↗</span><LinkPending /></span>
-    </Link> : <div className="hero-orbit" aria-hidden="true"><MissionIcon name="rocket" /></div>}
+      <p className="icon-line"><MissionIcon name="clock" /><LocalLaunchDate date={launch.net} precision={launch.net_precision} status={launch.status} showNotice={false} /></p>
+      <Link href={`/launches/${launch.id}`} className="hero-detail-link">{d.explore} <span aria-hidden="true">↗</span><LinkPending /></Link>
+    </div> : <div className="hero-orbit" aria-hidden="true"><MissionIcon name="rocket" /></div>}
   </section>;
 }
 
@@ -38,7 +38,7 @@ export function FeaturedLaunch({ launch, locale }: { launch: Launch; locale: Loc
   return <><section className="featured-launch" aria-labelledby="featured-heading">
     <VehicleVisual launch={launch} priority={false} />
     <div className="featured-copy"><p className="eyebrow">{d.featured}</p><h2 id="featured-heading">{launch.name}</h2>
-      <p>{launch.agency} · {launch.vehicle}</p><p><LocalLaunchDate date={launch.net} precision={launch.net_precision} status={launch.status} /></p>
+      <p>{launch.agency} · {launch.vehicle}</p><p><LocalLaunchDate date={launch.net} precision={launch.net_precision} status={launch.status} showNotice={false} /></p>
       <p>{d.featuredNote}</p><Link className="pill-button" href={`/launches/${launch.id}`}>{d.fullDetails} →<LinkPending /></Link>
     </div>
     <Countdown date={launch.net} precision={launch.net_precision} status={launch.status} />

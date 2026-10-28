@@ -56,7 +56,7 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, histor
         }}>
         <p className="launch-agency" title={`${launch.agency ?? t.agencyPending} · ${launch.vehicle ?? t.vehiclePending}`}>{launch.agency ?? t.agencyPending} · {launch.vehicle ?? t.vehiclePending}</p>
         <h3 title={launch.name}>{launch.name}</h3>
-        <p className="launch-date"><LocalLaunchDate date={launch.net} precision={launch.net_precision} status={launch.status} /></p>
+        <p className="launch-date"><LocalLaunchDate date={launch.net} precision={launch.net_precision} status={launch.status} showNotice={historical} /></p>
         <span className="launch-status-tag" data-tone={launchStatusTone(launch.status)}>{formatLaunchStatus(launch.status, locale)}</span>
         <span className="row-detail-link">{d.viewDetails} →<LinkPending /></span>
         {selection?.selected?.id === launch.id ? <span className="mission-selected-label">{d.selectedMission}</span> : null}

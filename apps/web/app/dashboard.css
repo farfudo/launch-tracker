@@ -890,3 +890,9 @@ html[data-theme="dark"] .is-planned { background:#483b18; color:#ffe29a; }
 
 @media(min-width:1001px) { .artemis-guide .guide-flow { grid-template-columns:repeat(5,minmax(0,1fr)); } }
 .artemis-guide .guide-flow li p { font-size:.88rem; line-height:1.5; margin:.5rem 0 0; }
+
+.countdown-heading { display:flex; align-items:center; gap:.15rem; }
+.countdown-warning .info-trigger { border:0 !important; background:transparent !important; color:var(--text-soft) !important; font-size:.8rem !important; }
+.countdown-warning .info-trigger:focus-visible { outline:2px solid var(--accent-strong); }
+.next-launch-panel .countdown-warning .info-trigger { color:#f0faf9 !important; }
+.hero-detail-link { color:inherit; }

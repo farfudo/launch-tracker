@@ -29,9 +29,10 @@ it("shows timing consistent with source status without inventing a date", async 
     expect(container.textContent).toContain("On hold");
     await render("TBC");
     expect(container.textContent).toContain("Provisional date");
-    expect(container.querySelector('[role="timer"]')).toBeNull();
+    expect(container.querySelector('[role="timer"]')).not.toBeNull();
+    expect(container.querySelector('.countdown-warning button')).not.toBeNull();
     await render("TBD");
-    expect(container.textContent).toContain("Launch date to be determined");
+    expect(container.querySelector('[role="timer"]')).not.toBeNull();
     expect(container.textContent).toContain("Provisional date");
     await render("Go", "invalid");
     expect(container.querySelector('[role="timer"]')).toBeNull();

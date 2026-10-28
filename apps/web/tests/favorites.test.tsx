@@ -72,7 +72,7 @@ describe("browser favorites", () => {
     await act(async () => root.render(<LocaleProvider locale="en-GB"><FavoriteLaunchList launches={[launch]} favoritesOnly emptyCache={false} /></LocaleProvider>));
     expect(container.querySelector("h3")?.textContent).toBe(launch.name);
     expect(container.querySelector("a button")).toBeNull();
-    await act(async () => button().click());
+    await act(async () => (container.querySelector('button[aria-pressed="true"]') as HTMLButtonElement).click());
     expect(container.querySelector("h3")?.textContent).toBe("No favorites yet");
   });
   it("distinguishes saved launches excluded by the current results", async () => {

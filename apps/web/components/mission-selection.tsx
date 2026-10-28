@@ -100,7 +100,7 @@ export function MissionDetailPanel() {
     <h2 id="selected-mission-heading">{missionTitle(detail || selected)}</h2>
     <p className="selected-mission-agency">{selected.agency || t.agencyPending} · {selected.vehicle || t.vehiclePending}</p>
     <span className="launch-status-tag" data-tone={launchStatusTone(selected.status)}>{formatLaunchStatus(selected.status, locale)}</span>
-    <p className="selected-mission-date"><LocalLaunchDate date={selected.net} precision={selected.net_precision} status={selected.status} /></p>
+    <p className="selected-mission-date"><LocalLaunchDate date={selected.net} precision={selected.net_precision} status={selected.status} showNotice={false} /></p>
     <div className="mission-countdown summary-countdown"><Countdown date={selected.net} precision={selected.net_precision} status={selected.status} /></div>
     <p className="visually-hidden" role="status">{loading ? d.loadingMission : `${d.selectedMission}: ${selected.name}`}</p>
     {loading ? <p className="panel-feedback"><Spinner /> {d.loadingMission}</p> : null}

@@ -25,6 +25,10 @@ export function precisionNotice(precision: NetPrecision | null | undefined, loca
   if (id === 2) return temporalCopy[locale].hour;
   return null;
 }
+export function precisionLabel(precision:NetPrecision | null | undefined, locale:Locale):string {
+  const id=precisionId(precision);
+  return id===null ? temporalCopy[locale].unknown : labels[locale][id];
+}
 export function formatTemporalDate(date: string, precision: NetPrecision | null | undefined, locale: Locale, zone = "UTC"): string {
   const id = precisionId(precision);
   if (!Number.isFinite(Date.parse(date)) || !/(?:Z|[+-]\d{2}:\d{2})$/.test(date)) return temporalCopy[locale].unknown;
