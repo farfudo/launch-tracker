@@ -927,3 +927,9 @@ Validação final desta correção: 145 testes unitários/componentes, build, 50
 
 ## Simplificação da data e contador — rascunho
 A lista, o resumo e a data principal da missão mostram a data de referência disponível em vez do rótulo genérico de precisão ampla, sem acrescentar hora. O contador apresenta apenas números e unidades, conforme revisão do utilizador. Informação detalhada de precisão e exportação permanece nos respetivos locais.
+
+## Space Programs — Ariane 6 (rascunho, 28/10/2026)
+Criado guia PT/EN/ES com fotografia ESA existente, arquitetura A62/A64, perfil visual e textual, quatro marcos selecionados e ligações aos guias aprovados. Reutiliza classes e padrões Artemis/Starship/Commercial Crew. O primeiro voo inclui a limitação da demonstração final; o primeiro voo comercial e o primeiro Ariane 64 são acontecimentos realizados. Related Launches lê apenas a API em cache existente, filtra o veículo Ariane 6/62/64, deduplica IDs e trata dados parciais, vazios e indisponíveis. Sem alterações a Launches ou serviços.
+Fontes: ESA (primeiro voo e relatório de 16/09/2024; voo comercial de 06/03/2025), ArianeGroup (arquitetura) e Arianespace (VA267, 12/02/2026), ligadas no guia. Nenhum calendário futuro fixo introduzido. Fotografia e licença em SPACE_PROGRAMS_IMAGE_CREDITS.md.
+
+Validação do rascunho: sete testes direcionados (associação, deduplicação, dados vazios/parciais/indisponíveis, traduções e landing), build e dois percursos de navegador passaram. Percursos cobrem PT/EN/ES × light/dark em 1440px e 390px, imagem local carregada, navegação e ausência de overflow. Prévia em http://127.0.0.1:3345/explore-space/programs/ariane-6 com dados fictícios locais; API real não foi alterada.

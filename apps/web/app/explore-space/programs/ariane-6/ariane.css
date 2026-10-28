@@ -1,0 +1,7 @@
+.ariane-variants svg { max-height:280px; }
+.ariane-variants figure { margin-inline:0; text-align:center; }
+
+.ariane-guide .ariane-variants { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.ariane-guide .starship-hero-photo img { object-position:center 30%; }
+.ariane-guide .guide-section > a { color:var(--accent-strong); display:inline-flex; align-items:center; min-height:44px; }
+@media(max-width:700px) { .ariane-guide .ariane-variants { grid-template-columns:1fr; } }
