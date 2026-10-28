@@ -17,7 +17,7 @@ test('Explore Space hub links to existing guides and launch data in each locale'
   ]);
   await expect(cards.nth(0)).toHaveAttribute('href', '/discoveries');
   await expect(cards.nth(1)).toHaveAttribute('href', '/discoveries/artemis');
-  await expect(cards.nth(2)).toHaveAttribute('href', '/discoveries#technology-lab');
+  await expect(cards.nth(2)).toHaveAttribute('href', '/explore-space/how-rockets-work');
   await expect(cards.nth(3)).toHaveAttribute('href', '/explore-space/milestones');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: test.info().outputPath('explore-space-desktop.png'), fullPage: true });
@@ -31,8 +31,8 @@ test('Explore Space hub links to existing guides and launch data in each locale'
   await expect(nav.locator('[aria-current="page"]')).toHaveAttribute('href', '/explore-space');
   await page.goto('/explore-space');
   await cards.nth(2).click();
-  await expect(page).toHaveURL(/\/discoveries#technology-lab$/);
-  await expect(page.locator('#lab-title')).toBeVisible();
+  await expect(page).toHaveURL(/\/explore-space\/how-rockets-work$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('How does a rocket fly?');
   await page.goto('/explore-space');
   await cards.nth(3).click();
   await expect(page).toHaveURL(/\/explore-space\/milestones$/);

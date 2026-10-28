@@ -13,7 +13,7 @@ describe("Explore Space hub content", () => {
     expect(copy.cards).toHaveLength(4);
     expect(copy.cards.map(([title]) => title)).toEqual(titles);
     expect(copy.cards.map(([, , , href]) => href)).toEqual([
-      "/discoveries", "/discoveries/artemis", "/discoveries#technology-lab", "/explore-space/milestones"
+      "/discoveries", "/discoveries/artemis", "/explore-space/how-rockets-work", "/explore-space/milestones"
     ]);
     expect(copy.cards.every(([, description, action]) => description.length > 20 && action.length > 3)).toBe(true);
   });

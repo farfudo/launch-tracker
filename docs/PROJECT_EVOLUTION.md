@@ -836,3 +836,9 @@ A primeira CI isolada detetou uma comparação de estado inalcançável no count
 As páginas Descobertas e Artemis ligam agora a lançamentos futuros apenas através de campos específicos já devolvidos pela API: nomes exatos de veículos aprovados editorialmente e títulos exatos das missões Artemis I–VI. A mesma regra alimenta ligações de regresso educativo nos detalhes da missão; IDs de lançamento da API permanecem os destinos estáveis. Padrões genéricos de texto deixam de criar associações. Cartões usam nome, agência, veículo, data/precisão e estado reais da API, sem countdown próprio nem pedido à LL2. Há no máximo um cartão por tema, na ordem editorial, com missões deduplicadas.
 
 Carregamento tem estado acessível; falha de leitura é indicada sem fingir ausência de correspondências. Sem relação confirmada, não é apresentada a secção Related Launches. Limitação: apenas o conjunto de até 100 lançamentos futuros já disponível na cache pode ser associado; missões históricas e veículos sem nome exato aprovado ficam de fora. Não foi alterado o contrato da API nem a lógica de calendário.
+
+## A18 — Capítulo 01: Como voa um foguetão (rascunho)
+
+Criado um capítulo introdutório em PT/EN/ES sobre impulso, forças, vácuo e órbita, com diagrama interativo acessível, alternativa textual, miniquestionário e fontes NASA. O cartão How Rockets Work passa a abrir o capítulo, que mantém uma ligação ao laboratório de tecnologia existente. Sem associações especulativas a missões. Rascunho isolado sem publicação.
+
+Ajuste posterior: cabeçalho do capítulo usa toda a largura disponível e o exemplo de impulso fica ao lado do texto em desktop; em mobile permanece em coluna.

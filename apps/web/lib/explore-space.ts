@@ -14,7 +14,7 @@ export const exploreSpaceCopy = {
     cards: [
       ["Descobertas e avanços", "Tecnologias e ideias que estão a mudar a exploração espacial.", "Explorar descobertas", "/discoveries"],
       ["Programas espaciais", "Explora o programa Artemis e as peças necessárias para regressar à Lua.", "Conhecer o Artemis", "/discoveries/artemis"],
-      ["Como funcionam os foguetões", "Vê, passo a passo, como motores, materiais e reabastecimento ajudam a chegar ao espaço.", "Explorar a tecnologia", "/discoveries#technology-lab"],
+      ["Como funcionam os foguetões", "Vê, passo a passo, como motores, materiais e reabastecimento ajudam a chegar ao espaço.", "Explorar a tecnologia", "/explore-space/how-rockets-work"],
       ["Marcos espaciais", "Descobre quatro momentos que mudaram a exploração espacial.", "Explorar a cronologia", "/explore-space/milestones"]
     ],
     numbers: ["01", "02", "03", "04"],
@@ -27,7 +27,7 @@ export const exploreSpaceCopy = {
     cards: [
       ["Discoveries & Advances", "Technologies and ideas changing space exploration.", "Explore discoveries", "/discoveries"],
       ["Space Programs", "Explore the Artemis programme and the pieces needed to return to the Moon.", "Explore Artemis", "/discoveries/artemis"],
-      ["How Rockets Work", "See how engines, materials and refuelling help rockets reach space.", "Explore the technology", "/discoveries#technology-lab"],
+      ["How Rockets Work", "See how engines, materials and refuelling help rockets reach space.", "Explore the technology", "/explore-space/how-rockets-work"],
       ["Space Milestones", "Explore four moments that changed space exploration.", "Explore the timeline", "/explore-space/milestones"]
     ],
     numbers: ["01", "02", "03", "04"],
@@ -40,7 +40,7 @@ export const exploreSpaceCopy = {
     cards: [
       ["Descubrimientos y avances", "Tecnologías e ideas que están cambiando la exploración espacial.", "Explorar descubrimientos", "/discoveries"],
       ["Programas espaciales", "Explora el programa Artemis y las piezas necesarias para volver a la Luna.", "Conocer Artemis", "/discoveries/artemis"],
-      ["Cómo funcionan los cohetes", "Descubre cómo motores, materiales y repostaje ayudan a llegar al espacio.", "Explorar la tecnología", "/discoveries#technology-lab"],
+      ["Cómo funcionan los cohetes", "Descubre cómo motores, materiales y repostaje ayudan a llegar al espacio.", "Explorar la tecnología", "/explore-space/how-rockets-work"],
       ["Hitos espaciales", "Descubre cuatro momentos que cambiaron la exploración espacial.", "Explorar la cronología", "/explore-space/milestones"]
     ],
     numbers: ["01", "02", "03", "04"],
