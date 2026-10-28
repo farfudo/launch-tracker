@@ -6,29 +6,36 @@ import { artemisSources, explorerCopy } from "../../../lib/discovery-explorers";
 import { MissionIcon } from "../../../components/mission-icon";
 import { LinkPending } from "../../../components/pending-feedback";
 
-export async function generateMetadata() {
-  const t = explorerCopy[await getLocale()];
-  return {title:`${t.guideTitle} — NextRocketLaunch`,description:t.guideIntro};
-}
+const labels = {
+ "en-GB": {back:"Space Programs", about:"What is Artemis?", aboutBody:"Artemis is NASA’s lunar exploration campaign with international and commercial partners. Its missions test the systems needed to explore the Moon and build knowledge for future exploration.", tech:"Meet the technology", roadmap:"Artemis roadmap", journey:"How a lunar mission works", related:"Related launches", why:"Why it matters", whyBody:"Exploring the Moon helps us study its history, develop technologies and learn how to support people farther from Earth.", continue:"Continue exploring", rockets:"How rockets work", discoveries:"Discoveries & Advances", milestones:"Space milestones", reviewed:"Editorial review: 28 October 2026. Plans and dates may change.", photo:"Image: NASA / JSC · Orion, Earth and Moon", source:"Programme overview · NASA", more:"Explore the challenges and common question"},
+ "pt-PT": {back:"Programas espaciais", about:"O que é Artemis?", aboutBody:"Artemis é o programa de exploração lunar da NASA, com parceiros internacionais e comerciais. As missões testam sistemas para explorar a Lua e desenvolver conhecimento para futuras explorações.", tech:"Conhece a tecnologia", roadmap:"Cronologia Artemis", journey:"Como funciona uma missão lunar", related:"Lançamentos relacionados", why:"Porque importa", whyBody:"Explorar a Lua ajuda-nos a estudar a sua história, desenvolver tecnologias e aprender a apoiar pessoas mais longe da Terra.", continue:"Continua a explorar", rockets:"Como funcionam os foguetões", discoveries:"Descobertas e avanços", milestones:"Marcos espaciais", reviewed:"Revisão editorial: 28 de outubro de 2026. Os planos e datas podem mudar.", photo:"Imagem: NASA / JSC · Orion, Terra e Lua", source:"Visão geral do programa · NASA", more:"Explorar desafios e pergunta frequente"},
+ "es-ES": {back:"Programas espaciales", about:"¿Qué es Artemis?", aboutBody:"Artemis es el programa de exploración lunar de la NASA con socios internacionales y comerciales. Sus misiones prueban sistemas para explorar la Luna y adquirir conocimientos para futuras exploraciones.", tech:"Conoce la tecnología", roadmap:"Cronología Artemis", journey:"Cómo funciona una misión lunar", related:"Lanzamientos relacionados", why:"Por qué importa", whyBody:"Explorar la Luna ayuda a estudiar su historia, desarrollar tecnologías y aprender a mantener a las personas más lejos de la Tierra.", continue:"Sigue explorando", rockets:"Cómo funcionan los cohetes", discoveries:"Descubrimientos y avances", milestones:"Hitos espaciales", reviewed:"Revisión editorial: 28 de octubre de 2026. Los planes y las fechas pueden cambiar.", photo:"Imagen: NASA / JSC · Orion, la Tierra y la Luna", source:"Descripción del programa · NASA", more:"Explorar desafíos y pregunta frecuente"}
+} as const;
 
+export async function generateMetadata() { const t=explorerCopy[await getLocale()]; return {title:`${t.guideTitle} — NextRocketLaunch`,description:t.guideIntro}; }
 export default async function ArtemisGuide() {
-  const locale = await getLocale();
-  const t = explorerCopy[locale];
-  const conclusion = {"pt-PT":"Em resumo: Artemis combina foguetão, nave e módulos lunares para levar pessoas à Lua; cada etapa exige testes e coordenação.","en-GB":"In short: Artemis combines a rocket, spacecraft and lunar landers to bring people to the Moon; each step requires testing and coordination.","es-ES":"En resumen: Artemis combina cohete, nave y módulos lunares para llevar personas a la Luna; cada etapa requiere pruebas y coordinación."}[locale];
-  const roleSources = [artemisSources.sls,artemisSources.orion,artemisSources.landers,artemisSources.esa];
-  const nextSources = [artemisSources.landers,artemisSources.third,artemisSources.orion];
-  return <main id="main-content" className="artemis-guide discoveries-page">
-    <Link className="guide-back" href="/discoveries#artemis-feature">← {t.back}<LinkPending/></Link>
-    <header className="artemis-guide-intro"><div><p className="eyebrow">{t.guide}</p><h1>{t.guideTitle}</h1><p>{t.guideIntro}</p><small>{t.reviewed}</small></div><div className="guide-moon" aria-hidden="true"><span className="lunar-disc"/></div></header>
-    <nav className="guide-contents" aria-label={t.contents}>{[t.parts,t.journey,t.progress,t.next].map((label,index)=><a key={label} href={`#guide-${index}`}><span>0{index+1}</span>{label}</a>)}</nav>
-    <section id="guide-0" className="guide-section"><h2>{t.parts}</h2><div className="guide-role-grid">{t.roles.map((role,index)=><article key={role.name}><MissionIcon name={index===0?"rocket":"orbit"}/><h3>{role.name}</h3><p>{role.body}</p><a href={roleSources[index]} target="_blank" rel="noopener noreferrer">{t.source} ↗</a></article>)}</div></section>
-    <section id="guide-1" className="guide-section"><h2>{t.journey}</h2><ol className="guide-flow">{t.connections.map((step,index)=><li key={step}><span>0{index+1}</span><strong>{step}</strong></li>)}</ol><p className="guide-note">{t.flowNote}</p></section>
-    <section id="guide-2" className="guide-section"><h2>{t.progress}</h2><div className="guide-missions">{t.missions.map((mission,index)=><article key={mission.name}><span className={`guide-mission-state ${index===2?"is-planned":"is-completed"}`}>{mission.status}</span><h3>{mission.name}</h3><p>{mission.body}</p><a href={artemisSources[mission.source as "first"|"second"|"third"]} target="_blank" rel="noopener noreferrer">NASA ↗</a></article>)}</div>
-      <aside className="guide-update"><h3>{t.current}</h3><p>{t.currentBody}</p><a href={artemisSources.landers} target="_blank" rel="noopener noreferrer">NASA · 23/10/2026 ↗</a></aside>
-    </section>
-    <section id="guide-3" className="guide-section"><h2>{t.next}</h2><div className="guide-challenges">{t.questions.map((question,index)=><article key={question.title}><h3>{question.title}</h3><p>{question.body}</p><a href={nextSources[index]} target="_blank" rel="noopener noreferrer">{t.source} ↗</a></article>)}</div></section>
-    <p className="guide-note">{conclusion}</p><Suspense fallback={<RelatedLaunchesLoading locale={locale} />}><RelatedMissions locale={locale} topics={["artemis"]}/></Suspense>
-    <details className="guide-faq"><summary>{t.faqQuestion}</summary><p>{t.faqAnswer}</p><a href={artemisSources.landers} target="_blank" rel="noopener noreferrer">{t.source} ↗</a></details>
-    <footer className="discovery-footer"><p>{t.reviewed}</p><Link href="/discoveries#artemis-feature">← {t.back}<LinkPending/></Link></footer>
-  </main>;
+ const locale=await getLocale(); const t=explorerCopy[locale]; const l=labels[locale];
+ const roleSources=[artemisSources.sls,artemisSources.orion,artemisSources.landers,artemisSources.esa];
+ const nextSources=[artemisSources.landers,artemisSources.third,artemisSources.orion];
+ const stepDetails = {
+  "en-GB": { descriptions:["SLS sends Orion and the crew on their journey.","Orion and its service module sustain the crew during the journey.","A lander meets Orion so astronauts can transfer.","The lander carries astronauts to the surface for exploration.","Orion brings the crew back to Earth."], returnTitle:"Return to Earth" },
+  "pt-PT": { descriptions:["O SLS envia Orion e a tripulação na sua viagem.","Orion e o módulo de serviço sustentam a tripulação durante a viagem.","Um alunador encontra Orion para a transferência dos astronautas.","O alunador leva astronautas à superfície para explorar.","Orion traz a tripulação de volta à Terra."], returnTitle:"Regressar à Terra" },
+  "es-ES": { descriptions:["SLS envía Orion y su tripulación en su viaje.","Orion y el módulo de servicio sostienen a la tripulación durante el viaje.","Un alunizador se encuentra con Orion para la transferencia de astronautas.","El alunizador lleva astronautas a la superficie para explorar.","Orion trae a la tripulación de vuelta a la Tierra."], returnTitle:"Volver a la Tierra" }
+ }[locale];
+ const sections=[[l.about,'about'],[l.tech,'guide-0'],[l.roadmap,'guide-2'],[l.journey,'guide-1'],[l.why,'why']] as const;
+ return <main id="main-content" className="artemis-guide discoveries-page">
+  <Link className="guide-back" href="/explore-space/programs">← {l.back}<LinkPending/></Link>
+  <header className="artemis-guide-intro artemis-cinematic"><div><p className="eyebrow">{t.guide}</p><h1>{t.guideTitle}</h1><p>{t.guideIntro}</p><small>{l.reviewed}</small></div></header>
+  <p className="artemis-photo-credit"><a href="https://www.nasa.gov/image-detail/amf-art001e000673/" target="_blank" rel="noopener noreferrer">{l.photo} ↗</a></p>
+  <nav className="guide-contents" aria-label={t.contents}>{sections.map(([label,id],i)=><a key={id} href={`#${id}`}><span>0{i+1}</span>{label}</a>)}</nav>
+  <section id="about" className="guide-section artemis-about"><p className="eyebrow">ARTEMIS</p><h2>{l.about}</h2><p>{l.aboutBody}</p><a href="https://www.nasa.gov/artemis/" target="_blank" rel="noopener noreferrer">{l.source} ↗</a></section>
+  <section id="guide-0" className="guide-section"><h2>{l.tech}</h2><p>{t.parts}</p><div className="guide-role-grid">{t.roles.map((role,i)=><article key={role.name}><MissionIcon name={i===0?"rocket":"orbit"}/><h3>{role.name}</h3><p>{role.body}</p><a href={roleSources[i]} target="_blank" rel="noopener noreferrer">{t.source} ↗</a></article>)}</div></section>
+  <section id="guide-2" className="guide-section"><h2>{l.roadmap}</h2><p>{t.progress}</p><div className="guide-missions">{t.missions.map((mission,i)=><article key={mission.name}><span className={`guide-mission-state ${i===2?"is-planned":"is-completed"}`}>{mission.status}</span><h3>{mission.name}</h3><p>{mission.body}</p><a href={artemisSources[mission.source as "first"|"second"|"third"]} target="_blank" rel="noopener noreferrer">NASA ↗</a></article>)}</div><aside className="guide-update"><h3>{t.current}</h3><p>{t.currentBody}</p><a href={artemisSources.landers} target="_blank" rel="noopener noreferrer">NASA · 23/10/2026 ↗</a></aside></section>
+  <section id="guide-1" className="guide-section"><h2>{l.journey}</h2><ol className="guide-flow">{[...t.connections,stepDetails.returnTitle].map((step,i)=><li key={step}><span>0{i+1}</span><strong>{step}</strong><p>{stepDetails.descriptions[i]}</p></li>)}</ol><p className="guide-note">{t.flowNote}</p></section>
+  <section className="guide-section" aria-labelledby="artemis-related"><h2 id="artemis-related">{l.related}</h2><Suspense fallback={<RelatedLaunchesLoading locale={locale} />}><RelatedMissions locale={locale} topics={["artemis"]}/></Suspense></section>
+  <section id="why" className="guide-section artemis-why"><h2>{l.why}</h2><p>{l.whyBody}</p></section>
+  <details id="guide-3" className="artemis-extra"><summary>{l.more}</summary><h2>{t.next}</h2><div className="guide-challenges">{t.questions.map((q,i)=><article key={q.title}><h3>{q.title}</h3><p>{q.body}</p><a href={nextSources[i]} target="_blank" rel="noopener noreferrer">{t.source} ↗</a></article>)}</div><details className="guide-faq"><summary>{t.faqQuestion}</summary><p>{t.faqAnswer}</p><a href={artemisSources.landers} target="_blank" rel="noopener noreferrer">{t.source} ↗</a></details></details>
+  <nav className="artemis-continue" aria-label={l.continue}><h2>{l.continue}</h2><Link href="/explore-space/how-rockets-work">{l.rockets} →</Link><Link href="/discoveries">{l.discoveries} →</Link><Link href="/explore-space/milestones">{l.milestones} →</Link></nav>
+  <footer className="discovery-footer"><p>{l.reviewed}</p><Link href="/discoveries#artemis-feature">← {t.back}<LinkPending/></Link></footer>
+ </main>;
 }

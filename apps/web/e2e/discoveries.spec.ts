@@ -163,8 +163,11 @@ test('visual technology lab explains concepts and links to a dated Artemis deep 
   await expect(page.locator('.section-navigation a[aria-current]')).toHaveAttribute('href','/explore-space');
   await expect(page.locator('.guide-role-grid article')).toHaveCount(4);
   await expect(page.locator('.guide-missions article')).toHaveCount(3);
+  await expect(page.locator('.guide-flow li')).toHaveCount(5);
+  await expect(page.locator('.guide-flow li').last()).toContainText('Return to Earth');
   await expect(page.locator('.guide-missions article').last()).toContainText('Low Earth orbit');
   await expect(page.locator('.guide-update')).toContainText('23 October 2026');
+  await page.locator('.artemis-extra > summary').press('Enter');
   await page.locator('.guide-faq summary').press('Enter');
   await expect(page.locator('.guide-faq p')).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
