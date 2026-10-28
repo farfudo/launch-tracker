@@ -917,3 +917,10 @@ Revisão do contador: o relógio mostra segundos até ao NET de referência para
 
 ## Resumo de lançamento e calendário — rascunho
 Removido favorito apenas do resumo selecionado à esquerda. Exportação admite NET utilizável em missões por confirmar, preservando evento provisório e aviso de cópia sem atualização; precisões amplas exportam dia inteiro de referência.
+
+## Correção de validação do calendário
+O teste de MissionCalendar ainda exigia bloquear TBC e não foi incluído na validação direcionada anterior. Atualizado para verificar links, aviso e ICS provisório de dia inteiro; mantida cobertura negativa para data inválida e missão concluída. Adicionado `npm run check:push`, com todas as etapas web do CI, e requisito de execução antes de pushes web no AGENTS.md.
+
+Isolada também a origem da API fictícia dos testes de navegador (3302) da prévia local (3301), para evitar reutilização de dados de precisão em cache durante testes do histórico. A prévia da interface mantém-se em 3345.
+
+Validação final desta correção: 145 testes unitários/componentes, build, 50 percursos de navegador e 6 percursos Starship passaram. As 8 exclusões condicionais existentes mantêm-se (cenários com falha global da API e verificações exclusivas de desktop). Nenhum teste foi desativado nesta correção.

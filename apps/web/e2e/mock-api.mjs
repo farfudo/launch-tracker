@@ -67,4 +67,4 @@ createServer(async (req, res) => {
   else result = [...launches, ...scrollLaunches].find(l => url.pathname === `/api/v1/launches/${l.id}`);
   res.writeHead(result === undefined ? 404 : 200, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify(result ?? { detail: 'Not found' }));
-}).listen(3301, '127.0.0.1');
+}).listen(Number(process.env.FIXTURE_PORT || 3301), '127.0.0.1');
