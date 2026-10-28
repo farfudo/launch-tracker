@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { MilestoneImage } from "../../../components/milestone-image";
 import { LinkPending } from "../../../components/pending-feedback";
 import { getLocale } from "../../../lib/locale-server";
 import { milestonesCopy, spaceMilestones } from "../../../lib/space-milestones";
@@ -30,6 +31,17 @@ export default async function SpaceMilestonesPage() {
               <span className="milestone-category">{t.categories[milestone.category]}</span>
             </div>
             <h2 id={`${milestone.id}-title`}>{milestone.title[locale]}</h2>
+            <MilestoneImage
+              id={milestone.id}
+              title={milestone.title[locale]}
+              src={milestone.image.src}
+              width={milestone.image.width}
+              height={milestone.image.height}
+              alt={milestone.image.alt[locale]}
+              credit={milestone.image.credit[locale]}
+              sourceUrl={milestone.image.url}
+              labels={{ open: t.openImage, close: t.closeImage, hint: t.imageHint, newTab: t.newTab }}
+            />
             <p className="milestone-description">{milestone.description[locale]}</p>
             <aside className="milestone-why" aria-label={t.why}>
               <strong>{t.why}</strong><p>{milestone.whyItMatters[locale]}</p>

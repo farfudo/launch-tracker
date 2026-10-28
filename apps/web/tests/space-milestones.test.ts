@@ -20,7 +20,24 @@ describe("Space Milestones editorial timeline", () => {
         expect(milestone.description[locale].length).toBeGreaterThan(30);
         expect(milestone.whyItMatters[locale].length).toBeGreaterThan(20);
         expect(milestone.source.label[locale].length).toBeGreaterThan(3);
+        expect(milestone.image.alt[locale].length).toBeGreaterThan(25);
+        expect(milestone.image.credit[locale].length).toBeGreaterThan(10);
       }
+    }
+  });
+
+  it("associates each historical milestone with its own credited local image", () => {
+    expect(spaceMilestones.map(({ id, image }) => [id, image.src])).toEqual([
+      ["sputnik-1", "/images/milestones/sputnik-1.jpg"],
+      ["vostok-1", "/images/milestones/vostok-1-gagarin.jpg"],
+      ["apollo-11", "/images/milestones/apollo-11.jpg"],
+      ["falcon-9-landing", "/images/milestones/falcon-9-landing-2015.jpg"]
+    ]);
+    for (const milestone of spaceMilestones) {
+      expect(milestone.image.width).toBeGreaterThanOrEqual(550);
+      expect(milestone.image.height).toBeGreaterThanOrEqual(370);
+      expect(new URL(milestone.image.url).hostname).toBe("commons.wikimedia.org");
+      expect(milestone.image.credit["en-GB"]).toMatch(/public domain|CC BY|CC0/i);
     }
   });
 

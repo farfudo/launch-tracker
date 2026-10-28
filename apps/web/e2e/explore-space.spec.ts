@@ -39,6 +39,29 @@ test('Explore Space hub links to existing guides and launch data in each locale'
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Space exploration milestones');
   await expect(page.locator('.milestone-item')).toHaveCount(4);
   await expect(page.locator('.milestone-date')).toHaveText(['4 October 1957', '12 April 1961', '20 July 1969', '21 December 2015']);
+  await expect(page.locator('.milestone-image-figure')).toHaveCount(4);
+  await expect(page.locator('.milestone-image-trigger img')).toHaveCount(4);
+  for (const image of await page.locator('.milestone-image-trigger img').all()) {
+    await expect(image).toHaveAttribute('alt', /.+/);
+    await expect(image).toBeVisible();
+  }
+  const firstImageButton = page.locator('.milestone-image-trigger').first();
+  await expect(firstImageButton).toHaveAttribute('aria-label', /Sputnik 1/);
+  await firstImageButton.focus();
+  await page.keyboard.press('Enter');
+  const firstImageTitle = (await page.locator('.milestone-card > h2').first().textContent())?.trim() ?? '';
+  const firstImageDialog = page.getByRole('dialog', { name: firstImageTitle });
+  await expect(firstImageDialog).toBeVisible();
+  await expect(firstImageDialog.getByRole('img')).toHaveAttribute('alt', /Sputnik 1 replica/);
+  await page.keyboard.press('Escape');
+  await expect(firstImageDialog).not.toBeVisible();
+  await expect(firstImageButton).toBeFocused();
+  await page.locator('.milestone-image-trigger').nth(2).click();
+  const apolloTitle = (await page.locator('.milestone-card > h2').nth(2).textContent())?.trim() ?? '';
+  const apolloDialog = page.getByRole('dialog', { name: apolloTitle });
+  await expect(apolloDialog).toBeVisible();
+  await apolloDialog.locator('.milestone-image-close').click();
+  await expect(apolloDialog).not.toBeVisible();
   await expect(page.getByRole('link', { name: /Explore the Artemis guide/ })).toBeVisible();
   await expect(page.getByRole('link', { name: /See how rocket reuse works/ })).toBeVisible();
   await page.screenshot({ path: test.info().outputPath('space-milestones-desktop.png'), fullPage: true });
@@ -55,8 +78,47 @@ test('Explore Space cards remain usable on narrow mobile screens', async ({ page
   await expect(page).toHaveURL(/\/explore-space\/milestones$/);
   await expect(page.locator('.milestone-item')).toHaveCount(4);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(page.locator('.milestone-image-trigger img')).toHaveCount(4);
+  const imageButton = page.locator('.milestone-image-trigger').first();
+  await expect(imageButton).toHaveAttribute('aria-label', /Sputnik 1/);
+  await imageButton.click();
+  const imageTitle = (await page.locator('.milestone-card > h2').first().textContent())?.trim() ?? '';
+  const imageDialog = page.getByRole('dialog', { name: imageTitle });
+  await expect(imageDialog).toBeVisible();
+  await expect(imageDialog.getByRole('img')).toBeVisible();
+  await imageDialog.locator('.milestone-image-close').click();
+  await expect(imageDialog).not.toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: test.info().outputPath('space-milestones-mobile.png'), fullPage: true });
+});
+
+test('milestone images load locally and open accessibly on desktop and touch devices', async ({ page, context }) => {
+  await context.route('**/*', route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.abort());
+  await page.goto('/explore-space/milestones');
+  const images = page.locator('.milestone-image-trigger img');
+  await expect(images).toHaveCount(4);
+  for (const image of await images.all()) {
+    await image.scrollIntoViewIfNeeded();
+    await expect(image).toBeVisible();
+    await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.naturalWidth)).toBeGreaterThan(0);
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: test.info().outputPath('space-milestones-images-preview.png'), fullPage: true });
+
+  const trigger = page.locator('.milestone-image-trigger').first();
+  await expect(trigger).toHaveAttribute('aria-haspopup', 'dialog');
+  await trigger.focus();
+  const title = (await page.locator('.milestone-card > h2').first().textContent())?.trim() ?? '';
+  const dialog = page.getByRole('dialog', { name: title });
+  if (test.info().project.name.startsWith('mobile')) await trigger.tap();
+  else await page.keyboard.press('Enter');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('img')).toHaveAttribute('alt', /Sputnik 1/);
+  await page.screenshot({ path: test.info().outputPath('space-milestones-image-dialog.png') });
+  if (test.info().project.name.startsWith('mobile')) await dialog.locator('.milestone-image-close').tap();
+  else await page.keyboard.press('Escape');
+  await expect(dialog).not.toBeVisible();
+  if (!test.info().project.name.startsWith('mobile')) await expect(trigger).toBeFocused();
 });
 
 test('Space Milestones title and categories are available in PT, EN and ES', async ({ page, context }) => {
@@ -71,5 +133,7 @@ test('Space Milestones title and categories are available in PT, EN and ES', asy
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
     await expect(page.locator('.milestone-category').first()).toHaveText(category);
     await expect(page.locator('.milestone-item')).toHaveCount(4);
+    await expect(page.locator('.milestone-image-figure figcaption a')).toHaveCount(4);
+    await expect(page.locator('.milestone-image-figure figcaption a').first()).toHaveAttribute('href', /commons\.wikimedia\.org/);
   }
 });

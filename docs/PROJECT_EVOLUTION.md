@@ -1,5 +1,9 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## A18 — imagens dos Space Milestones (rascunho local, 28/10/2026)
+
+Atualizada a cronologia com imagens históricas locais para Sputnik 1, Vostok 1/Yuri Gagarin, Apollo 11 e aterragem Falcon 9 de 2015. Mantidos os textos, a ordem e as ligações existentes. Cada imagem tem alt text PT/EN/ES, crédito e link para a fonte/licença; detalhes e limites jurisdicionais estão em `SPACE_MILESTONES_IMAGE_CREDITS.md`. Os thumbnails têm até 960 px e são apresentados com carregamento responsivo/lazy; clicar ou tocar abre uma ampliação acessível por teclado, Escape, botão de fechar e toque fora. Testes direcionados e prévias desktop/mobile pendentes. Sem commit, push ou deploy.
+
 ## A18 — Descobertas e Artemis (rascunho local)
 
 Acrescentadas conclusões educativas curtas nos três temas e no guia Artemis, legendas de texto legível sob as ilustrações e ligações a lançamentos apenas quando os dados da API contêm uma correspondência explícita. A leitura reutiliza a cache pública; falhas ou ausência de correspondência não criam uma ligação. Testes direcionados: cinco passaram; prévia local bloqueou no carregamento, pelo que desktop/mobile continuam por rever.
