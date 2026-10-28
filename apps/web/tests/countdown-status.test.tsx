@@ -39,3 +39,22 @@ it("shows timing consistent with source status without inventing a date", async 
     expect(container.querySelector('time')).toBeNull();
   } finally { await act(async () => root.unmount()); }
 });
+
+it("updates seconds for a broad reference and stops when it passes", async () => {
+  const { vi } = await import("vitest");
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date("2099-01-01T11:59:58Z"));
+  const container = document.createElement("div");
+  const root = createRoot(container);
+  try {
+    await act(async () => root.render(<LocaleProvider locale="en-GB"><Countdown precision={{id:7}} date="2099-01-01T12:00:00Z" status="TBC" /></LocaleProvider>));
+    expect(container.textContent).toContain("Countdown to unconfirmed reference");
+    expect(container.querySelectorAll('[role="timer"] strong')[3].textContent).toBe("02");
+    await act(async () => vi.advanceTimersByTime(1000));
+    expect(container.querySelectorAll('[role="timer"] strong')[3].textContent).toBe("01");
+    await act(async () => vi.advanceTimersByTime(1000));
+    expect(container.querySelector('[role="timer"]')).toBeNull();
+    expect(container.textContent).toContain("to be confirmed");
+  } finally { await act(async () => root.unmount()); vi.useRealTimers(); }
+});

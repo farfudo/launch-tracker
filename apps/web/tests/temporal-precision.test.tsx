@@ -62,7 +62,7 @@ it("keeps source uncertainty accessible and hides false instants for broad and l
   }
 });
 
-it("shows a reference date once for missing precision and limits countdown units in all languages", () => {
+it("shows a reference date once for missing precision and labels reference countdowns in all languages", () => {
   for (const locale of ["pt-PT", "en-GB", "es-ES"] as const) {
     const missing = renderToStaticMarkup(<LocaleProvider locale={locale}><LocalLaunchDate date={date} status="TBC" precision={null} /></LocaleProvider>);
     expect(missing).toContain("2026");
@@ -71,11 +71,13 @@ it("shows a reference date once for missing precision and limits countdown units
     for (const id of [0, 1, 2]) {
       const html = renderToStaticMarkup(<LocaleProvider locale={locale}><Countdown date="2099-01-01T00:00:00Z" status="Go" precision={{id}} /></LocaleProvider>);
       expect(html).toContain('role="timer"');
-      expect((html.match(/<strong>/g) ?? []).length).toBe(4-id);
+      expect((html.match(/<strong>/g) ?? []).length).toBe(4);
+      if (id > 0) expect(html).toContain({"pt-PT":"referência não confirmada", "en-GB":"unconfirmed reference", "es-ES":"referencia no confirmada"}[locale]);
     }
     const html = renderToStaticMarkup(<LocaleProvider locale={locale}><Countdown date={date} status="Go" precision={null} /></LocaleProvider>);
     expect(html).toContain('role="timer"');
-    expect((html.match(/<strong>/g) ?? []).length).toBe(1);
+    expect((html.match(/<strong>/g) ?? []).length).toBe(4);
+    expect(html).toContain({"pt-PT":"referência não confirmada", "en-GB":"unconfirmed reference", "es-ES":"referencia no confirmada"}[locale]);
     expect(html).toContain("info-trigger");
   }
 });
