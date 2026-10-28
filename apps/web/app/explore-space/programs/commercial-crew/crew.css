@@ -1,0 +1,5 @@
+.crew-comparison { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.crew-comparison figure { margin:0 0 1rem; }
+.crew-comparison img { display:block; width:100%; height:200px; object-fit:contain; background:#080e16; border-radius:10px; }
+.crew-comparison figcaption { font-size:.8rem; line-height:1.5; margin-top:.3rem; }
+@media(max-width:700px) { .crew-comparison { grid-template-columns:1fr; } }

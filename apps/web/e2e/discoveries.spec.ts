@@ -87,6 +87,8 @@ test('hero catch repeats muted at double speed, can pause and respects reduced m
     }}}); 
   });
   await page.goto('/discoveries');
+  // Next can briefly retain the previous tree while hydration completes.
+  await expect(page.locator('.booster-catch')).toHaveCount(1);
   await page.locator('.booster-catch').scrollIntoViewIfNeeded();
   await expect(page.getByRole('button',{name:'Ⅱ Pause excerpt',exact:true})).toBeVisible();
   if (test.info().project.name === 'desktop-chromium') {

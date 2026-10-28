@@ -1,5 +1,25 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## Commercial Crew — validação antes do envio (28/10/2026)
+
+Após autorização de commit e push, passaram 142 testes unitários, build, seis testes browser Starship e os testes dirigidos Commercial Crew. A suite browser completa detetou primeiro uma duplicação temporária de `.booster-catch` durante a navegação; teste passou a esperar a existência de uma única figura antes de interagir, mantendo todas as asserções de reprodução, e passou em desktop/mobile. Nova execução completa teve 49 passagens, oito omissões existentes e uma falha desktop do Histórico ao preservar a pesquisa; o mesmo teste passou isoladamente em desktop/mobile sem retries. Nenhum código de Launches ou Mission Details foi alterado. A suite completa não ficou integralmente verde localmente; a CI remota continua a ser o critério de confirmação e este risco foi registado.
+
+## Commercial Crew — sequência visual e associação simulada (28/10/2026)
+
+Após pedido de refinamento, mantida comparação fotográfica e acrescentado esquema SVG sem escala: lançamento, ISS e regresso, com trajetórias distintas, título e descrição acessíveis PT/EN/ES e lista de cinco etapas preservada. Prévia mobile 390×844 revista: diagrama e texto legíveis, sem transbordo.
+
+Extraído o bloco local de lançamentos relacionados para componente próprio, sem alterar serviços nem regras existentes de Mission Details. Com dados simulados, testes confirmam que `Crew-10` liga ao ID devolvido, uma missão semelhante não é associada, ausência de correspondência e falha da leitura exibem os estados corretos. O fixture não representa lançamento futuro real. Oito testes dirigidos passaram, assim como TypeScript, lint, build e dois testes browser desktop/mobile incluindo a existência acessível do diagrama. Prévia local sem API real mantém mensagem de indisponibilidade. Rascunho sem commit/push/deploy.
+
+## Commercial Crew — rascunho local (28/10/2026)
+
+Branch isolada `codex/commercial-crew` sobre `21fb3cc`; CI anterior confirmada verde. Página `/explore-space/programs/commercial-crew` e ligação no cartão existente, usando estruturas visuais Artemis e Starship: hero fotográfico, comparação com fotografias, fases da missão, cronologia, importância e ligações. Conteúdo PT/EN/ES e revisão editorial datada. Crew Dragon operacional e Starliner ainda em certificação são distintos; CFT regressou sem tripulação, com voo de avaliação não tripulado seguinte previsto sem data fixa.
+
+Fontes oficiais: NASA Commercial Crew https://www.nasa.gov/humans-in-space/commercial-space/commercial-crew-program/ ; NASA e Boeing sobre certificação https://www.nasa.gov/news-release/nasa-boeing-share-update-on-commercial-starliner-development-plans/ ; Boeing https://www.boeing.com/content/theboeingcompany/us/en/space/starliner/starliner-1.html ; SpaceX Crew-10 https://www.spacex.com/launches/crew10 . NASA Demo-2 e Crew-1 ligadas na cronologia. Dois endereços NASA inicialmente devolviam 404; substituídos por fontes oficiais verificadas.
+
+Imagens NASA: `iss063e021563` Demo-2, 31/05/2020 https://www.nasa.gov/image-article/spacex-crew-dragon-approaches-international-space-station-4/ ; `iss067e066644` Starliner OFT-2 não tripulado, 20/05/2022 https://www.nasa.gov/image-article/boeings-starliner-crew-ship-approaches-space-station/ . Convertidas para WebP; Starliner recortada; crédito e data junto das imagens, orientações https://www.nasa.gov/nasa-brand-center/images-and-media/ .
+
+Related Launches usa apenas correspondências exatas de nomes revistos sobre a cache pública existente, sem mudar Launches, Mission Details, API, LL2 ou sincronização; pode não mostrar missões quando o nome fornecido não coincide exatamente. Prévia local sem API mostra estado de indisponibilidade. Dez testes dirigidos, TypeScript, lint e build passaram; dois testes browser desktop/mobile passaram com API fictícia sem correspondências, navegação, imagens, fases e ambos os temas. Prévia desktop/mobile, âncoras, idiomas inglês/espanhol e tema escuro observados; não constitui auditoria completa de acessibilidade nem validação de dados reais. Rascunho não aprovado, sem commit/push/deploy.
+
 ## CI Starship — correção local da recolha (28/10/2026)
 
 A CI `40718914700` de `dca90db` falhou porque a suite normal recolhia os seis testes de Starship, mas não iniciava os seus servidores específicos. Corrigida a configuração normal para não recolher esse ficheiro e acrescentado passo próprio na mesma CI que executa a configuração Starship, iniciando as três origens de API simulada e três servidores locais; evidência dessa suite também é guardada. Os testes não foram eliminados nem ignorados pela CI: são executados no passo próprio.
