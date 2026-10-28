@@ -8,7 +8,6 @@ import { formatLaunchStatus, launchStatusTone } from "../lib/launch";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { useLocale } from "./locale-provider";
 import { LocalLaunchDate } from "./local-launch-date";
-import { FavoriteButton } from "./favorites";
 import { MissionStreams } from "./mission-streams";
 import { Spinner, LinkPending } from "./pending-feedback";
 import { CacheNotice } from "./cache-notice";
@@ -110,7 +109,7 @@ export function MissionDetailPanel() {
       <div className="summary-description"><h3>{t.aboutMission}</h3><p>{detail.mission_description || t.descriptionPending}</p>
       {detail.mission_description ? <p className="launch-meta">{t.originalDescription}</p> : null}</div>
     </div> : null}
-    <div className="selected-mission-actions"><Link className="pill-button" href={`/launches/${selected.id}`}>{d.fullDetails} →<LinkPending /></Link><FavoriteButton id={selected.id} name={selected.name} /></div>
+    <div className="selected-mission-actions"><Link className="pill-button" href={`/launches/${selected.id}`}>{d.fullDetails} →<LinkPending /></Link></div>
     <div className="summary-secondary">
     <MissionFreshness launch={detail || selected} />
     <p className="mission-summary-hint">{summaryCopy.hint}</p>

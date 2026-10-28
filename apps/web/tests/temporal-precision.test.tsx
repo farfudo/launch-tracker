@@ -40,13 +40,13 @@ it("formats supported units only across midnight and DST; broad dates never shif
 it("gates exact calendar and countdown independently of Go and preserves terminal states", () => {
   for(const id of [null,...Array.from({length:17},(_,i)=>i),99]) {
     const precision=id===null?null:{id};
-    expect(canExportCalendar({...mission,net_precision:precision})).toBe(id===0);
+    expect(canExportCalendar({...mission,net_precision:precision})).toBe(true);
     const html=renderToStaticMarkup(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T00:00:00Z" status="Go" precision={precision}/></LocaleProvider>);
     expect(html).toContain('role="timer"');
     for(const status of ["Success","Failure","Cancelled","TBD","Hold","In Flight"]) {
       const html=renderToStaticMarkup(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T00:00:00Z" status={status} precision={precision}/></LocaleProvider>);
       expect(html.includes('role="timer"')).toBe(status === "TBD");
-      expect(canExportCalendar({...mission,status,net_precision:precision})).toBe(false);
+      expect(canExportCalendar({...mission,status,net_precision:precision})).toBe(["TBD","Hold"].includes(status));
     }
   }
 });

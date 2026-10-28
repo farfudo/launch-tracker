@@ -84,6 +84,7 @@ it("keeps only the summary and directs advanced information to the full page", (
   expect(panel.querySelector('.summary-countdown [role="timer"]')).not.toBeNull();
   expect(panel.querySelector(".mission-sources")).toBeNull();
   expect(panel.querySelector(".mission-calendar")).toBeNull();
+  expect(panel.querySelector("button[aria-pressed]")).toBeNull();
   expect(panel.querySelector(".panel-time-zones")).toBeNull();
   expect(panel.querySelector(".summary-location")).toBeNull();
   expect(panel.textContent).not.toContain("Share mission");

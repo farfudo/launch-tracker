@@ -914,3 +914,6 @@ O contador mantém datas utilizáveis por confirmar, apresenta um aviso acessív
 Ajuste de revisão: todos os cartões mostram o contador completo, incluindo segundos quando a precisão os permite, sem formato de tempo aproximado; mantêm-se os limites de precisão e o aviso acessível.
 
 Revisão do contador: o relógio mostra segundos até ao NET de referência para todas as precisões; quando a fonte não confirma segundos, o título e o aviso explicitam que o instante não é um lançamento confirmado.
+
+## Resumo de lançamento e calendário — rascunho
+Removido favorito apenas do resumo selecionado à esquerda. Exportação admite NET utilizável em missões por confirmar, preservando evento provisório e aviso de cópia sem atualização; precisões amplas exportam dia inteiro de referência.

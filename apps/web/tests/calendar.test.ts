@@ -3,9 +3,9 @@ import type { LaunchDetail } from "../lib/api";
 import { calendarEvent, canExportCalendar } from "../lib/calendar";
 
 const launch = { id: "real-id", name: "Mission, one; test", status: "Go", net_precision: {id:0}, net: "2026-11-01T02:30:00+01:00", window_start: "2026-11-01T01:00:00Z", window_end: "2026-11-01T02:00:00Z", pad_name: "Pad", location_name: "Site" } as LaunchDetail;
-it("rejects unconfirmed, invalid, missing and inconsistent schedules", () => {
+it("rejects completed missions and unusable dates", () => {
   expect(canExportCalendar(launch)).toBe(true);
-  for (const patch of [{status:"TBD"},{status:"TBC"},{status:"Hold"},{status:"Success"},{net:"invalid"},{net:"2026-11-01T01:30:00"},{window_start:null},{window_end:null},{window_end:"2026-10-01T00:00:00Z"}]) {
+  for (const patch of [{status:"Success"},{net:"invalid"},{net:"2026-11-01T01:30:00"}]) {
     expect(calendarEvent({...launch,...patch}, "https://example.com", "Notice")).toBeNull();
   }
 });
@@ -27,4 +27,15 @@ it("escapes injected content lines and folds UTF-8 without breaking characters",
   expect(event.ics).toContain("\\nBEGIN:VALARM");
   for (const line of event.ics.split("\r\n")) expect(new TextEncoder().encode(line).length).toBeLessThanOrEqual(75);
   expect(event.ics).not.toContain("�");
+});
+
+it("exports uncertain schedules as tentative and broad dates as all-day references", () => {
+  for (const status of ["TBD", "TBC", "Hold"]) expect(canExportCalendar({...launch,status})).toBe(true);
+  for (const id of [3,5,6,7,8,14,16]) {
+    const event=calendarEvent({...launch,status:"TBC",net_precision:{id}},"https://example.com","Reference only")!;
+    expect(event.ics).toContain("DTSTART;VALUE=DATE:20261101");
+    expect(event.ics).toContain("DTEND;VALUE=DATE:20261102");
+    expect(event.ics).toContain("STATUS:TENTATIVE");
+    expect(event.ics).not.toContain("DTSTART:20261101T");
+  }
 });

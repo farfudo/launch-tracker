@@ -1,4 +1,5 @@
-import { exactPrecision } from "./temporal-precision";
+import { precisionId } from "./temporal-precision";
+import { launchTimingStatus } from "./launch";
 import type { LaunchDetail } from "./api";
 
 function timestamp(value: string | null) {
@@ -7,10 +8,9 @@ function timestamp(value: string | null) {
 
 export function canExportCalendar(launch: LaunchDetail) {
   const start = timestamp(launch.net);
-  const from = timestamp(launch.window_start);
-  const to = timestamp(launch.window_end);
-  return exactPrecision(launch.net_precision) && /^(go|go for launch)$/i.test(launch.status) && Number.isFinite(start)
-    && Number.isFinite(from) && Number.isFinite(to) && from <= start && start <= to;
+  const timing = launchTimingStatus(launch.status);
+  return timing !== "terminal" && timing !== "in-flight" && Number.isFinite(start);
+
 }
 
 const utc = (value: string) => new Date(value).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
@@ -32,11 +32,16 @@ export function calendarEvent(launch: LaunchDetail, origin: string, notice: stri
   const url = new URL(`/launches/${encodeURIComponent(launch.id)}`, origin).href;
   const description = `${notice}\n${url}`;
   const location = [launch.pad_name, launch.location_name].filter(Boolean).join(" · ");
-  const start = utc(launch.net);
+  const precision = precisionId(launch.net_precision);
+  const allDay = precision === null || precision >= 3;
+  const quantum = precision === 1 ? 60000 : precision === 2 ? 3600000 : 1000;
+  const start = allDay ? utc(launch.net).slice(0,8) : utc(new Date(Math.floor(Date.parse(launch.net)/quantum)*quantum).toISOString());
+  const end = allDay ? utc(new Date(Date.parse(launch.net)+86400000).toISOString()).slice(0,8) : start;
   // A point-in-time reminder, not a fabricated launch duration or launch window.
-  const params = new URLSearchParams({ action: "TEMPLATE", text: launch.name, dates: `${start}/${start}`, details: description, location });
+  const params = new URLSearchParams({ action: "TEMPLATE", text: launch.name, dates: `${start}/${end}`, details: description, location });
   const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//NextRocketLaunch//Mission calendar//EN", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
-    `UID:${escapeText(launch.id)}@nextrocketlaunch`, `DTSTAMP:${utc(now.toISOString())}`, `DTSTART:${start}`,
+    `UID:${escapeText(launch.id)}@nextrocketlaunch`, `DTSTAMP:${utc(now.toISOString())}`, `DTSTART${allDay ? ";VALUE=DATE" : ""}:${start}`,
+    ...(allDay ? [`DTEND;VALUE=DATE:${end}`] : []),
     `SUMMARY:${escapeText(launch.name)}`, `DESCRIPTION:${escapeText(description)}`, `LOCATION:${escapeText(location)}`,
     `URL:${url}`, "STATUS:TENTATIVE", "TRANSP:TRANSPARENT", "END:VEVENT", "END:VCALENDAR"];
   return { google: `https://calendar.google.com/calendar/render?${params}`, ics: lines.map(fold).join("\r\n") + "\r\n" };
