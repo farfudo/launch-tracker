@@ -850,3 +850,5 @@ Criada uma landing com apresentação dos seis programas e destaque para o guia 
 ## A18 — Space Programs, Fase 2: guia Artemis (rascunho)
 
 Reorganizado o guia sem eliminar os quatro sistemas, marcos, esquema funcional, desafios, FAQ ou associações reais de lançamentos. Adicionados hero com imagem NASA existente, explicação introdutória, cronologia, conclusão e ligações a conteúdos relacionados; desafios e FAQ ficam em aprofundamento opcional. NASA confirma Artemis III como demonstração em órbita terrestre baixa prevista para 2027 e Artemis IV como objetivo de alunagem no início de 2028; ESA confirma o regresso da Artemis II e funções do módulo europeu. Fontes: https://www.nasa.gov/artemis-iii-news-and-updates/ e https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/Artemis_II_splashdown . Revisão editorial: 28/10/2026. Sem publicação.
+
+Correção de CI: o teste de navegação mobile ainda procurava o antigo texto “Explore Artemis” no hub. Foi atualizado para verificar o novo acesso a Space Programs e a ligação existente ao guia Artemis, mantendo o percurso dos marcos espaciais.

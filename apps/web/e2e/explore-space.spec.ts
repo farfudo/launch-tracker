@@ -80,7 +80,12 @@ test('Explore Space cards remain usable on narrow mobile screens', async ({ page
   await page.setViewportSize({ width: 320, height: 720 });
   await page.goto('/explore-space');
   await expect(page.locator('.explore-space-card')).toHaveCount(4);
-  await expect(page.getByRole('link', { name: /Explore Artemis/ })).toBeVisible();
+  const programs = page.getByRole('link', { name: /Explore programs/ });
+  await expect(programs).toBeVisible();
+  await expect(programs).toHaveAttribute('href', '/explore-space/programs');
+  await programs.click();
+  await expect(page.getByRole('link', { name: /Explore the Artemis guide/ })).toBeVisible();
+  await page.goto('/explore-space');
   await page.getByRole('link', { name: /Explore the timeline/ }).click();
   await expect(page).toHaveURL(/\/explore-space\/milestones$/);
   await expect(page.locator('.milestone-item')).toHaveCount(4);
