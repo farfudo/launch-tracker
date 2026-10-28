@@ -1,5 +1,11 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## CI Starship — correção local da recolha (28/10/2026)
+
+A CI `40718914700` de `dca90db` falhou porque a suite normal recolhia os seis testes de Starship, mas não iniciava os seus servidores específicos. Corrigida a configuração normal para não recolher esse ficheiro e acrescentado passo próprio na mesma CI que executa a configuração Starship, iniciando as três origens de API simulada e três servidores locais; evidência dessa suite também é guardada. Os testes não foram eliminados nem ignorados pela CI: são executados no passo próprio.
+
+Recolha confirmada: 56 casos normais e seis Starship, sem sobreposição. Os seis Starship passaram em desktop/mobile; na execução normal passaram 47, oito foram omitidos conforme regras existentes e um teste desktop do vídeo falhou por encontrar duas figuras durante navegação; repetido isoladamente sem retries, passou. Não se afirma que a suite normal completa passou, nem que a CI remota foi validada. Nenhuma alteração de produto/infraestrutura/produção. Rascunho local sem commit/push; necessário rever e obter autorização específica para envio.
+
 ## Starship — build completo e API simulada no navegador (28/10/2026)
 
 Build de produção completo passou com Turbopack, TypeScript e geração das páginas, incluindo a nova rota. A ligação simbólica às dependências fora da raiz impedia o build; tentativa de cópia ficou lenta e foi interrompida. Instalação isolada com `npm ci --no-audit --no-fund`, usando o lock existente, resolveu sem alterar dependências versionadas nem o checkout original. `next-env.d.ts` voltou ao conteúdo de produção original.

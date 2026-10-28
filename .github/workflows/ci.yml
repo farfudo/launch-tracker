@@ -112,6 +112,9 @@ jobs:
       - name: Run isolated browser journeys
         run: npm run test:e2e
 
+      - name: Run Starship fixture journeys
+        run: npx playwright test --config e2e/starship.validation.config.ts
+
       - name: Save browser test evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -120,4 +123,5 @@ jobs:
           path: |
             apps/web/playwright-report/
             apps/web/test-results/
+            apps/web/output/playwright/starship-validation/
           retention-days: 7
