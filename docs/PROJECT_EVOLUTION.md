@@ -1,5 +1,15 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## A18 — Fase 5: revisão final Explore Space (rascunho local, 28/10/2026)
+
+Estado confirmado antes da revisão: `main` pública em `05db8ec` inclui as Fases 1–4 (hub, conteúdos Discoveries/Artemis, ligações contextuais e cronologia), com CI e Vercel verdes. As quatro fotografias da cronologia estavam apenas no commit local `6b1c33d`, ainda não publicado; a revisão foi preparada no worktree `codex/a18-phase5` sobre esse commit, sem alterar `main`.
+
+Correções concretas: fotografias dos marcos usam moldura comum 3:2 sem barras laterais; a imagem completa continua disponível na ampliação; a página Space Milestones passa a usar a imagem de aterragem Falcon 9 já documentada, em vez do fundo da ISS, com crédito/licença CC0 e fonte correta. Fotografias locais têm 92–212 KB, dimensões até 960 px, `next/image`, carregamento lazy e ampliação nativa por diálogo; texto alternativo, créditos, Escape, foco e toque existentes foram preservados. Rotas antigas `/discoveries` e `/discoveries/artemis`, metadata e ligações editoriais verificadas; as associações continuam baseadas nas regras explícitas existentes, sem gerar relações por palavras-chave.
+
+Verificação: 125 testes Vitest passaram (incluindo suíte de regressões completa). Prévia manual inspecionada em 1440 px e 390 px, claro/escuro e PT/EN/ES; navegação, títulos, alternativas, créditos, timeline e guia Artemis visíveis. E2E direcionados não executaram as asserções: o Chromium headless encerrou no arranque com `MachPortRendezvousServer: Permission denied` neste ambiente. Lint não terminou no limite local; build e E2E permanecem para CI. O carregamento do player externo do excerto no browser da prévia também não foi confirmado.
+
+Sem commit, push, merge ou deploy. O trabalho é um rascunho isolado; a prévia local está em `/explore-space/milestones`.
+
 ## A18 — imagens dos Space Milestones (rascunho local, 28/10/2026)
 
 Atualizada a cronologia com imagens históricas locais para Sputnik 1, Vostok 1/Yuri Gagarin, Apollo 11 e aterragem Falcon 9 de 2015. Mantidos os textos, a ordem e as ligações existentes. Cada imagem tem alt text PT/EN/ES, crédito e link para a fonte/licença; detalhes e limites jurisdicionais estão em `SPACE_MILESTONES_IMAGE_CREDITS.md`. Os thumbnails têm até 960 px e são apresentados com carregamento responsivo/lazy; clicar ou tocar abre uma ampliação acessível por teclado, Escape, botão de fechar e toque fora. Testes direcionados e prévias desktop/mobile pendentes. Sem commit, push ou deploy.

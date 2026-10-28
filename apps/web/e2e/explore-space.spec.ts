@@ -43,7 +43,11 @@ test('Explore Space hub links to existing guides and launch data in each locale'
   await expect(page.locator('.milestone-image-trigger img')).toHaveCount(4);
   for (const image of await page.locator('.milestone-image-trigger img').all()) {
     await expect(image).toHaveAttribute('alt', /.+/);
+    await expect(image).toHaveCSS('object-fit', 'cover');
     await expect(image).toBeVisible();
+  }
+  for (const frame of await page.locator('.milestone-image-trigger').all()) {
+    await expect.poll(() => frame.evaluate((element: HTMLElement) => Math.round(element.getBoundingClientRect().width / element.getBoundingClientRect().height * 100) / 100)).toBe(1.5);
   }
   const firstImageButton = page.locator('.milestone-image-trigger').first();
   await expect(firstImageButton).toHaveAttribute('aria-label', /Sputnik 1/);
@@ -79,6 +83,8 @@ test('Explore Space cards remain usable on narrow mobile screens', async ({ page
   await expect(page.locator('.milestone-item')).toHaveCount(4);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   await expect(page.locator('.milestone-image-trigger img')).toHaveCount(4);
+  await expect(page.locator('.site-background')).toHaveAttribute('data-section', 'milestones');
+  await expect(page.locator('.site-footer .background-credit a')).toHaveAttribute('href', /commons\.wikimedia\.org\/wiki\/File:Falcon_9/);
   const imageButton = page.locator('.milestone-image-trigger').first();
   await expect(imageButton).toHaveAttribute('aria-label', /Sputnik 1/);
   await imageButton.click();
