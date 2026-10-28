@@ -910,3 +910,5 @@ Correção de CI: o teste de navegação mobile ainda procurava o antigo texto �
 ## Launches — contador e favoritos (rascunho)
 
 O contador mantém datas utilizáveis por confirmar, apresenta um aviso acessível com a precisão e limita as unidades à precisão conhecida. Datas amplas são estimativas em dias, sem hora inventada. O painel featured já não inclui favorito; a lista e os detalhes mantêm-no. Prévia com dados fictícios, sem alterações aos serviços.
+
+Ajuste de revisão: todos os cartões mostram o contador completo, incluindo segundos quando a precisão os permite, sem formato de tempo aproximado; mantêm-se os limites de precisão e o aviso acessível.

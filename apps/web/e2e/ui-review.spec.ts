@@ -107,7 +107,11 @@ test('development label and informative detail without empty stream actions', as
   await expect(share.getByRole('button', {name:'Copy link',exact:true})).toBeHidden();
   await page.screenshot({path:test.info().outputPath('ui-review-detail.png'),fullPage:true});
   await page.goto('/?q=Test');
-  await expect(page.locator('.launch-list .countdown-compact')).toHaveCount(1);
+  await expect(page.locator('.launch-list [role="timer"]')).toHaveCount(3);
+  for (const timer of await page.locator('.launch-list [role="timer"]').all()) {
+    await expect(timer.locator('strong')).toHaveCount(4);
+    await expect(timer).not.toContainText('≈');
+  }
   await expect(page.locator('.launch-row-actions .countdown-group').first()).toHaveCSS('background-color','rgb(234, 242, 255)');
   if ((page.viewportSize()?.width ?? 1000) <= 600) {
     await expect(page.locator('.launch-date').first()).toHaveCSS('font-size', '14px');

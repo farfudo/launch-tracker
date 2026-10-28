@@ -14,10 +14,10 @@ export function Countdown({ date, status, precision, compact = false }: { date: 
   const d = dashboardCopy[locale];
   useEffect(() => {
     const tick = () => setNow(Date.now());
-    const timer = window.setInterval(tick, compact ? 60000 : 1000);
+    const timer = window.setInterval(tick, 1000);
     tick();
     return () => window.clearInterval(timer);
-  }, [compact]);
+  }, []);
   const target = Date.parse(date);
   const timing = launchTimingStatus(status);
   if (timing === "terminal") return null;
@@ -35,15 +35,10 @@ export function Countdown({ date, status, precision, compact = false }: { date: 
   if (now !== null && now >= start + (precisionLevel === 0 ? 0 : quantum)) return <p className="countdown-note">{estimated ? d.unconfirmed : d.elapsed}</p>;
   if (now !== null && now >= start && precisionLevel !== 0) return <p className="countdown-note">{d.unconfirmed}</p>;
   const seconds = now === null ? null : Math.floor((start - now) / quantum) * quantum / 1000;
-  if (broad) return <div className="countdown-group"><div className="countdown-heading"><span className="countdown-estimate">{estimateLabel}</span>{warning}</div><div className="countdown" role="timer" aria-label={d.timer} aria-live="off"><div><strong>{seconds===null?'—':`≈ ${Math.max(0,Math.floor(seconds/86400))}`}</strong><span>{d.days}</span></div></div></div>;
-  if (compact) {
-    const unit = seconds !== null && seconds >= 86400 ? "day" : precisionLevel === 2 || (seconds !== null && seconds >= 3600) ? "hour" : "minute";
-    const divisor = unit === "day" ? 86400 : unit === "hour" ? 3600 : 60;
-    return <div className="countdown-compact"><div className="countdown-heading"><span>{estimateLabel}</span>{warning}</div><strong role="timer" aria-label={d.timer} aria-live="off">{seconds === null ? "—" : `≈ ${new Intl.RelativeTimeFormat(locale, {numeric:"always"}).format(Math.floor(seconds / divisor), unit)}`}</strong></div>;
-  }
+  if (broad) return <div className="countdown-group"><div className="countdown-heading"><span className="countdown-estimate">{estimateLabel}</span>{warning}</div><div className="countdown" role="timer" aria-label={d.timer} aria-live="off"><div><strong>{seconds===null?'—':String(Math.max(0,Math.floor(seconds/86400)))}</strong><span>{d.days}</span></div></div></div>;
   const units = precisionLevel === null || precisionLevel === 0 ? 4 : precisionLevel === 1 ? 3 : 2;
   const parts = (seconds === null ? [null, null, null, null] : [Math.floor(seconds / 86400), Math.floor(seconds / 3600) % 24, Math.floor(seconds / 60) % 60, seconds % 60]).slice(0, units);
-  return <div className="countdown-group"><div className="countdown-heading"><span className="countdown-estimate">{estimateLabel}</span>{warning}</div><div className="countdown" role="timer" aria-label={d.timer} aria-live="off">
+  return <div className={compact ? "countdown-group countdown-compact" : "countdown-group"}><div className="countdown-heading"><span className="countdown-estimate">{estimateLabel}</span>{warning}</div><div className="countdown" role="timer" aria-label={d.timer} aria-live="off">
     {parts.map((value, index) => <div key={index}><strong>{value === null ? "—" : String(value).padStart(2, "0")}</strong><span>{[d.days, d.hours, d.mins, d.secs][index]}</span></div>)}
   </div></div>;
 }
