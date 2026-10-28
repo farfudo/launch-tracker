@@ -5,6 +5,7 @@ import { useMemo, useState, useSyncExternalStore } from "react";
 import { parseFavorites, readFavorites, subscribeFavorites, toggleFavorite } from "../lib/favorites";
 import type { Launch } from "../lib/api";
 import { VehicleVisual } from "./vehicle-visual";
+import { LaunchWatchButton } from "./launch-watch-button";
 import { Countdown } from "./countdown";
 import { LocalLaunchDate } from "./local-launch-date";
 import { dashboardCopy } from "../lib/dashboard-i18n";
@@ -34,8 +35,8 @@ export function FavoriteButton({ id, name }: { id: string; name: string }) {
   </div>;
 }
 
-export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, historical = false, initialLimit = 6 }: {
-  launches: Launch[]; favoritesOnly: boolean; emptyCache: boolean; historical?: boolean; initialLimit?: number;
+export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, historical = false, initialLimit = 6, showWatch = false }: {
+  launches: Launch[]; favoritesOnly: boolean; emptyCache: boolean; historical?: boolean; initialLimit?: number; showWatch?: boolean;
 }) {
   const { locale, messages: t } = useLocale();
   const { ids, ready } = useFavorites();
@@ -61,7 +62,7 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, histor
         <span className="row-detail-link">{d.viewDetails} →<LinkPending /></span>
         {selection?.selected?.id === launch.id ? <span className="mission-selected-label">{d.selectedMission}</span> : null}
       </Link>
-      <div className="launch-row-actions">{historical ? null : <Countdown date={launch.net} precision={launch.net_precision} status={launch.status} compact={index !== 0 && selection?.selected?.id !== launch.id} />}<FavoriteButton id={launch.id} name={launch.name} /></div>
+      <div className="launch-row-actions">{historical ? null : <Countdown date={launch.net} precision={launch.net_precision} status={launch.status} compact={index !== 0 && selection?.selected?.id !== launch.id} />}<div className="launch-row-buttons"><FavoriteButton id={launch.id} name={launch.name} />{showWatch ? <LaunchWatchButton launch={launch}/> : null}</div></div>
     </article>)}</div> : <article className="launch-card">
       <h3>{favoritesOnly ? ids.length ? t.noFavoriteMatches : t.noFavorites : emptyCache ? t.emptyTitle : t.noResults}</h3>
       <p>{favoritesOnly ? t.favoriteEmptyBody : emptyCache ? t.emptyBody : t.noResultsBody}</p>

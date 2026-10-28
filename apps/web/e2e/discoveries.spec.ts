@@ -7,6 +7,8 @@ test('curated discovery topics filter without duplicating sources and support th
   await expect(page.locator('.section-navigation a[aria-current="page"]')).toHaveText('Explore Space');
   await expect(page.locator('.section-navigation a')).toHaveCount(2);
   await expect(page.locator('.discovery-source-card')).toHaveCount(6);
+  // The related section is streamed through Suspense; wait for its actual content.
+  await expect(page.getByRole('heading',{name:'Related launches',exact:true})).toBeVisible();
   // Compact overview is a content/disclosure contract, not a document-height budget.
   expect(await page.locator('.discoveries-page > section, .discoveries-page > details')
     .evaluateAll(elements => elements.map(element => element.getAttribute('aria-labelledby') || element.className)))

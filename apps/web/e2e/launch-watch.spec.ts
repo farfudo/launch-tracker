@@ -1,0 +1,34 @@
+import {test,expect} from '@playwright/test';
+test('list play opens verified links on demand, caches the read, and preserves direct mission navigation',async({page})=>{
+ let reads=0;page.on('request',r=>{if(new URL(r.url()).pathname==='/api/missions/e2e-falcon')reads++;});
+ await page.goto('/');
+ const row=page.locator('.launch-card').filter({hasText:'Falcon 9 | Test Starlink'}).first();
+ await expect(page.locator('#selected-mission')).toHaveCount(0);
+ expect(reads).toBe(0);
+ const play=row.getByRole('button',{name:'Watch here: Falcon 9 | Test Starlink',exact:true});
+ await play.click();
+ const dialog=page.getByRole('dialog',{name:'Watch here',exact:true});
+ await expect(dialog.getByRole('link',{name:/Fixture broadcast/})).toHaveAttribute('href','https://example.com/stream');
+ await expect(dialog.getByRole('link',{name:/Fixture broadcast/})).toHaveAttribute('target','_blank');
+ expect(reads).toBe(1);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.screenshot({path:test.info().outputPath("watch-dialog.png")});
+ await dialog.getByRole('button',{name:'Close',exact:true}).press('Escape');
+ await expect(dialog).toBeHidden();await expect(play).toBeFocused();
+ await play.click();await expect(dialog.getByRole('link',{name:/Fixture broadcast/})).toBeVisible();expect(reads).toBe(1);
+ await dialog.getByRole('button',{name:'Close',exact:true}).click();
+ await row.locator('.launch-card-link').click();await expect(page).toHaveURL(/\/launches\/e2e-falcon$/);
+});
+test('play explains missing broadcasts and allows retry after a request fails',async({page})=>{
+ await page.goto('/');
+ await page.locator('.theme-toggle').click();
+ await page.getByRole('button',{name:'Watch here: Electron | Test mission',exact:true}).click();
+ const dialog=page.getByRole('dialog',{name:'Watch here',exact:true});
+ await expect(dialog.locator('.stream-unavailable')).toBeVisible();await expect(dialog.getByRole('link')).toHaveCount(0);
+ await dialog.getByRole('button',{name:'Close',exact:true}).click();
+ await page.route('**/api/missions/e2e-falcon',route=>route.fulfill({status:503,body:'Unavailable'}));
+ await page.getByRole('button',{name:'Watch here: Falcon 9 | Test Starlink',exact:true}).click();
+ await expect(dialog.getByRole('alert')).toBeVisible();
+ await page.unroute('**/api/missions/e2e-falcon');await dialog.getByRole('button',{name:'Try again',exact:true}).click();
+ await expect(dialog.getByRole('link',{name:/Fixture broadcast/})).toBeVisible();
+});

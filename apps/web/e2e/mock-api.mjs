@@ -23,6 +23,13 @@ const launches = [
   ,{ ...base, id: 'e2e-science', name: 'Electron | Test science mission', mission_name: 'Science mission', agency: 'Rocket Lab', vehicle: 'Electron', net: '2099-01-03T12:00:00Z', streams: [], mission_links: [] }
   ,{ ...base, id: 'e2e-history', name: 'Falcon 9 | Archived test mission', mission_name: 'Archived test mission', net: '2020-01-01T12:00:00Z', status: 'Launch Successful' }
 ];
+// Opt-in visual fixture: real NASA photograph, explicitly fictional future mission.
+if (process.env.FIXTURE_SPOTLIGHT_PHOTO === 'true') Object.assign(launches[0], {
+ name:'SLS | Visual preview (fictional date)', mission_name:'Visual preview (fictional date)', vehicle:'SLS', agency:'NASA',
+ image_url:'https://www.nasa.gov/wp-content/uploads/2024/11/52507883571-396b3c1c6c-o.jpg',
+ image_title:'Artemis I, 16 November 2022 — reference photograph for a fictional test date',
+ image_credit:'NASA / Joel Kowsky · Artemis I (2022)', image_kind:'vehicle', image_license:'NASA media guidelines', image_license_url:'https://www.nasa.gov/nasa-brand-center/images-and-media/'
+});
 const scrollLaunches = Array.from({length: 30}, (_, index) => ({
   ...launches[0], id: `scroll-${index}`, name: `scroll-fixture | Demo mission ${index + 1}`,
   mission_name: `Demo mission ${index + 1}`,

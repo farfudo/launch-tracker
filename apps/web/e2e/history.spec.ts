@@ -1,3 +1,4 @@
+import {openLaunchFilters} from './launch-filter-helpers';
 import { test, expect } from '@playwright/test';
 
 test('main navigation exposes Launches and Explore Space while old content routes stay available', async ({ page }) => {
@@ -29,15 +30,17 @@ test('upcoming and history are separate and preserve search on switching', async
   const calendar = page.locator('#launch-calendar');
   await expect(calendar.getByRole('heading', { name: 'Falcon 9 | Test Starlink', exact: true })).toBeVisible();
   await expect(calendar.getByRole('heading', { name: 'Falcon 9 | Archived test mission', exact: true })).toHaveCount(0);
-  await calendar.getByRole('link', { name: 'History', exact: true }).click();
+  await openLaunchFilters(page);
+  await page.locator('.launch-filter-panel').getByRole('link', { name: 'History', exact: true }).click();
   await expect(calendar.getByRole('heading', { name: 'Falcon 9 | Archived test mission', exact: true })).toBeVisible();
   await expect(calendar.getByRole('heading', { name: 'Falcon 9 | Test Starlink', exact: true })).toHaveCount(0);
-  await calendar.getByRole('searchbox').fill('Archived');
-  await calendar.getByRole('button', { name: 'Apply filters' }).click();
+  await page.locator('.launch-filter-panel').getByRole('searchbox').fill('Archived');
+  await page.locator('.launch-filter-panel').getByRole('button', { name: 'Apply filters' }).click();
   await expect(page).toHaveURL(/period=past/);
   await expect(calendar.getByRole('heading', { name: 'Falcon 9 | Archived test mission', exact: true })).toBeVisible();
-  await calendar.getByRole('link', { name: 'Upcoming launches', exact: true }).click();
+  await openLaunchFilters(page);
+  await page.locator('.launch-filter-panel').getByRole('link', { name: 'Upcoming launches', exact: true }).click();
   await expect(page).toHaveURL(/period=upcoming/);
-  await expect(calendar.getByRole('searchbox')).toHaveValue('Archived');
+  await expect(page.locator('.launch-filter-panel').getByRole('searchbox')).toHaveValue('Archived');
   await expect(calendar.getByRole('heading', { name: 'No results', exact: true })).toBeVisible();
 });

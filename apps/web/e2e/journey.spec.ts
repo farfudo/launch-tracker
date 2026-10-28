@@ -1,6 +1,7 @@
+import {openLaunchFilters} from './launch-filter-helpers';
 import { test, expect } from '@playwright/test';
 
-test('search, filters, mission, persistent favorite, streams, language and theme', async ({ page, context, isMobile }) => {
+test('search, filters, mission, persistent favorite, streams, language and theme', async ({ page, context }) => {
   // No video provider, analytics or other remote resource is needed for this test.
   await context.route('**/*', route => new URL(route.request().url()).hostname === '127.0.0.1' ? route.continue() : route.abort());
   await page.emulateMedia({ colorScheme: 'dark' });
@@ -8,8 +9,8 @@ test('search, filters, mission, persistent favorite, streams, language and theme
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   await page.getByRole('combobox').filter({ has: page.locator('option[value="en-GB"]') }).selectOption('en-GB');
   await expect(page.locator('html')).toHaveAttribute('lang', 'en-GB');
+  await openLaunchFilters(page);
   await page.getByRole('searchbox', { name: 'Search', exact: true }).fill('Test Starlink');
-  await page.locator('summary').filter({ hasText: 'More filters' }).click();
   await page.locator('select[name="agency"]').selectOption('SpaceX');
   await page.locator('select[name="vehicle"]').selectOption('Falcon 9');
   await page.getByRole('button', { name: 'Apply filters', exact: true }).click();
@@ -24,29 +25,9 @@ test('search, filters, mission, persistent favorite, streams, language and theme
   await page.getByRole('link', { name: '☆ My favorites', exact: true }).click();
   await expect(page).toHaveURL(/favorites=1/);
   await expect(rows).toHaveCount(1);
-  // Desktop selects an in-page panel; mobile opens the full detail directly.
+  // Details now open directly on every screen size; no in-page preview is mounted.
+  await expect(page.locator('#selected-mission')).toHaveCount(0);
   await rows.locator('.launch-card-link').click();
-  if (!isMobile) {
-    await expect(page.locator('#selected-mission')).toContainText('Mission at a glance');
-    await expect(page.locator('#selected-mission .mission-sources')).toHaveCount(0);
-    await expect(page.locator('#selected-mission .summary-description')).toContainText('Controlled mission for browser tests.');
-    await expect(page.locator('#selected-mission .summary-countdown [role="timer"]')).toBeVisible();
-    await expect.poll(async () => {
-      const left = await page.locator('.dashboard-introduction').boundingBox();
-      const right = await page.locator('.calendar-panel').boundingBox();
-      return Math.abs(left!.y + left!.height - right!.y - right!.height);
-    }).toBeLessThan(2);
-    await expect(page.locator('.launch-results-scroll')).toHaveCSS('overflow-y','scroll');
-    await expect(page.locator('.launch-results-scroll')).toHaveCSS('overscroll-behavior-y','auto');
-    await expect(page.locator('#selected-mission .panel-time-zones')).toHaveCount(0);
-    await expect(page.locator('#selected-mission .summary-location')).toHaveCount(0);
-    await page.locator('#selected-mission .stream-button').click();
-    await expect(page.locator('#selected-mission').getByRole('link', {name:/Fixture broadcast/})).toBeVisible();
-    await page.emulateMedia({reducedMotion: 'reduce'});
-    await page.locator('#selected-mission').screenshot({ path: test.info().outputPath('mission-summary.png') });
-    await page.screenshot({ path: test.info().outputPath('aligned-workspace.png'), fullPage: true });
-    await page.locator('#selected-mission').getByRole('link', { name: /View full details/ }).click();
-  }
   await expect(page).toHaveURL(/\/launches\/e2e-falcon$/);
   await expect(page.getByRole('heading', { name: 'Test Starlink', exact: true, level: 1 })).toBeVisible();
   await expect(page.locator('.mission-description')).toContainText('Controlled mission for browser tests.');

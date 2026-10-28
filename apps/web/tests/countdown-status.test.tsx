@@ -59,3 +59,15 @@ it("updates seconds for a broad reference and stops when it passes", async () =>
     expect(container.textContent).toContain("to be confirmed");
   } finally { await act(async () => root.unmount()); vi.useRealTimers(); }
 });
+
+it("preserves source precision in the spotlight without changing list counters", async () => {
+ const container=document.createElement('div');const root=createRoot(container);
+ try {
+  for(const [id,units] of [[0,4],[1,3],[2,2],[5,0],[7,0],[16,0]] as const){
+   await act(async()=>root.render(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T12:00:00Z" status="TBC" precision={{id}} respectPrecision/></LocaleProvider>));
+   expect(container.querySelectorAll('[role="timer"] strong')).toHaveLength(units);
+  }
+  await act(async()=>root.render(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T12:00:00Z" status="TBC" precision={{id:7}}/></LocaleProvider>));
+  expect(container.querySelectorAll('[role="timer"] strong')).toHaveLength(4);
+ } finally {await act(async()=>root.unmount());}
+});

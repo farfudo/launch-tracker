@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const fixturePort=process.env.FIXTURE_SPOTLIGHT_PHOTO==='true'?3303:3302;
+const fixtureOrigin=`http://127.0.0.1:${fixturePort}`;
 export default defineConfig({
   testDir: './e2e',
   testIgnore: 'starship-validation.spec.ts',
@@ -14,8 +16,8 @@ export default defineConfig({
     { name: 'mobile-chromium', use: { ...devices['Pixel 7'], defaultBrowserType: 'chromium' } }
   ],
   webServer: [
-    { command: 'node e2e/mock-api.mjs', url: 'http://127.0.0.1:3302/health', env: { FIXTURE_PORT: '3302' }, reuseExistingServer: false },
+    { command: 'node e2e/mock-api.mjs', url: `${fixtureOrigin}/health`, env: { FIXTURE_PORT: String(fixturePort) }, reuseExistingServer: false },
     { command: 'npm run start -- --hostname 127.0.0.1 --port 3300', url: 'http://127.0.0.1:3300', reuseExistingServer: false,
-      env: { API_BASE_URL: 'http://127.0.0.1:3302', NEXT_PUBLIC_API_BASE_URL: 'http://127.0.0.1:3302', DESIGN_PREVIEW: 'false' } }
+      env: { API_BASE_URL: fixtureOrigin, NEXT_PUBLIC_API_BASE_URL: fixtureOrigin, DESIGN_PREVIEW: 'false' } }
   ]
 });

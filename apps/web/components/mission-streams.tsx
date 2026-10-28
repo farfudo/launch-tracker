@@ -13,7 +13,7 @@ export function safeMissionLink(link: MissionLink): (MissionLink & { host: strin
   } catch { return null; }
 }
 
-export function MissionStreams({ launch, compact = false }: { launch: LaunchDetail; compact?: boolean }) {
+export function MissionStreams({ launch, compact = false, inline = false }: { launch: LaunchDetail; compact?: boolean; inline?: boolean }) {
   const { locale } = useLocale();
   const d = dashboardCopy[locale];
   const streams = (launch.streams || []).map(safeMissionLink).filter(link => link !== null);
@@ -22,9 +22,7 @@ export function MissionStreams({ launch, compact = false }: { launch: LaunchDeta
     <p>{d.streamMissing}</p>
   </div>;
   const snapshot = Date.parse(launch.source_updated_at);
-  return <details key={launch.id} className={`mission-streams stream-disclosure${compact ? " stream-disclosure-compact" : ""}`}>
-    <summary className="stream-button"><span aria-hidden="true">▷</span> {d.watchHere}<span className="stream-count">{streams.length}</span><span className="stream-chevron" aria-hidden="true">⌄</span></summary>
-    <div className="stream-disclosure-content">
+  const content = <div className="stream-disclosure-content">
     <h3>{d.streamsHeading}</h3>
     <p className="stream-disclaimer">{d.streamsNotice}</p>
     {streams.length ? <ul>{streams.map(link => {
@@ -40,6 +38,10 @@ export function MissionStreams({ launch, compact = false }: { launch: LaunchDeta
       </li>;
     })}</ul> : <p className="stream-empty">{d.streamMissing}</p>}
     <p className="stream-updated">{d.streamSnapshot}: {formatLaunchDate(launch.source_updated_at, locale)} · Launch Library 2</p>
-    </div>
+    </div>;
+  if (inline) return <section className="mission-streams">{content}</section>;
+  return <details key={launch.id} className={`mission-streams stream-disclosure${compact ? " stream-disclosure-compact" : ""}`}>
+    <summary className="stream-button"><span aria-hidden="true">▷</span> {d.watchHere}<span className="stream-count">{streams.length}</span><span className="stream-chevron" aria-hidden="true">⌄</span></summary>
+    {content}
   </details>;
 }

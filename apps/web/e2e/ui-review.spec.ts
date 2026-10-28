@@ -1,3 +1,4 @@
+import {openLaunchFilters} from './launch-filter-helpers';
 import { expect, test } from '@playwright/test';
 
 test('status filter keeps provisional dates explicit and composes with favorites', async ({page}) => {
@@ -8,6 +9,7 @@ test('status filter keeps provisional dates explicit and composes with favorites
   await info.locator('summary').press('Enter');
   await expect(info.locator('time')).toBeVisible();
   await info.locator('summary').press('Enter');
+  await openLaunchFilters(page);
   await page.locator('select[name="status"]').selectOption('tbc');
   await page.getByRole('button',{name:'Apply filters',exact:true}).click();
   await expect(page).toHaveURL(/status=tbc/);
@@ -43,12 +45,18 @@ test('calendar view switches preserve document scroll', async ({page, isMobile})
   await page.locator('.period-tabs a').filter({hasText:'Upcoming launches'}).click();
   await expect(page).toHaveURL(/period=upcoming/);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(y);
-  await page.locator('.agency-chips a').filter({hasText:'SpaceX'}).click();
+  await page.locator('select[name="agency"]').selectOption('SpaceX');
+  const apply=page.getByRole('button',{name:'Apply filters',exact:true});
+  await apply.scrollIntoViewIfNeeded();
+  const agencyY=await page.evaluate(()=>window.scrollY);
+  await apply.click();
   await expect(page).toHaveURL(/agency=SpaceX/);
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(y);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(agencyY);
+  await page.locator('.clear-filters').scrollIntoViewIfNeeded();
+  const resetY=await page.evaluate(()=>window.scrollY);
   await page.locator('.clear-filters').click();
   await expect(page).not.toHaveURL(/agency=SpaceX/);
-  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(y);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(resetY);
   await page.screenshot({path:test.info().outputPath('calendar-scroll-preserved.png')});
 });
 
@@ -63,12 +71,12 @@ test('desktop list scroll chains to the page only at its boundaries', async ({ p
   await calendar.scrollIntoViewIfNeeded();
   await calendar.hover();
   const documentY = await page.evaluate(() => window.scrollY);
-  const filterY = (await main.locator('.calendar-panel .filters').boundingBox())!.y;
+  const filterY = (await main.locator('.launch-filter-panel .filters').boundingBox())!.y;
   await expect(main.locator('.launch-scroll-rail')).toHaveCount(0);
   await page.mouse.wheel(0, 100);
   await expect.poll(() => calendar.evaluate(el => el.scrollTop)).toBeGreaterThan(0);
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(documentY);
-  expect((await main.locator('.calendar-panel .filters').boundingBox())!.y).toBe(filterY);
+  expect((await main.locator('.launch-filter-panel .filters').boundingBox())!.y).toBe(filterY);
   await page.mouse.wheel(0, 10000);
   await expect.poll(() => calendar.evaluate(el => Math.abs(el.scrollHeight - el.clientHeight - el.scrollTop))).toBeLessThan(2);
   await page.mouse.wheel(0, 300);
@@ -116,8 +124,12 @@ test('development label and informative detail without empty stream actions', as
     await expect(page.locator('.launch-date').first()).toHaveCSS('font-size', '14px');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   }
-  const filters = page.locator('.advanced-filters');
+  const filters = page.locator('.launch-filter-panel');
+  await openLaunchFilters(page);
+  await expect(filters.locator('select[name="vehicle"]')).toBeVisible();
   await filters.locator('summary').click();
+  await expect(filters).not.toHaveAttribute('open');
+  await filters.locator('summary').press('Enter');
   await expect(filters).toHaveAttribute('open', '');
   await expect(filters.locator('select[name="vehicle"]')).toBeVisible();
   await filters.locator('summary').click();
