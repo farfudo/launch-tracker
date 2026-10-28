@@ -1,5 +1,33 @@
 # NextRocketLaunch — evolução técnica e histórico explicado
 
+## Starship — build completo e API simulada no navegador (28/10/2026)
+
+Build de produção completo passou com Turbopack, TypeScript e geração das páginas, incluindo a nova rota. A ligação simbólica às dependências fora da raiz impedia o build; tentativa de cópia ficou lenta e foi interrompida. Instalação isolada com `npm ci --no-audit --no-fund`, usando o lock existente, resolveu sem alterar dependências versionadas nem o checkout original. `next-env.d.ts` voltou ao conteúdo de produção original.
+
+Adicionados servidor simulado somente GET e configuração Playwright específica, com três origens localhost separadas para impedir contaminação da cache entre correspondência, ausência de correspondência e HTTP 503. Não usa API real, PostgreSQL, LL2 ou credenciais. Os seis cenários desktop/mobile passaram; toque real em contexto Chromium móvel (`tap`, 390×844) abriu a página a partir do cartão e navegou para Artemis. Os 14 testes unitários dirigidos voltaram a passar e lint/diff foram verificados.
+
+A inspeção da captura com dados disponíveis revelou conflito visual herdado: `.artemis-guide :is(article,aside,details) a` tornava o link do cartão `inline-flex`, alinhando os textos horizontalmente. Correção limitada a `.starship-guide .related-launch-card .launch-card-link { display:block; }`, sem alterar Artemis ou Launches. Build repetido passou; quatro cenários de ausência/erro passaram e os dois casos afetados passaram na repetição dirigida após corrigir a medição para obter ambos os retângulos no mesmo frame (scroll suave tornava leituras separadas inconsistentes). Capturas em `apps/web/output/playwright/starship-validation/`, incluindo `related-card.png`; dados explicitamente fictícios para teste. Rascunho pronto para revisão, não publicado, sem commit/push/merge/deploy.
+
+## Starship — fecho da validação dirigida (28/10/2026)
+
+Resolvida a falha do teste de indisponibilidade: `beforeEach(()=>read.mockReset())` devolvia a função mock; Vitest interpretava-a como limpeza e executava-a depois do teste, voltando a lançar a rejeição simulada. A função de preparação passou a usar bloco sem retorno. Mantidas verificações de erro acessível, correspondência por metadados e ausência de cartões; nenhum componente ou serviço de dados foi alterado. Os 14 testes dirigidos, TypeScript e lint do teste passaram.
+
+Percurso landing → Starship → Artemis → landing exercitado em PT/EN/ES, claro/escuro, 1440×900 e 390×844 (12 combinações), confirmando destinos, preservação de idioma/tema e ausência de transbordo nas páginas de guia. Um clique automatizado mobile não navegou; a mesma ligação funcionou por Enter, e restantes percursos mobile foram concluídos por teclado. Não foi reproduzido defeito do produto, mas não se declara validação exaustiva de toque. Prévia local continua em localhost:3326; API ausente continua a produzir a mensagem de indisponibilidade de Related Launches, coberta agora por teste. Validação de produção/build completo não foi executada nesta fase dirigida. Sem commit/push/merge/deploy; aprovação visual e qualquer envio continuam separados.
+
+## Starship — refinamento autorizado do rascunho (28/10/2026)
+
+Substituída fotografia distante por Starship/Super Heavy na plataforma antes do Voo 5 (12/10/2024), Steve Jurvetson, CC BY 2.0. Origem e licença verificadas em https://commons.wikimedia.org/wiki/File:SpaceX_Starship_before_IFT-5.jpg ; recorte/redimensionamento documentados no crédito. WebP local 72 822 bytes. Hero dividido: fotografia separada do texto em mobile, para manter o veículo visível e a leitura independente da imagem.
+
+Adicionado diagrama SVG acessível com percursos contínuo/tracejado para propulsor e nave no Voo 5, descrição textual e ressalva de escala/simultaneidade. Cronologia acrescenta primeiro revoo de Super Heavy (Voo 9, 27/05/2025) e primeiro V3/Raptor 3 (Voo 12, 22/05/2026), com perdas/limitações explícitas e fontes SpaceX. A seleção continua sem alegar ser um registo completo até ao último voo. Ligação do cartão Starship ativada sem reformular landing ou Artemis.
+
+TypeScript e lint passaram. Nos 14 testes dirigidos, correspondência real por metadados, exclusão de veículos alheios e ausência de cartões sem correspondência passaram; o novo teste de rejeição da leitura em RelatedMissions falhou ao propagar o erro simulado, permanecendo pendente. Componente de produção preservado, teste não omitido nem expectativa enfraquecida. Prévias 1440/390 observadas, incluindo hero e cartões no escuro; sem commit/push/merge/deploy. Não considerar o rascunho totalmente validado antes de resolver o teste pendente.
+
+## Starship Development — rascunho isolado de 28/10/2026
+
+Criada página `/explore-space/programs/starship` em `codex/starship-development`, base GitHub `52582d9`. Reutiliza apresentação Artemis/Programas sem reformular páginas aprovadas. Hero fotográfico com CC BY 2.0 documentada, arquitetura e Raptor, reutilização, marcos históricos selecionados, perfil didático do Voo 5, HLS, RelatedMissions existente, importância e continuação PT/EN/ES. Distingue demonstrações de objetivos, sem datas futuras fixas. Nenhuma alteração nas áreas Launches, Mission Details, countdown, favoritos, A07 ou serviços de dados.
+
+Dificuldades e soluções: clone inicial não continha a landing aprovada; obtida base remota em worktree isolado, preservando alterações locais. Turbopack recusou dependências partilhadas fora da raiz; prévia Webpack local funcionou sem alterar configuração. TypeScript, lint dos novos ficheiros e 11 testes dirigidos passaram. Prévia observada em 1440 e 390 px, fotografia carregada, zero âncoras internas sem destino, sem overflow mobile; PT/EN/ES e tema escuro exercitados. RelatedMissions apresentou estado de indisponibilidade por ausência da API nesta prévia, sem criar associações. Fontes, direitos e limites em STARSHIP_DEVELOPMENT_REVIEW.md. Rascunho sem commit/push/merge/deploy, pendente de aprovação visual.
+
 ## A18 — Fase 5: revisão final Explore Space (rascunho local, 28/10/2026)
 
 Estado confirmado antes da revisão: `main` pública em `05db8ec` inclui as Fases 1–4 (hub, conteúdos Discoveries/Artemis, ligações contextuais e cronologia), com CI e Vercel verdes. As quatro fotografias da cronologia estavam apenas no commit local `6b1c33d`, ainda não publicado; a revisão foi preparada no worktree `codex/a18-phase5` sobre esse commit, sem alterar `main`.
