@@ -9,7 +9,7 @@ for (const locale of ['pt-PT', 'en-GB', 'es-ES'] as const) {
     await page.goto('/');
     const main=page.locator('main:visible');
     await expect(main).toHaveCount(1);
-    await main.locator('.data-info > summary').click();
+    await main.locator('.data-info .info-trigger').click();
     await expect(main.locator('.data-info')).toContainText(t.global);
     await page.screenshot({path:test.info().outputPath(`home-${locale}.png`),fullPage:true});
     await page.goto('/launches/freshness-old');

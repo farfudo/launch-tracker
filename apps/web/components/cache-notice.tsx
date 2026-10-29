@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import type { PublicCacheInfo } from "../lib/cached-api";
 import { formatLaunchDate } from "../lib/date";
 import { useLocale } from "./locale-provider";
+import { InfoDisclosure } from "./info-disclosure";
 import { Spinner } from "./pending-feedback";
 
 const copy = {
@@ -40,7 +41,7 @@ export function CacheNotice({ entries, autoRefresh = true, onRetry, compact = fa
   const t = copy[locale];
   const timestamp = checked ? <p>{t.saved}: <time dateTime={checked}>{formatLaunchDate(checked, locale)}</time>.</p> : null;
   return <aside className={`frontend-cache-notice${compact ? " frontend-cache-notice-compact" : ""}`} aria-label={t.saved}>
-    {compact ? <details className="data-info"><summary><span aria-hidden="true">ⓘ</span> {messages.aboutData}</summary><div>{children}{timestamp}</div></details> : <>{children}{timestamp}</>}
+    {compact ? <div className="data-info"><InfoDisclosure label={messages.aboutData}>{children}{timestamp}</InfoDisclosure></div> : <>{children}{timestamp}</>}
     <p role="status">{refreshing ? <><Spinner /> {t.updating}</> : unconfirmed ? t.waiting : null}</p>
     {unconfirmed ? <button type="button" onClick={() => { tries.current = 0; setUnconfirmed(false); setRefreshing(true); if (onRetry) onRetry(); else router.refresh(); }}>{t.retry}</button> : null}
   </aside>;

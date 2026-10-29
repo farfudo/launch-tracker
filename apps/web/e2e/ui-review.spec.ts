@@ -4,11 +4,11 @@ import { expect, test } from '@playwright/test';
 test('status filter keeps provisional dates explicit and composes with favorites', async ({page}) => {
   await page.goto('/?period=upcoming');
   const info = page.locator('.calendar-panel .data-info');
-  await expect(info).not.toHaveAttribute('open');
+  await expect(info.locator('.info-trigger')).toHaveAttribute('aria-expanded','false');
   await expect(info.locator('time')).toBeHidden();
-  await info.locator('summary').press('Enter');
+  await info.locator('.info-trigger').focus();
   await expect(info.locator('time')).toBeVisible();
-  await info.locator('summary').press('Enter');
+  await info.locator('.info-trigger').press('Escape');
   await openLaunchFilters(page);
   await page.locator('select[name="status"]').selectOption('tbc');
   await page.getByRole('button',{name:'Apply filters',exact:true}).click();
