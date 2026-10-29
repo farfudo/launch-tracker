@@ -15,6 +15,8 @@ import "./dashboard.css";
 import { SectionNavigation } from "../components/section-navigation";
 import { ScrollHeader } from "../components/scroll-header";
 import { SiteFooter } from "../components/site-footer";
+import { FeedbackWidget, FeedbackLink } from "../components/feedback-widget";
+import "./feedback.css";
 import { PageBackground } from "../components/page-background";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -38,12 +40,13 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <a className="skip-link" href="#main-content">{d.skip}</a>
           <ScrollHeader>
             <Link href="/" className="home-brand" aria-label="NextRocketLaunch home"><BrandMark /><LinkPending /></Link>
-            <DevelopmentBadge />
+            <div className="development-feedback"><DevelopmentBadge /><FeedbackLink placement="header"/></div>
             <SectionNavigation />
             <div className="toolbar-controls"><ThemeToggle /><LanguageSelector /></div>
           </ScrollHeader>
           {children}
           <SiteFooter locale={locale}/>
+          <FeedbackWidget controller={process.env.FEEDBACK_CONTROLLER} contact={process.env.FEEDBACK_PRIVACY_CONTACT}/>
         </LocaleProvider>
       </body>
     </html>

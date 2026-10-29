@@ -89,3 +89,10 @@ def sync_launches(
         raise HTTPException(status_code=503, detail="Launch data is temporarily unavailable.") from error
 
     return result
+
+# Feedback has separate storage and never touches launch or synchronization data.
+from app.feedback import admin as feedback_admin  # noqa: E402
+from app.feedback import router as feedback_router  # noqa: E402
+
+app.include_router(feedback_router)
+app.include_router(feedback_admin)

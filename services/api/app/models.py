@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import JSON, DateTime, String, Text
+from sqlalchemy import JSON, CheckConstraint, DateTime, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -42,3 +42,29 @@ class Launch(Base):
     streams: Mapped[list] = mapped_column(JSON, default=list, server_default="[]")
     mission_links: Mapped[list] = mapped_column(JSON, default=list, server_default="[]")
     source_updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class Feedback(Base):
+    __tablename__ = "feedback"
+    __table_args__ = (
+        CheckConstraint("type IN ('suggestion','bug','opinion')", name="feedback_type"),
+        CheckConstraint("status IN ('new','reviewed','planned','resolved')", name="feedback_status"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    type: Mapped[str] = mapped_column(String(16))
+    message: Mapped[str] = mapped_column(Text)
+    name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    email: Mapped[str | None] = mapped_column(String(254), nullable=True)
+    status: Mapped[str] = mapped_column(String(16), default="new", index=True)
+    payload_digest: Mapped[str] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class FeedbackRateBucket(Base):
+    __tablename__ = "feedback_rate_buckets"
+
+    id: Mapped[str] = mapped_column(String(48), primary_key=True)
+    count: Mapped[int] = mapped_column(default=0)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)

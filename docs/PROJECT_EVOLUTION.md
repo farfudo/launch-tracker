@@ -997,3 +997,20 @@ Validação final para envio: 155 testes unitários/componentes, build, 58 percu
 - Pre-push regression: desktop wheel gestures could remain trapped at list boundaries with the compact panel geometry. Added a boundary-only handoff to document scrolling; native scrolling inside the list and mobile document scrolling remain intact. The existing exact boundary regression passes without assertion changes.
 
 - Authorized main push validation: all 157 unit/component tests, production build, 64 browser tests (8 existing conditional skips), 6 isolated Starship checks and targeted lint passed. Existing scroll regression assertions remain unchanged.
+
+### 2026-10-29 — Feedback Hub MVP (local draft)
+- Added a shared floating feedback button and footer entry, native responsive modal, PT/EN/ES, keyboard/focus handling, independent optional contacts, length counter, server-confirmed success and retry deduplication. Existing launch/countdown/favorites/filter/Explore behavior unchanged.
+- Added FastAPI anonymous intake, isolated feedback/rate-bucket models and Alembic revision `20261029_09`; same-origin bounded web proxy uses only the existing server API origin (optional separate local feedback origin). Intake requires explicit enablement, secret and controller/privacy-contact configuration.
+- PostgreSQL atomic aggregate budgets (24/minute, 500/day) retain no client identifiers; honeypot, capped bodies, generic validation/storage errors, UUID retry keys and keyed payload digests. Retention command clears optional contacts/digests after 30 days and whole records after 180 days.
+- No safe admin identity exists: all administrative API routes fail closed, and the web admin route returns an uncacheable 404 before streaming. A localized admin panel is prepared but unmounted; safe authentication and authorization must precede activation.
+- Activation, privacy/controller review, retention scheduling, migration and admin prerequisites documented in `docs/FEEDBACK_HUB.md`. No production changes, commit or push authorized.
+- Validation so far: 107 API tests, 157 existing web tests, 3 new proxy checks and 16 focused browser journeys passed; production build and focused lint passed. Alembic upgrade succeeded on a new isolated SQLite database; a real proxy-to-API retry created exactly one persistent row. PostgreSQL migration/concurrency validation remains pending because the local Docker daemon is unavailable.
+
+- Final preview validation: desktop/mobile light/dark screenshots and two live browser submissions passed against local isolated storage. Intake form fields lock during a pending request. The additional API failure/configuration checks bring the focused feedback suite to 15 tests.
+
+- Final API regression run: 109 tests passed; Ruff passed on app/tests/new migration. Web build and lint passed after final form changes; 4 feedback journeys re-passed. Existing web unit regression (157), new proxy tests (3), 16 relevant browser checks and 2 real local integration/preview checks passed during this draft.
+
+- Approved placement refinement: moved the feedback entry beside the development badge (below it on mobile), with a message icon and text. Removed the floating button; footer access and the existing modal remain.
+- Header placement validation: build/lint and 10 relevant browser checks passed (feedback, page bounds, responsive header/footer). Preview restarted on port 3345 with the current assets.
+
+- User authorized commit and main push. Final `npm run check:push` passed: 160 web unit/component tests, production build, 68 main browser checks (8 existing conditional skips), and 6 isolated Starship checks. API regression previously passed 109 checks; Ruff passed app/tests/PostgreSQL tests/new migration. Added CI PostgreSQL migration, concurrent retry and atomic-budget regressions; updated the exact expected Alembic head to the new revision. Local PostgreSQL remains unavailable, so those checks await the CI service.
