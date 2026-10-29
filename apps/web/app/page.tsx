@@ -70,11 +70,13 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </div>
         <p className="activity-scope">{control.scope}</p></section>
         <LaunchFilterPanel title={control.filters} active={Boolean(filters.q || filters.agency || filters.vehicle || filters.status || period==='past')}>
-        <div className="filter-panel-heading"><Link className="clear-filters" href={`/?period=${period}#launch-calendar`} scroll={false}>{control.reset}<LinkPending /></Link></div>
+        <div className="filter-panel-heading">
         <nav className="period-tabs" aria-label={t.launchPeriod}>
           <Link href={upcomingHref} scroll={false} aria-current={period === "upcoming" ? "page" : undefined}>{t.upcoming}<LinkPending /></Link>
           <Link href={historyHref} scroll={false} aria-current={period === "past" ? "page" : undefined}>{t.history}<LinkPending /></Link>
         </nav>
+        <Link className="clear-filters" href={`/?period=${period}#launch-calendar`} scroll={false}>{control.reset}<LinkPending /></Link>
+        </div>
         {!hasFilterOptions ? <p role="status" className="launch-meta">{t.filtersUnavailable}</p> : null}
         <SearchForm>
           <input type="hidden" name="period" value={period} />

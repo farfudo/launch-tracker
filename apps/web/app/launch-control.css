@@ -48,7 +48,7 @@
 .mission-control .launch-spotlight .vehicle-visual-frame::after { background:none; }
 .mission-control .launch-spotlight .vehicle-visual figcaption { display:block; }
 .mission-control .launch-activity,.mission-control .calendar-panel { color:var(--text); }
-.launch-filter-panel .filter-panel-heading { display:flex; justify-content:flex-end; margin:-.3rem 0 .5rem; }
+.launch-filter-panel .filter-panel-heading { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem .6rem; margin:0 0 .65rem; }
 .launch-filter-panel .filter-panel-heading .clear-filters { margin:0; min-height:44px; font-size:.8rem; text-decoration:none; }
 /* Compact rhythm follows the reference while retaining visible source credits. */
 .mission-control .launch-spotlight { min-height:380px; }
@@ -60,8 +60,7 @@
 .launch-activity h2 { margin:0 0 .65rem; }
 .launch-activity .activity-scope { font-size:.7rem; margin:.65rem 0 0; }
 .mission-control .launch-filter-panel { position:relative; }
-.launch-filter-panel .filter-panel-heading { position:absolute; top:.65rem; right:1.1rem; margin:0; }
-.launch-filter-panel[open] > summary { max-width:calc(100% - 4rem); }
+.launch-filter-panel .filter-panel-heading { position:static; }
 @media(max-width:700px) { .mission-control .launch-spotlight { min-height:380px; } }
 /* Keep attribution above the photograph wash and clear of the primary action. */
 .mission-control .launch-spotlight > .vehicle-visual { z-index:0; }
@@ -117,3 +116,5 @@ html[data-theme="dark"] .mission-control .launch-quick-actions .launch-watch-but
 /* Compact gap between the calendar heading and its view controls. */
 .mission-control .calendar-panel > .section-heading { margin-bottom:.25rem; }
 .mission-control .calendar-panel > .favorite-views { margin-top:.25rem; margin-bottom:.6rem; }
+
+.launch-filter-panel .filter-panel-heading .period-tabs { flex:1 1 180px; margin:0; min-width:0; }

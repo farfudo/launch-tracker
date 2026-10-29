@@ -984,3 +984,16 @@ Validação final para envio: 155 testes unitários/componentes, build, 58 percu
 - Investigating the reported mobile photo-information interaction using real-photo fixtures; no list layout or launch behavior changes, and no commit/push authorization for this draft.
 - Confirmed against real-photo fixtures with long credits: warning and photo-credit panels remain above all neighbouring images (nine hit-test points per panel), open by mobile touch, fit the viewport and close with Escape with focus restored. Desktop/mobile and light/dark passed. Six shared browser interaction checks, six focused component checks and production build passed; added a persistent top-layer assertion to the shared disclosure browser regression. Preview on port 3345 uses fictional missions with NASA reference photography.
 - User approved commit/push. Final `npm run check:push` passed: 157 unit/component tests, production build, 62 main browser tests (8 existing conditional skips) and 6 isolated Starship tests. No tests disabled or weakened.
+
+### 2026-10-29 — Filter disclosure motion (local draft)
+- Removed absolute positioning from “Reset” inside the Launches filter panel; it now follows the expandable heading in normal flow and cannot overlap the trigger.
+- Applied one smooth content-height transition to all native expandable sections across the site, including the separately styled live-stream disclosure. The browser interpolates intrinsic height; reduced-motion preference disables the animation.
+- Added a desktop/mobile browser regression for reset placement, an in-progress intrinsic-height interpolation, the shared transition timing and reduced-motion behavior. Production build, targeted lint, whitespace validation and both browser project runs passed; previews captured at 1440px and 390px. No behavior or tests outside the disclosure UX were changed.
+
+- Follow-up review: intrinsic-size interpolation now also applies to stream disclosures; verified intermediate heights during both opening and closing on desktop/mobile. Production build and both focused browser regressions passed. Draft remains uncommitted.
+
+- Visual refinement: Reset now shares the period-navigation row inside the expanded filters, with wrapping at narrow widths, removing its isolated row.
+
+- Pre-push regression: desktop wheel gestures could remain trapped at list boundaries with the compact panel geometry. Added a boundary-only handoff to document scrolling; native scrolling inside the list and mobile document scrolling remain intact. The existing exact boundary regression passes without assertion changes.
+
+- Authorized main push validation: all 157 unit/component tests, production build, 64 browser tests (8 existing conditional skips), 6 isolated Starship checks and targeted lint passed. Existing scroll regression assertions remain unchanged.

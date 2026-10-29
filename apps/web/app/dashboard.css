@@ -382,9 +382,11 @@ html[data-theme="dark"] .stream-unavailable .stream-button-unavailable { backgro
 html[data-theme="dark"] { --disclosure-surface: #1d3534; --disclosure-border: #527d74; }
 .calendar-panel, .selected-mission-panel, .mission-panel, .mission-fact-card { box-shadow: 0 4px 16px #1529230c; }
 html[data-theme="dark"] :is(.calendar-panel,.selected-mission-panel,.mission-panel,.mission-fact-card) { box-shadow: 0 4px 16px #0000001f; }
+details { interpolate-size: allow-keywords; }
+details:not(.stream-disclosure) { transition: background-color .26s ease, border-color .26s ease, box-shadow .26s ease; }
 details:not(.stream-disclosure) > summary { display: flex; align-items: center; justify-content: space-between; gap: .8rem; min-height: 44px; box-sizing: border-box; padding: .65rem .85rem; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface-raised); color: var(--text); cursor: pointer; list-style: none; font-size: .85rem; font-weight: 600; }
 details:not(.stream-disclosure) > summary::-webkit-details-marker { display: none; }
-details:not(.stream-disclosure) > summary::after { content: "⌄"; margin-left: auto; font-size: 1.1rem; line-height: 1; transition: transform .18s ease; }
+details:not(.stream-disclosure) > summary::after { content: "⌄"; margin-left: auto; font-size: 1.1rem; line-height: 1; transition: transform .26s cubic-bezier(.2,.7,.2,1); }
 details:not(.stream-disclosure)[open] { padding: .75rem; border: 1px solid var(--disclosure-border); border-radius: 15px; background: var(--disclosure-surface); }
 details:not(.stream-disclosure)[open] > summary { border-color: var(--disclosure-border); background: var(--accent-soft); color: var(--accent-strong); }
 details:not(.stream-disclosure)[open] > summary::after { transform: rotate(180deg); }
@@ -394,7 +396,14 @@ details:not(.stream-disclosure) > summary:focus-visible { outline: 3px solid var
 .mission-share[open] .mission-share-content { margin: 0; padding: .85rem 0 0; border: 0; background: transparent; }
 .mission-calendar[open] .mission-calendar-options a { background: var(--surface-raised); }
 .advanced-filters[open] > :not(summary) { margin-top: .8rem; }
-@media (prefers-reduced-motion: reduce) { details:not(.stream-disclosure) > summary::after { transition: none; } }
+@supports selector(details::details-content) {
+  details::details-content { block-size:0; overflow:clip; transition:block-size .26s cubic-bezier(.2,.7,.2,1), content-visibility .26s allow-discrete; }
+  details[open]::details-content { block-size:auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  details:not(.stream-disclosure), details::details-content,
+  details:not(.stream-disclosure) > summary::after { transition:none !important; }
+}
 
 @media (min-width: 801px) {
   .launch-dashboard > .calendar-panel { display: flex; flex-direction: column; align-self: stretch; min-height: 0; max-height: none; contain: size; overflow: hidden; }
