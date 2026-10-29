@@ -86,3 +86,21 @@
 .launch-watch-button:hover,.launch-watch-button:focus-visible { background:#ffab70; outline-color:#e95720; }
 html[data-theme="dark"] .launch-watch-button { background:#ff934f; border-color:#ffb36b; color:#14232f; }
 html[data-theme="dark"] .launch-watch-button:hover,html[data-theme="dark"] .launch-watch-button:focus-visible { background:#ffb36b; outline-color:#ffb36b; }
+/* Minimal actions within the existing card. */
+.mission-control .launch-quick-actions { gap:4px; flex-wrap:nowrap; justify-content:flex-end; }
+.mission-control .launch-quick-actions .favorite-action { flex:0 0 auto; }
+.mission-control .launch-quick-actions .quick-action { display:inline-grid; place-items:center; width:44px; min-width:44px; height:44px; min-height:44px; padding:0; border:1px solid transparent; border-radius:10px; background:var(--surface); color:var(--text-soft); cursor:pointer; transition:background .15s,color .15s; }
+.mission-control .launch-quick-actions .quick-action:hover { background:var(--accent-soft); color:var(--accent-strong); }
+.mission-control .launch-quick-actions .quick-action:focus-visible { outline:2px solid var(--accent-strong); outline-offset:2px; }
+.mission-control .launch-quick-actions .quick-action:active { transform:scale(.95); }
+.mission-control .launch-quick-actions .quick-action[aria-disabled="true"],.mission-control .launch-quick-actions .quick-action:disabled { opacity:.5; cursor:not-allowed; }
+.mission-control .launch-quick-actions [aria-pressed="true"] svg { fill:currentColor; }
+.mission-control .launch-quick-actions [aria-pressed="true"] { color:var(--accent-strong); }
+.mission-control .launch-quick-actions .launch-watch-button { color:#c34e10; background:#ff8a3d18; }
+.quick-share { position:relative; }
+.quick-share-error { position:absolute; z-index:5; right:0; width:230px; padding:1rem; border:1px solid var(--border); border-radius:10px; background:var(--surface-raised); }
+.quick-share-error input { width:100%; }
+@media(min-width:1101px) { .mission-control .calendar-panel .launch-list > .launch-card { grid-template-columns:75px minmax(0,1fr) 188px; } }
+@media(max-width:1100px) { .mission-control .launch-row-actions { flex-wrap:wrap; }.mission-control .launch-quick-actions { margin-left:auto; } }
+@media(max-width:360px) { .mission-control .launch-row-actions { grid-column:1/-1; } }
+html[data-theme="dark"] .mission-control .launch-quick-actions .launch-watch-button { color:#ffab70; }

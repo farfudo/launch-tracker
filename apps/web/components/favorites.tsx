@@ -5,7 +5,8 @@ import { useMemo, useState, useSyncExternalStore } from "react";
 import { parseFavorites, readFavorites, subscribeFavorites, toggleFavorite } from "../lib/favorites";
 import type { Launch } from "../lib/api";
 import { VehicleVisual } from "./vehicle-visual";
-import { LaunchWatchButton } from "./launch-watch-button";
+import { LaunchQuickActions } from "./launch-quick-actions";
+import { QuickActionIcon } from "./quick-action-icon";
 import { Countdown } from "./countdown";
 import { LocalLaunchDate } from "./local-launch-date";
 import { dashboardCopy } from "../lib/dashboard-i18n";
@@ -20,16 +21,17 @@ export function useFavorites() {
   return { ids: useMemo(() => parseFavorites(raw), [raw]), ready: raw !== null };
 }
 
-export function FavoriteButton({ id, name }: { id: string; name: string }) {
+export function FavoriteButton({ id, name, iconOnly = false }: { id: string; name: string; iconOnly?: boolean }) {
   const { messages: t } = useLocale();
   const { ids, ready } = useFavorites();
   const [error, setError] = useState(false);
   const selected = ids.includes(id);
   return <div className="favorite-action">
-    <button className="favorite-button" type="button" disabled={!ready} aria-pressed={selected}
+    <button className={`favorite-button${iconOnly ? " quick-action" : ""}`} type="button" disabled={!ready} aria-pressed={selected}
       aria-label={`${selected ? t.removeFavorite : t.addFavorite}: ${name}`}
-      onClick={() => setError(!toggleFavorite(id))}>
-      {ready ? <span aria-hidden="true">{selected ? "★" : "☆"}</span> : <Spinner />} {selected ? t.savedFavorite : t.addFavorite}
+      title={`${selected ? t.removeFavorite : t.addFavorite}: ${name}`}
+      onClick={event => { event.stopPropagation(); setError(!toggleFavorite(id)); }}>
+      {ready ? iconOnly ? <QuickActionIcon kind="star"/> : <span aria-hidden="true">{selected ? "★" : "☆"}</span> : <Spinner />} {iconOnly ? null : selected ? t.savedFavorite : t.addFavorite}
     </button>
     {error ? <p role="alert">{t.favoriteError}</p> : null}
   </div>;
@@ -62,7 +64,7 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, histor
         <span className="row-detail-link">{d.viewDetails} →<LinkPending /></span>
         {selection?.selected?.id === launch.id ? <span className="mission-selected-label">{d.selectedMission}</span> : null}
       </Link>
-      <div className="launch-row-actions">{historical ? null : <Countdown date={launch.net} precision={launch.net_precision} status={launch.status} compact={index !== 0 && selection?.selected?.id !== launch.id} />}<div className="launch-row-buttons"><FavoriteButton id={launch.id} name={launch.name} />{showWatch ? <LaunchWatchButton launch={launch}/> : null}</div></div>
+      <div className="launch-row-actions">{historical ? null : <Countdown date={launch.net} precision={launch.net_precision} status={launch.status} compact={index !== 0 && selection?.selected?.id !== launch.id} />}<LaunchQuickActions launch={launch} showWatch={showWatch}/></div>
     </article>)}</div> : <article className="launch-card">
       <h3>{favoritesOnly ? ids.length ? t.noFavoriteMatches : t.noFavorites : emptyCache ? t.emptyTitle : t.noResults}</h3>
       <p>{favoritesOnly ? t.favoriteEmptyBody : emptyCache ? t.emptyBody : t.noResultsBody}</p>
