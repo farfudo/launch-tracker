@@ -57,3 +57,14 @@ test('icon actions fit 1440, 390 and 320 in every locale and theme',async({page,
   }
  }
 });
+test('broadcast discovery does not resize the card or shift the scroll area',async({page})=>{
+ await page.setViewportSize({width:900,height:900});
+ let release!:()=>void;const gate=new Promise<void>(resolve=>{release=resolve;});
+ await page.route('**/api/missions/e2e-falcon',async route=>{await gate;await route.continue();});
+ await page.goto('/');
+ const row=page.locator('.launch-card').filter({hasText:'Falcon 9 | Test Starlink'}).first();
+ await row.locator('.launch-quick-actions').scrollIntoViewIfNeeded();
+ const before=await row.boundingBox();
+ release();await expect(row.locator('.launch-watch-button')).toBeVisible();
+ expect((await row.boundingBox())!.height).toBe(before!.height);
+});

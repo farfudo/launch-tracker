@@ -112,3 +112,5 @@ html[data-theme="dark"] .mission-control .launch-quick-actions .launch-watch-but
 .mission-control .launch-heading-with-info .frontend-cache-notice > [role="status"]:not(:empty) { max-width:30ch; }
 .mission-control .favorites-view-with-info { display:inline-flex; align-items:center; gap:.25rem; min-width:0; }
 .mission-control .favorite-views { align-items:center; flex-wrap:wrap; }
+/* Reserve the action row before broadcast discovery to avoid scroll/layout jumps. */
+.mission-control .launch-quick-actions { width:188px; min-width:188px; }
