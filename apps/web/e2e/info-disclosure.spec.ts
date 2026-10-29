@@ -10,6 +10,7 @@ test('supplementary notes open by pointer or touch and keep credits separate',as
   await expect(panel).not.toBeVisible();
   if(isMobile) await trigger.tap(); else await trigger.hover();
   await expect(panel).toBeVisible();
+  expect(await panel.evaluate(element=>element.matches(':popover-open'))).toBe(true);
   const box=await panel.boundingBox();
   expect(box!.x).toBeGreaterThanOrEqual(0);
   expect(box!.x+box!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
