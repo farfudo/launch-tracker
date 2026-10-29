@@ -68,3 +68,13 @@ class FeedbackRateBucket(Base):
     id: Mapped[str] = mapped_column(String(48), primary_key=True)
     count: Mapped[int] = mapped_column(default=0)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+
+
+class AdminSession(Base):
+    __tablename__ = "admin_sessions"
+
+    token_digest: Mapped[str] = mapped_column(String(64), primary_key=True)
+    credential_version: Mapped[str] = mapped_column(String(64))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)

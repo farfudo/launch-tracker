@@ -1,0 +1,2 @@
+import {authenticatedRequest,denied,privateHeaders,upstreamFailure} from '../../../../lib/admin-auth';
+export async function GET(request:Request){const query=new URL(request.url).searchParams;const params=new URLSearchParams();for(const key of ['type','status','offset'])if(query.has(key))params.set(key,query.get(key)!);const r=await authenticatedRequest(`feedback?${params}`);if(!r.ok)return upstreamFailure(r.status);try{return Response.json(await r.json(),{headers:privateHeaders});}catch{return denied(503);}}

@@ -2,13 +2,14 @@
 import hashlib
 import hmac
 import json
+import logging
 import os
 import re
 from datetime import UTC, datetime, timedelta
 from typing import Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 from sqlalchemy import delete, func, select, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
@@ -17,6 +18,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from starlette.concurrency import run_in_threadpool
 
+from app.admin_auth import require_admin
 from app.db import get_db
 from app.models import Feedback, FeedbackRateBucket
 
@@ -116,12 +118,7 @@ async def submit_feedback(request: Request, db: Session = Depends(get_db)):
     return await run_in_threadpool(store_feedback, db, data, identifier, secret)
 
 
-def admin_unavailable():
-    # No secure administrative identity exists in this application yet. Fail closed.
-    raise HTTPException(503, "Administrative access is not enabled.")
-
-
-admin = APIRouter(prefix="/admin/feedback", dependencies=[Depends(admin_unavailable)],
+admin = APIRouter(prefix="/admin/feedback", dependencies=[Depends(require_admin)],
                   tags=["feedback administration"])
 
 
@@ -136,8 +133,11 @@ def public_admin_item(item: Feedback):
 
 
 @admin.get("")
-def list_feedback(status: str | None = None, type: str | None = None,
-                  offset: int = 0, db: Session = Depends(get_db)):
+def list_feedback(
+    status: Literal["new", "reviewed", "planned", "resolved"] | None = None,
+    type: Literal["suggestion", "bug", "opinion"] | None = None,
+    offset: int = Query(default=0, ge=0, le=100000), db: Session = Depends(get_db),
+):
     query = select(Feedback)
     if status:
         query = query.where(Feedback.status == status)
@@ -157,11 +157,32 @@ def get_feedback(identifier: str, db: Session = Depends(get_db)):
     return public_admin_item(item)
 
 
-@admin.patch("/{identifier}")
-def update_feedback(identifier: str, data: StatusUpdate, db: Session = Depends(get_db)):
+def apply_status(db, identifier, data):
     item = db.get(Feedback, identifier)
     if not item:
         raise HTTPException(404, "Not found.")
     item.status, item.updated_at = data.status, datetime.now(UTC)
-    db.commit()
+    try:
+        db.commit()
+    except SQLAlchemyError:
+        db.rollback()
+        raise HTTPException(503, "Administrative request unavailable.") from None
+    logging.getLogger(__name__).info("admin_feedback_status_changed id=%s status=%s",
+                                     identifier, data.status)
     return public_admin_item(item)
+
+
+@admin.patch("/{identifier}")
+async def update_feedback(identifier: str, request: Request, db: Session = Depends(get_db)):
+    if request.headers.get("content-type", "").split(";")[0] != "application/json":
+        raise HTTPException(415, "JSON required.")
+    body = bytearray()
+    async for chunk in request.stream():
+        body.extend(chunk)
+        if len(body) > 1024:
+            raise HTTPException(413, "Request too large.")
+    try:
+        data = StatusUpdate.model_validate_json(body)
+    except ValidationError:
+        raise HTTPException(422, "Invalid status.") from None
+    return await run_in_threadpool(apply_status, db, identifier, data)

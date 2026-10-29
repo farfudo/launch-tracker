@@ -17,6 +17,7 @@ import { ScrollHeader } from "../components/scroll-header";
 import { SiteFooter } from "../components/site-footer";
 import { FeedbackWidget, FeedbackLink } from "../components/feedback-widget";
 import "./feedback.css";
+import "./admin.css";
 import { PageBackground } from "../components/page-background";
 
 export async function generateMetadata(): Promise<Metadata> {

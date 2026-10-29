@@ -96,3 +96,17 @@ from app.feedback import router as feedback_router  # noqa: E402
 
 app.include_router(feedback_router)
 app.include_router(feedback_admin)
+
+from app.admin_auth import router as admin_auth_router  # noqa: E402
+
+app.include_router(admin_auth_router)
+
+
+@app.middleware("http")
+async def private_admin_headers(request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith("/admin/"):
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["X-Robots-Tag"] = "noindex, nofollow"
+        response.headers["Referrer-Policy"] = "no-referrer"
+    return response

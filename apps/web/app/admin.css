@@ -1,0 +1,19 @@
+.admin-page { width:min(960px,calc(100% - 2rem)); margin:2rem auto; padding:1.5rem; border:1px solid var(--border); border-radius:18px; background:var(--surface-raised); color:var(--text); box-sizing:border-box; }
+.admin-login { max-width:440px; }
+.admin-page h1 { font-size:1.6rem; line-height:1.25; letter-spacing:-.025em; margin:0 0 1rem; }
+.admin-page h2 { font-size:1rem; margin:.3rem 0; }
+.admin-page fieldset { display:grid; gap:.65rem; border:0; padding:0; margin:0; min-width:0; }
+.admin-page :is(input,select,button) { min-height:44px; box-sizing:border-box; border:1px solid var(--border-strong); border-radius:9px; padding:.65rem .85rem; font:inherit; color:var(--text); background:var(--surface); max-width:100%; }
+.admin-page input { width:100%; }
+.admin-page button { cursor:pointer; color:var(--accent-strong); font-weight:600; }
+.admin-page :disabled { opacity:.6; cursor:default; }
+.admin-page :focus-visible { outline:3px solid var(--accent-strong); outline-offset:3px; }
+.admin-page label { font-weight:600; }
+.admin-page .feedback-panel { padding:0; }
+.admin-page .feedback-panel > label { display:inline-grid; gap:.35rem; margin:0 1rem 1rem 0; }
+.admin-page article { padding:1rem; margin:1rem 0; background:var(--surface); border:1px solid var(--border); border-radius:12px; overflow-wrap:anywhere; }
+.admin-page article p { line-height:1.65; }
+.admin-page time { color:var(--text-soft); font-size:.8rem; }
+.admin-page [role="alert"]:empty { display:none; }
+.admin-toolbar,.admin-pagination { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+@media(max-width:480px) { .admin-page { padding:1rem; margin:1rem auto; }.admin-page :is(input,select) { font-size:16px; }.admin-page .feedback-panel > label { display:grid; margin-right:0; } }

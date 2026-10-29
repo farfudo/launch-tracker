@@ -1,0 +1,2 @@
+import {authenticatedRequest,clearAdminCookie,denied,privateHeaders,upstreamFailure} from '../../../../lib/admin-auth';
+export async function GET(){const r=await authenticatedRequest('auth/session');if(!r.ok){if(r.status===401)await clearAdminCookie();return upstreamFailure(r.status);}try{const s=await r.json();return Response.json({csrf:s.csrf,expires_at:s.expires_at},{headers:privateHeaders});}catch{return denied(503);}}

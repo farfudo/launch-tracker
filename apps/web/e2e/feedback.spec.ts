@@ -11,7 +11,7 @@ test('feedback validates, survives failure, prevents duplicates and confirms onl
  await expect(dialog.getByRole('status')).toContainText('has been received');expect(calls).toBe(2);expect(keys[0]).toBe(keys[1]);
  await dialog.getByRole('button',{name:'Close feedback'}).click();await expect(dialog).not.toBeVisible();
  await expect(page.getByRole('button',{name:'Give Feedback',exact:true}).first()).toBeFocused();
- const denied=await page.goto('/admin/feedback');expect(denied?.status()).toBe(404);
+ await page.goto('/admin/feedback');await expect(page).toHaveURL(/\/admin\/login$/);await expect(page.getByRole('textbox',{name:'Username'})).toBeDisabled();
 });
 test('feedback is translated, keyboard accessible and fits small viewports',async({page})=>{
  for(const [locale,open,title] of [['pt-PT','Dar feedback','Ajuda a melhorar o NextRocketLaunch'],['en-GB','Give Feedback','Help improve NextRocketLaunch'],['es-ES','Dar feedback','Ayuda a mejorar NextRocketLaunch']]){

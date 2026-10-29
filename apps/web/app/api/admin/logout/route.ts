@@ -1,0 +1,2 @@
+import {authenticatedRequest,clearAdminCookie,denied,privateHeaders,sameAdminOrigin,upstreamFailure} from '../../../../lib/admin-auth';
+export async function POST(request:Request){if(!sameAdminOrigin(request)||!(/^[a-f0-9]{64}$/.test(request.headers.get('x-csrf-token')??'')))return denied(403);const r=await authenticatedRequest('auth/logout',{method:'POST',csrf:request.headers.get('x-csrf-token')??''});if(r.ok||r.status===401){await clearAdminCookie();return new Response(null,{status:204,headers:privateHeaders});}return upstreamFailure(r.status);}

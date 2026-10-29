@@ -15,11 +15,11 @@
 - Receipts allow a visitor to refer to a submission for access/deletion requests; they do not authenticate ownership. Verify requests proportionately before disclosing personal information; anonymous deletion can be processed conservatively by the controller. Responses should use the supplied optional email only for that feedback conversation.
 - Privacy reference reviewed: [European Commission — GDPR principles](https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/principles-gdpr_en), including minimisation, transparency and storage limitation. This draft's retention durations are product choices, not periods prescribed by GDPR.
 
-## Administration deliberately unavailable
-No safe administrative login/identity exists in this repository. The synchronization secret grants a different capability and is not reused.
-- `GET /admin/feedback`, `GET /admin/feedback/{id}` and `PATCH /admin/feedback/{id}` all fail closed (503), independent of headers, until `admin_unavailable` is replaced with a reviewed authentication + authorization dependency.
-- Web `/admin/feedback` always returns 404, with noindex metadata. `FeedbackAdminPanel` is prepared but unmounted: date order, filters, pending count, full text/contacts and status callback, localized PT/EN/ES. No administrator data is embedded in public pages, no frontend admin key exists.
-- Activation requires an actual server-side authenticated session or verified identity provider, restricted admin role, CSRF protection on authenticated state changes, no-store protected data transport, secure cookie/session settings, audit events containing only actor/record/status identifiers and access tests. Wire the prepared panel only after that review. Do not simply remove the denial dependency or hide the URL.
+## Private administration (follow-up local draft)
+
+A single-administrator login and revocable PostgreSQL sessions are now implemented on the same branch. Administrative routes remain closed unless explicitly configured. The old always-denied placeholder has been replaced by server-side session authorization; no production configuration or deployment has been performed.
+
+See [FEEDBACK_ADMIN.md](FEEDBACK_ADMIN.md) for the Render/Vercel architecture, all server-only environment settings, interactive password-hash generation, migration `20261029_10`, secure cookies, CSRF, shared login limits, activation and recovery. Public intake is unchanged. Do not enable the panel by exposing a frontend key or simply hiding its URL.
 
 ## Validation and preview
 API tests cover four optional-contact combinations, persistence, malformed email/length/status, honeypot, body size, shared limits, retry deduplication/conflict, retention and default-denied administration. Browser tests cover server-confirmed success, network retry with the same key, disabled double submit, focus return, mobile sizing and translations. PostgreSQL-specific migration/concurrency checks remain required when a local PostgreSQL instance is available; Docker was unavailable during this draft.
