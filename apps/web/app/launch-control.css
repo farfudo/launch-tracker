@@ -104,3 +104,11 @@ html[data-theme="dark"] .launch-watch-button:hover,html[data-theme="dark"] .laun
 @media(max-width:1100px) { .mission-control .launch-row-actions { flex-wrap:wrap; }.mission-control .launch-quick-actions { margin-left:auto; } }
 @media(max-width:360px) { .mission-control .launch-row-actions { grid-column:1/-1; } }
 html[data-theme="dark"] .mission-control .launch-quick-actions .launch-watch-button { color:#ffab70; }
+/* Keep supplementary data beside the heading, without a separate empty row. */
+.mission-control .launch-heading-with-info { display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; min-width:0; }
+.mission-control .launch-heading-with-info h2 { margin:0; }
+.mission-control .launch-heading-with-info .frontend-cache-notice { margin:0; }
+.mission-control .launch-heading-with-info .frontend-cache-notice > [role="status"]:empty { display:none; }
+.mission-control .launch-heading-with-info .frontend-cache-notice > [role="status"]:not(:empty) { max-width:30ch; }
+.mission-control .favorites-view-with-info { display:inline-flex; align-items:center; gap:.25rem; min-width:0; }
+.mission-control .favorite-views { align-items:center; flex-wrap:wrap; }

@@ -111,13 +111,8 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       </div>
       <section className="calendar-panel" id="launch-calendar" aria-labelledby="next-launch-heading">
         <div className="section-heading">
-          <div>
+          <div className="launch-heading-with-info">
             <h2 id="next-launch-heading">{period === "past" ? t.history : t.upcoming}</h2>
-          </div>
-          <span className="status">
-            {!hasLaunchData ? t.dataUnavailable : !dataStatus || !statusConfirmed ? freshnessCopy[locale].unknown : dataStatus.cached_launches === 0 ? t.awaitingData : dataStatus?.stale ? t.staleData : t.launchCalendar}
-          </span>
-        </div>
         <CacheNotice entries={cacheEntries} compact>
         {hasLaunchData && dataStatus?.last_updated_at ? (
           <p className="launch-meta">
@@ -127,10 +122,16 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         ) : null}
         <p className="launch-meta">{period === "past" ? t.historyNotice : t.upcomingNotice}</p>
         </CacheNotice>
+          </div>
+          <span className="status">
+            {!hasLaunchData ? t.dataUnavailable : !dataStatus || !statusConfirmed ? freshnessCopy[locale].unknown : dataStatus.cached_launches === 0 ? t.awaitingData : dataStatus?.stale ? t.staleData : t.launchCalendar}
+          </span>
+        </div>
+
         {dataStatus?.stale ? <p className="launch-meta" role="status">{t.staleNotice}</p> : null}
         <nav className="favorite-views" aria-label={t.calendarView}>
           <Link href={allHref} scroll={false} aria-current={!favoritesOnly ? "page" : undefined}>{t.allLaunches}<LinkPending /></Link>
-          <Link href={favoritesHref} scroll={false} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}<LinkPending /></Link>
+          <div className="favorites-view-with-info"><Link href={favoritesHref} scroll={false} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}<LinkPending /></Link><InfoDisclosure label={d.privacy}>{t.favoritePrivacy}</InfoDisclosure></div>
         </nav>
         <LaunchResultsScroll>
         {hasLaunchData ? (

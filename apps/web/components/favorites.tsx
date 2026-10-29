@@ -6,7 +6,6 @@ import { parseFavorites, readFavorites, subscribeFavorites, toggleFavorite } fro
 import type { Launch } from "../lib/api";
 import { VehicleVisual } from "./vehicle-visual";
 import { LaunchQuickActions } from "./launch-quick-actions";
-import { InfoDisclosure } from "./info-disclosure";
 import { QuickActionIcon } from "./quick-action-icon";
 import { Countdown } from "./countdown";
 import { LocalLaunchDate } from "./local-launch-date";
@@ -71,6 +70,5 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, histor
       <p>{favoritesOnly ? t.favoriteEmptyBody : emptyCache ? t.emptyBody : t.noResultsBody}</p>
     </article>}
     {visible.length > limit ? <button className="load-more" type="button" onClick={() => setLimit(value => value + 6)}>{d.loadMore} ({visible.length - limit})</button> : null}
-    <div className="favorites-privacy"><InfoDisclosure label={d.privacy}>{t.favoritePrivacy}</InfoDisclosure></div>
   </>;
 }
