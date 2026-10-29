@@ -7,7 +7,7 @@ import { useLocale } from "./locale-provider";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { formatLaunchStatus, launchTimingStatus } from "../lib/launch";
 
-export function Countdown({ date, status, precision, compact = false, respectPrecision = false }: { date: string; status?: string; precision?: NetPrecision | null; compact?: boolean; respectPrecision?: boolean }) {
+export function Countdown({ date, status, precision, compact = false, respectPrecision = false, showReferenceSeconds = false }: { date: string; status?: string; precision?: NetPrecision | null; compact?: boolean; respectPrecision?: boolean; showReferenceSeconds?: boolean }) {
   const [now, setNow] = useState<number | null>(null);
   const { locale } = useLocale();
   const d = dashboardCopy[locale];
@@ -26,11 +26,11 @@ export function Countdown({ date, status, precision, compact = false, respectPre
   const estimated = timing !== 'scheduled' || precisionLevel === null || precisionLevel > 0;
   if (now !== null && now >= target) return <p className="countdown-note">{estimated ? d.unconfirmed : d.elapsed}</p>;
   if (respectPrecision && (precisionLevel === null || precisionLevel > 2)) return <p className="countdown-note">{d.unconfirmed}</p>;
-  const quantum=respectPrecision ? precisionLevel===1?60000:precisionLevel===2?3600000:1000 : 1000;
-  const countdownTarget=respectPrecision ? Math.floor(target/quantum)*quantum : target;
-  const seconds = now === null ? null : Math.max(0, respectPrecision ? Math.floor((countdownTarget-now)/quantum)*quantum/1000 : Math.ceil((target-now)/1000));
+  const quantum=respectPrecision && !showReferenceSeconds ? precisionLevel===1?60000:precisionLevel===2?3600000:1000 : 1000;
+  const countdownTarget=respectPrecision && !showReferenceSeconds ? Math.floor(target/quantum)*quantum : target;
+  const seconds = now === null ? null : Math.max(0, respectPrecision && !showReferenceSeconds ? Math.floor((countdownTarget-now)/quantum)*quantum/1000 : Math.ceil((target-now)/1000));
   const parts = seconds === null ? [null, null, null, null] : [Math.floor(seconds / 86400), Math.floor(seconds / 3600) % 24, Math.floor(seconds / 60) % 60, seconds % 60];
-  const visibleParts=respectPrecision?parts.slice(0,precisionLevel===1?3:precisionLevel===2?2:4):parts;
+  const visibleParts=respectPrecision && !showReferenceSeconds?parts.slice(0,precisionLevel===1?3:precisionLevel===2?2:4):parts;
   return <div className={compact ? "countdown-group countdown-compact" : "countdown-group"}><div className="countdown" role="timer" aria-label={d.timer} aria-live="off">
     {visibleParts.map((value, index) => <div key={index}><strong>{value === null ? "—" : String(value).padStart(2, "0")}</strong><span>{[d.days, d.hours, d.mins, d.secs][index]}</span></div>)}
   </div></div>;

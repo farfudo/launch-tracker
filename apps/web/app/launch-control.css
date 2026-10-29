@@ -114,3 +114,6 @@ html[data-theme="dark"] .mission-control .launch-quick-actions .launch-watch-but
 .mission-control .favorite-views { align-items:center; flex-wrap:wrap; }
 /* Reserve the action row before broadcast discovery to avoid scroll/layout jumps. */
 .mission-control .launch-quick-actions { width:188px; min-width:188px; }
+/* Compact gap between the calendar heading and its view controls. */
+.mission-control .calendar-panel > .section-heading { margin-bottom:.25rem; }
+.mission-control .calendar-panel > .favorite-views { margin-top:.25rem; margin-bottom:.6rem; }

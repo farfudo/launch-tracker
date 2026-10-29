@@ -3,7 +3,7 @@
 import {useEffect, useId, useRef, useState, type ReactNode} from "react";
 
 /** Supplementary information, available by pointer, keyboard and touch. */
-export function InfoDisclosure({label, children, symbol="ⓘ"}: {label:string; children:ReactNode; symbol?:string}) {
+export function InfoDisclosure({label, children, symbol="ⓘ"}: {label:string; children:ReactNode; symbol?:ReactNode}) {
   const id=useId();
   const [open,setOpen]=useState(false);
   const wrapper=useRef<HTMLSpanElement>(null);

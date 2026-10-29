@@ -71,3 +71,21 @@ it("preserves source precision in the spotlight without changing list counters",
   expect(container.querySelectorAll('[role="timer"] strong')).toHaveLength(4);
  } finally {await act(async()=>root.unmount());}
 });
+
+it("ticks spotlight reference seconds for minute/hour NET while broad dates stay guarded", async () => {
+ const {vi}=await import('vitest');vi.useFakeTimers();vi.setSystemTime(new Date('2099-01-01T11:59:58.100Z'));
+ const container=document.createElement('div');const root=createRoot(container);
+ try {
+  for(const id of [1,2]){
+   await act(async()=>root.render(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T12:00:00Z" status="TBC" precision={{id}} respectPrecision showReferenceSeconds/></LocaleProvider>));
+   expect(container.querySelectorAll('[role="timer"] strong')).toHaveLength(4);
+   expect(container.querySelectorAll('[role="timer"] strong')[3].textContent).toBe('02');
+  }
+  await act(async()=>vi.advanceTimersByTime(1000));
+  expect(container.querySelectorAll('[role="timer"] strong')[3].textContent).toBe('01');
+  for(const id of [3,5,7,16]){
+   await act(async()=>root.render(<LocaleProvider locale="en-GB"><Countdown date="2099-01-01T12:00:00Z" status="TBC" precision={{id}} respectPrecision showReferenceSeconds/></LocaleProvider>));
+   expect(container.querySelector('[role="timer"]')).toBeNull();
+  }
+ } finally {await act(async()=>root.unmount());vi.useRealTimers();}
+});
