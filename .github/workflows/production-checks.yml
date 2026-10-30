@@ -2,12 +2,17 @@ name: Production readiness
 
 on:
   deployment_status:
+  workflow_run:
+    workflows: ['Continuous integration']
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
   schedule:
     - cron: '41 * * * *'
 
 permissions:
   contents: read
+  statuses: read
 
 concurrency:
   group: production-readiness
@@ -18,11 +23,12 @@ jobs:
     # Explicit activation after reviewing production targets and notification delivery.
     if: >-
       vars.OPERATIONS_CHECKS_ENABLED == 'true' &&
+      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') &&
       (github.event_name != 'deployment_status' ||
        (github.event.deployment_status.state == 'success' &&
         github.event.deployment.environment == 'Production'))
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
         with:
@@ -31,9 +37,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Wait for Vercel after main CI when deployment events are unavailable
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECK_SHA: ${{ github.event.workflow_run.head_sha }}
+          CHECK_REPOSITORY: ${{ github.repository }}
+        run: |
+          for attempt in $(seq 1 12); do
+            state=$(gh api "repos/$CHECK_REPOSITORY/commits/$CHECK_SHA/status" --jq '[.statuses[] | select(.context == "Vercel")][0].state // "pending"')
+            if [ "$state" = 'success' ]; then exit 0; fi
+            if [ "$state" = 'failure' ] || [ "$state" = 'error' ]; then
+              echo 'Vercel deployment failed'; exit 1
+            fi
+            sleep 20
+          done
+          echo 'Vercel deployment readiness not confirmed'; exit 1
       - name: Check deployed pages, configuration and authorization
         env:
-          CHECK_FRESHNESS: ${{ github.event_name != 'deployment_status' }}
+          CHECK_FRESHNESS: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         run: |
           if [ "$CHECK_FRESHNESS" = 'true' ]; then
             python scripts/verify-production.py --freshness
