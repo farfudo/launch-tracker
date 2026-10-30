@@ -1052,3 +1052,11 @@ A pedido do utilizador, retirada a descrição permanente do rodapé e colocada 
 O utilizador observou a prévia local e aprovou a versão com a descrição no (i), autorizando commit e push da branch. A aprovação manual não equivale a inspeção visual do agente na matriz desktop/mobile e light/dark. Preparada a verificação completa `check:push` obrigatória antes de enviar alterações web; o merge e deploy deste incremento não foram pedidos.
 
 Validação pré-push do rodapé: 165 testes unitários/componentes, build, 70 E2E (8 skips condicionais existentes) e 6 verificações Starship passaram. O primeiro arranque E2E exigiu instalar o Chromium ausente; as suites restantes passaram depois, sem alterações nos testes.
+
+### Acesso aos outros projetos no cabeçalho (30/10/2026)
+
+Rascunho local: ligação PT/EN/ES “Outros projetos” junto de “Em desenvolvimento”, com âncora para o link Ride Together no rodapé. Reutiliza o estilo discreto do acesso ao feedback e o scroll suave existente, respeitando movimento reduzido. O grupo permite quebra em ecrãs estreitos; mantém o acesso ao feedback. Texto Ride Together atualizado para explicitar passeios de mota em grupo. Sem commit, push ou publicação.
+
+Apresentação aprovada pelo utilizador: selos “Outros projetos” violeta no cabeçalho e rodapé, reutilizando a classe visual de “Em desenvolvimento” com ponto circular. A ligação no cabeçalho mantém uma área de toque alargada sem aumentar o selo visível. Texto PT/EN/ES do Ride Together explicita passeios de mota em grupo. Commit/push da branch autorizados; sem pedido de merge neste incremento.
+
+Validação final: `check:push` completo passou (165 testes unitários/componentes, build, 70 E2E com 8 skips existentes e 6 verificações Starship). Separada a classe visual `project-status-badge` para não atribuir a outros selos o identificador específico `development-badge`, preservando os testes existentes sem os alterar. A primeira execução teve também uma duplicação transitória em Discoveries; a nova execução completa passou sem alteração dessa área.

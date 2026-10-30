@@ -28,3 +28,13 @@
 .feedback-header-link:focus-visible { outline:3px solid var(--accent-strong); outline-offset:2px; }
 @media(max-width:1100px) { .development-feedback { flex-direction:column; align-items:flex-start; gap:0; }.development-feedback .development-badge { align-self:flex-start; } }
 @media(max-width:800px) { .development-feedback { grid-column:1; grid-row:2; justify-self:start; }.feedback-header-link { padding-inline:0; font-size:.72rem; } }
+
+.development-projects { display:flex; align-items:center; flex-wrap:wrap; gap:.4rem; min-width:0; }
+.development-projects .development-badge, .development-projects .project-status-badge { align-self:center; }
+.development-projects a { text-decoration:none; }
+
+.development-projects .other-projects-badge, .site-footer .other-projects-badge { position:relative; border-color:#a69acb; background:#f1ecfa; color:#594185; text-decoration:none; }
+html[data-theme="dark"] .development-projects .other-projects-badge, html[data-theme="dark"] .site-footer .other-projects-badge { border-color:#8e7db5; background:#30273f; color:#dfd0fa; }
+a.other-projects-badge::after { content:""; position:absolute; inset:50% 0 auto; height:44px; transform:translateY(-50%); }
+a.other-projects-badge:hover { box-shadow:0 0 0 1px currentColor; }
+a.other-projects-badge:focus-visible { outline:3px solid currentColor; outline-offset:3px; }

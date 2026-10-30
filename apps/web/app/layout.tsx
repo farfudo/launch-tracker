@@ -41,7 +41,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <a className="skip-link" href="#main-content">{d.skip}</a>
           <ScrollHeader>
             <Link href="/" className="home-brand" aria-label="NextRocketLaunch home"><BrandMark /><LinkPending /></Link>
-            <div className="development-feedback"><DevelopmentBadge /><FeedbackLink placement="header"/></div>
+            <div className="development-feedback"><div className="development-projects"><DevelopmentBadge /><a className="project-status-badge other-projects-badge" href="#other-projects"><span aria-hidden="true">●</span> {dictionaries[locale].otherProjects}</a></div><FeedbackLink placement="header"/></div>
             <SectionNavigation />
             <div className="toolbar-controls"><ThemeToggle /><LanguageSelector /></div>
           </ScrollHeader>
