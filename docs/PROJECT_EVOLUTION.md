@@ -1036,3 +1036,19 @@ Retenção diária preparada em workflow próprio com opt-in separado para avali
 Ensaio de recuperação preparado em PostgreSQL 18 descartável com migrations, dump e restauro de um feedback fictício para segunda base e comparação de schema/dados. Não usa Neon, segredos reais ou artifacts de dumps. Docker local indisponível: execução do ensaio continua pendente, tal como escolha e autorização de backups reais. `docs/OPERATIONS.md` apresenta opções de ativação, limitações do cron GitHub, notificações e procedimento de recuperação isolada.
 
 Validação: 119 testes API e seis testes operacionais passaram, lint e sintaxe YAML/shell verificados. Verificação pública passou os nove controlos sem criar dados; prévia SQLite em memória mostrou um registo a eliminar e um a redigir, mantendo os três registos após avaliação. Sem alterações web, produção, agendamentos, migrations, limpezas, sincronizações, commits, push ou deploy neste rascunho.
+## Ride Together no rodapé — rascunho local (30/10/2026)
+
+Branch `codex/ride-together-footer`, baseada na main `6a7b2db`. Adicionada uma referência discreta ao outro projeto do autor, imediatamente após os créditos de desenvolvimento: “Outros projetos · Ride Together — passeios em grupo ↗”. Liga à app pública `https://ride-together-app.vercel.app/`, em novo separador com `noopener noreferrer`, sem expor o repositório privado. Textos PT/EN/ES no dicionário existente; cores e foco herdados do rodapé, com alvo de interação de 44 px e possibilidade de quebra em larguras pequenas. Não altera navegação principal, Launches ou backend.
+
+Passaram os dois testes existentes de traduções, ESLint dirigido e TypeScript. Prévia local iniciada na porta habitual 3345; validação visual desktop/mobile e light/dark pendente porque a revisão automática de aprovação bloqueou a abertura pelo navegador. Não foram obtidas screenshots nem declarada validação visual. Sem commit, push, merge ou deploy deste incremento.
+### Contexto do Ride Together no rodapé (30/10/2026)
+
+Adicionado um parágrafo curto PT/EN/ES junto ao link para explicar os passeios em grupo, partilha de localização durante a sessão e alertas de afastamento, identificando a app como em desenvolvimento. Criado `docs/ride-together/README.md` com apresentação e funcionalidades descritas no README do projeto consultado, incluindo a limitação da partilha web em primeiro plano. Mantém-se o rascunho local; a validação visual continua pendente devido ao bloqueio anterior da revisão automática do navegador.
+### Informação Ride Together recolhida num (i) (30/10/2026)
+
+A pedido do utilizador, retirada a descrição permanente do rodapé e colocada no componente `InfoDisclosure` existente, junto ao link da app. Mantém texto e nome acessível PT/EN/ES, hover, foco, toque, Escape e clique fora. O link e o botão partilham um grupo flexível para manter proximidade em larguras pequenas, sem alterar o comportamento global dos outros (i). A validação visual continua pendente devido ao bloqueio anterior do navegador; sem publicação deste rascunho.
+### Aprovação manual do rodapé Ride Together (30/10/2026)
+
+O utilizador observou a prévia local e aprovou a versão com a descrição no (i), autorizando commit e push da branch. A aprovação manual não equivale a inspeção visual do agente na matriz desktop/mobile e light/dark. Preparada a verificação completa `check:push` obrigatória antes de enviar alterações web; o merge e deploy deste incremento não foram pedidos.
+
+Validação pré-push do rodapé: 165 testes unitários/componentes, build, 70 E2E (8 skips condicionais existentes) e 6 verificações Starship passaram. O primeiro arranque E2E exigiu instalar o Chromium ausente; as suites restantes passaram depois, sem alterações nos testes.

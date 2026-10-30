@@ -17,6 +17,10 @@ html[data-theme="dark"] .site-background { --wash-rgb:16 27 33; --wash-min:.76; 
 .info-panel a { color:var(--accent-strong); text-decoration:underline; }
 .dashboard-image-credit,.dashboard-footer { margin-block:.35rem; font-size:.8rem; line-height:1.5; }
 .site-footer .footer-image-credit { margin-top:.15rem; }
+.footer-other-projects a { display:inline-flex; align-items:center; min-height:44px; max-width:100%; overflow-wrap:anywhere; }
+.footer-project-link { display:inline-flex; align-items:center; gap:.25rem; max-width:100%; vertical-align:middle; }
+.footer-project-link > a { min-width:0; }
+.footer-project-link > .info-disclosure { flex:none; }
 :root:not([data-theme="dark"]) { --text-soft:#304650; }
 :root:not([data-theme="dark"]) :is(.site-footer a,.discoveries-intro .eyebrow,.discovery-section-heading .eyebrow,.artemis-guide > .back-link,.artemis-guide footer a) { color:#054d4b; }
 .guide-contents a { background:var(--surface-raised); }
