@@ -1,0 +1,42 @@
+name: Production readiness
+
+on:
+  deployment_status:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-readiness
+  cancel-in-progress: false
+
+jobs:
+  check:
+    # Explicit activation after reviewing production targets and notification delivery.
+    if: >-
+      vars.OPERATIONS_CHECKS_ENABLED == 'true' &&
+      (github.event_name != 'deployment_status' ||
+       (github.event.deployment_status.state == 'success' &&
+        github.event.deployment.environment == 'Production'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check deployed pages, configuration and authorization
+        env:
+          CHECK_FRESHNESS: ${{ github.event_name != 'deployment_status' }}
+        run: |
+          if [ "$CHECK_FRESHNESS" = 'true' ]; then
+            python scripts/verify-production.py --freshness
+          else
+            python scripts/verify-production.py
+          fi

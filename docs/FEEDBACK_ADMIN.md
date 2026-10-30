@@ -64,7 +64,7 @@ Este trabalho não executou migration/deploy em produção, nem modificou config
 
 O painel reutiliza `FeedbackAdminPanel`: lista por data decrescente, contagem global de `new`, filtros no servidor, mensagens completas, contactos apenas quando existem e estados New/Reviewed/Planned/Resolved. UI e mensagens são PT/EN/ES; formulários e controlos têm foco visível, alvos táteis e layout mobile. O botão público de feedback não aparece dentro da administração.
 
-A tarefa diária `python -m app.feedback_retention` já fornecida também remove sessões cuja expiração absoluta terminou. Mantêm-se as regras anteriores de retenção do feedback; não foi alterada a sincronização LL2 nem a lógica dos lançamentos.
+A tarefa diária `python -m app.feedback_retention --apply` também remove sessões cuja expiração absoluta terminou. Sem `--apply`, o comando apenas mostra contagens para avaliação prévia. A ativação explícita do workflow está documentada em `OPERATIONS.md`; este rascunho não a executa em produção. Mantêm-se as regras anteriores de retenção do feedback; não foi alterada a sincronização LL2 nem a lógica dos lançamentos.
 
 ## Verificação
 

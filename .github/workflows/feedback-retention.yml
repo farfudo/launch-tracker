@@ -1,0 +1,53 @@
+name: Feedback retention
+
+on:
+  schedule:
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: Apply deletion/redaction rather than only show counts
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: feedback-retention-production
+  cancel-in-progress: false
+
+jobs:
+  retention:
+    # No production access until explicitly activated. Scheduled cleanup also needs opt-in.
+    if: >-
+      vars.FEEDBACK_RETENTION_ENABLED == 'true' &&
+      (github.event_name == 'workflow_dispatch' || vars.FEEDBACK_RETENTION_APPLY == 'true')
+    environment: production-maintenance
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: services/api
+    env:
+      DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+      APPLY_RETENTION: ${{ github.event_name == 'schedule' || inputs.apply == true }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install .
+      - name: Evaluate or apply retention
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo 'Database configuration missing'; exit 1
+          fi
+          if [ "$APPLY_RETENTION" = 'true' ]; then
+            python -m app.feedback_retention --apply
+          else
+            python -m app.feedback_retention
+          fi
