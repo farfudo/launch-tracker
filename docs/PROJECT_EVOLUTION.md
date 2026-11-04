@@ -1060,3 +1060,7 @@ Rascunho local: ligação PT/EN/ES “Outros projetos” junto de “Em desenvol
 Apresentação aprovada pelo utilizador: selos “Outros projetos” violeta no cabeçalho e rodapé, reutilizando a classe visual de “Em desenvolvimento” com ponto circular. A ligação no cabeçalho mantém uma área de toque alargada sem aumentar o selo visível. Texto PT/EN/ES do Ride Together explicita passeios de mota em grupo. Commit/push da branch autorizados; sem pedido de merge neste incremento.
 
 Validação final: `check:push` completo passou (165 testes unitários/componentes, build, 70 E2E com 8 skips existentes e 6 verificações Starship). Separada a classe visual `project-status-badge` para não atribuir a outros selos o identificador específico `development-badge`, preservando os testes existentes sem os alterar. A primeira execução teve também uma duplicação transitória em Discoveries; a nova execução completa passou sem alteração dessa área.
+
+### Fiabilidade da cache offline — rascunho 4/11/2026
+
+Diagnóstico documentado em MVP_RELIABILITY_REVIEW_2026-11-04.md. Reproduzido retry offline incorreto e corrigido CacheNotice para preservar aviso e verificar recuperação por eventos de rede. Teste red/green e regressões direcionadas. Syncs verdes observados eram skips por retry_wait; sem alteração de backoff, LL2, produção ou thresholds. Branch codex/mvp-api-reliability em revisão local; sem commit/push/deploy.

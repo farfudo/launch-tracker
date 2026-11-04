@@ -45,3 +45,21 @@ it("bounds refresh attempts and preserves saved-data messaging", async () => {
     expect(vi.getTimerCount()).toBe(0);
   } finally { container.remove(); }
 });
+it("does not claim to check or request refresh when retrying offline", async () => {
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  Object.defineProperty(navigator, "onLine", { configurable: true, value: false });
+  const container = document.createElement("div"); const root = createRoot(container);
+  try {
+    await act(async () => root.render(<LocaleProvider locale="en-GB"><CacheNotice entries={[{checkedAt:new Date(Date.now()-360000).toISOString(),revalidateSeconds:300}]} /></LocaleProvider>));
+    await act(async () => container.querySelector<HTMLButtonElement>("button")!.click());
+    expect(refresh).not.toHaveBeenCalled();
+    expect(container.querySelector('[role="status"]')?.textContent).toContain("has not been confirmed");
+    Object.defineProperty(navigator, "onLine", { configurable: true, value: true });
+    await act(async () => window.dispatchEvent(new Event("online")));
+    expect(refresh).toHaveBeenCalledTimes(1);
+    expect(container.querySelector('[role="status"]')?.textContent).toContain("Showing saved data");
+  } finally {
+    await act(async () => root.unmount());
+    Object.defineProperty(navigator, "onLine", { configurable: true, value: true });
+  }
+});

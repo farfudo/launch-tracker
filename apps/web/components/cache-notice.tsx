@@ -34,7 +34,13 @@ export function CacheNotice({ entries, autoRefresh = true, onRetry, compact = fa
     }
     check();
     const timer = window.setInterval(check, 10000);
-    return () => window.clearInterval(timer);
+    window.addEventListener("online", check);
+    window.addEventListener("offline", check);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("online", check);
+      window.removeEventListener("offline", check);
+    };
   }, [key, router, autoRefresh]);
   if (!entries.length && !children) return null;
   const checked = entries.map(item => item.checkedAt).sort()[0];
@@ -43,6 +49,6 @@ export function CacheNotice({ entries, autoRefresh = true, onRetry, compact = fa
   return <aside className={`frontend-cache-notice${compact ? " frontend-cache-notice-compact" : ""}`} aria-label={t.saved}>
     {compact ? <div className="data-info"><InfoDisclosure label={messages.aboutData}>{children}{timestamp}</InfoDisclosure></div> : <>{children}{timestamp}</>}
     <p role="status">{refreshing ? <><Spinner /> {t.updating}</> : unconfirmed ? t.waiting : null}</p>
-    {unconfirmed ? <button type="button" onClick={() => { tries.current = 0; setUnconfirmed(false); setRefreshing(true); if (onRetry) onRetry(); else router.refresh(); }}>{t.retry}</button> : null}
+    {unconfirmed ? <button type="button" onClick={() => { if (navigator.onLine === false) { setUnconfirmed(true); setRefreshing(false); return; } tries.current = 0; setUnconfirmed(false); setRefreshing(true); if (onRetry) onRetry(); else router.refresh(); }}>{t.retry}</button> : null}
   </aside>;
 }
