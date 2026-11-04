@@ -59,3 +59,13 @@ it("explains why completed or cancelled missions cannot be exported", async () =
   }
   await act(async () => root.unmount());
 });
+it("shows calendar destinations immediately inside the quick-action dialog", async () => {
+  const container = document.createElement("div"); const root=createRoot(container);
+  try {
+    await act(async()=>root.render(<LocaleProvider locale="pt-PT"><MissionCalendar launch={launch} inline/></LocaleProvider>));
+    expect(container.querySelector('details')).toBeNull();
+    expect(container.querySelector('a[download]')).not.toBeNull();
+    expect(container.querySelector('a[target="_blank"]')?.textContent).toContain('Google Calendar');
+    expect(container.textContent).toContain('alterações de horário não atualizam');
+  } finally { await act(async()=>root.unmount()); }
+});

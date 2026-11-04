@@ -1,4 +1,5 @@
 "use client";
+import { InfoDisclosure } from "./info-disclosure";
 import { precisionId, precisionLabel } from "../lib/temporal-precision";
 
 import { useSyncExternalStore } from "react";
@@ -16,7 +17,7 @@ const subscribe = () => () => {};
 const getOrigin = () => window.location.origin;
 const serverOrigin = () => "";
 
-export function MissionCalendar({ launch }: { launch: LaunchDetail }) {
+export function MissionCalendar({ launch, inline = false }: { launch: LaunchDetail; inline?: boolean }) {
   const { locale } = useLocale();
   const t = copy[locale];
   const origin = useSyncExternalStore(subscribe, getOrigin, serverOrigin);
@@ -30,12 +31,14 @@ export function MissionCalendar({ launch }: { launch: LaunchDetail }) {
     const flying={"en-GB":"Calendar export is unavailable while the mission is in flight.","pt-PT":"A exportação para calendário não está disponível enquanto a missão está em voo.","es-ES":"La exportación al calendario no está disponible durante el vuelo."}[locale];
     return <div className="mission-calendar"><button type="button" disabled>{t.title}</button><p>{state === "terminal" ? finished : state === "in-flight" ? flying : t.unavailable}</p></div>;
   }
+  const options = event ? <div className="mission-calendar-options">
+      <a href={event.google} target="_blank" rel="noopener noreferrer">Google Calendar ↗<span className="visually-hidden"> ({t.tab})</span></a>
+      <a href={`data:text/calendar;charset=utf-8,${encodeURIComponent(event.ics)}`} download={`mission-${launch.id.replace(/[^a-zA-Z0-9-]/g, "")}.ics`}>{t.download} ↓</a>
+    </div> : null;
+  if (inline) return <div className="mission-calendar mission-calendar-inline"><p>{precision !== 0 ? referenceNotice.split(". ")[0] + ". " : ""}{t.notice}</p>{options}<InfoDisclosure label={t.title}>{notice}</InfoDisclosure></div>;
   return <details className="mission-calendar">
     <summary>{t.title}</summary>
     <p>{notice}</p>
-    {event ? <div className="mission-calendar-options">
-      <a href={event.google} target="_blank" rel="noopener noreferrer">Google Calendar ↗<span className="visually-hidden"> ({t.tab})</span></a>
-      <a href={`data:text/calendar;charset=utf-8,${encodeURIComponent(event.ics)}`} download={`mission-${launch.id.replace(/[^a-zA-Z0-9-]/g, "")}.ics`}>{t.download} ↓</a>
-    </div> : null}
+    {options}
   </details>;
 }

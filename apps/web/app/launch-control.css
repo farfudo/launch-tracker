@@ -118,3 +118,25 @@ html[data-theme="dark"] .mission-control .launch-quick-actions .launch-watch-but
 .mission-control .calendar-panel > .favorite-views { margin-top:.25rem; margin-bottom:.6rem; }
 
 .launch-filter-panel .filter-panel-heading .period-tabs { flex:1 1 180px; margin:0; min-width:0; }
+
+/* Audit: keep status text below the heading, and reveal the list sooner on phones. */
+.mission-control .launch-heading-with-info { display:flex; flex-wrap:wrap; gap:.35rem .5rem; flex:1; }
+.mission-control .launch-heading-with-info .frontend-cache-notice { display:contents; }
+.mission-control .launch-heading-with-info .frontend-cache-notice > [role="status"]:not(:empty) { max-width:none; flex:1 0 100%; }
+.launch-list .launch-thumbnail .vehicle-visual[data-source-illustration] img { object-fit:contain; object-position:center; background:var(--surface); }
+.mission-calendar-inline .mission-calendar-options { display:flex; flex-wrap:wrap; gap:.75rem; }
+.mission-calendar-inline .mission-calendar-options a { min-height:44px; display:inline-flex; align-items:center; }
+@media(max-width:700px) {
+ .mission-control .launch-spotlight { min-height:0; }
+ .launch-spotlight .spotlight-copy { gap:.4rem; padding:1rem 1rem 3rem; }
+ .launch-spotlight h1 { font-size:1.55rem; }
+ .launch-spotlight h2 { font-size:.95rem; line-height:1.3; }
+ .launch-spotlight .countdown { margin:.2rem 0; }
+ .launch-spotlight .countdown > div { padding:.3rem .2rem; }
+ .launch-spotlight .vehicle-visual figcaption { left:1rem; right:1rem; font-size:.6rem; }
+ .mission-control .launch-activity { padding:.75rem; }
+ .launch-activity h2 { margin-bottom:.4rem; font-size:.9rem; }
+ .mission-control .launch-activity .dashboard-benefits strong { font-size:1.15rem; }
+ .launch-activity .activity-scope { margin:.35rem 0 0; font-size:.65rem; }
+ .mission-control .dashboard-introduction { gap:.7rem; }
+}

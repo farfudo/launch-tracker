@@ -26,7 +26,8 @@ export function VehicleVisual({ launch, priority = true }: { launch: Launch; pri
   const licenseUrl = httpsUrl(launch.image_license_url);
   const hasImage = url !== null && !failed;
 
-  return <figure className={`vehicle-visual ${hasImage ? "has-photo" : "has-illustration"}`}>
+  const sourceIllustration = /\b(illustration|rendering|ilustración)\b|ilustração/i.test(launch.image_title ?? "");
+  return <figure data-source-illustration={sourceIllustration || undefined} className={`vehicle-visual ${hasImage ? "has-photo" : "has-illustration"}`}>
     <div className="vehicle-visual-frame">
       <div className="photo-orbit" aria-hidden="true" />
       {hasImage ? <Image

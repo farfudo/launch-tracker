@@ -1064,3 +1064,7 @@ Validação final: `check:push` completo passou (165 testes unitários/component
 ### Fiabilidade da cache offline — rascunho 4/11/2026
 
 Diagnóstico documentado em MVP_RELIABILITY_REVIEW_2026-11-04.md. Reproduzido retry offline incorreto e corrigido CacheNotice para preservar aviso e verificar recuperação por eventos de rede. Teste red/green e regressões direcionadas. Syncs verdes observados eram skips por retry_wait; sem alteração de backoff, LL2, produção ou thresholds. Branch codex/mvp-api-reliability em revisão local; sem commit/push/deploy.
+
+### Ajustes aprovados da auditoria Launches — 4/11/2026
+
+Rascunho codex/launches-audit-fixes: mobile mais compacto, aviso de cache em linha própria, calendário rápido com opções diretas, ilustrações sem recorte e erro específico do detalhe com refresh/regresso. Countdown preservado por instrução. Testes e limitações descritos em LAUNCHES_AUDIT_FIXES_REVIEW.md. Sem commit/push/deploy.

@@ -29,6 +29,6 @@ export function LaunchQuickActions({launch,showWatch}:{launch:Launch;showWatch:b
   <FavoriteButton id={launch.id} name={launch.name} iconOnly/>
   <button type="button" className="quick-action" aria-label={`${available?t.calendar:t.unavailable}: ${launch.name}`} title={available?t.calendar:t.unavailable} aria-disabled={!available} aria-haspopup="dialog" onClick={()=>{if(available)dialog.current?.showModal();}}><QuickActionIcon kind="calendar-plus"/></button>
   <MissionShare id={launch.id} name={launch.name} iconOnly/>
-  <dialog ref={dialog} className="launch-watch-dialog" aria-labelledby={title}><button type="button" className="launch-watch-close" aria-label={t.close} onClick={()=>dialog.current?.close()}>×</button><h2 id={title}>{t.calendar}</h2><p>{launch.name}</p><MissionCalendar launch={calendarLaunch}/></dialog>
+  <dialog ref={dialog} className="launch-watch-dialog" aria-labelledby={title}><button type="button" className="launch-watch-close" aria-label={t.close} onClick={()=>dialog.current?.close()}>×</button><h2 id={title}>{t.calendar}</h2><p>{launch.name}</p><MissionCalendar launch={calendarLaunch} inline/></dialog>
  </div>;
 }
