@@ -14,7 +14,9 @@ test('verified play, favorites, calendar and sharing stay within each card',asyn
  await star.click();await expect(star).toHaveAttribute('aria-pressed','false');
  await row.getByRole('button',{name:/Add to calendar:/}).click();
  const calendar=page.getByRole('dialog',{name:'Add to calendar',exact:true});
- await calendar.locator('summary').click();
+ await expect(calendar.locator('summary')).toHaveCount(0);
+ await expect(calendar.getByRole('link',{name:/Google Calendar/})).toBeVisible();
+ await expect(calendar.getByRole('link',{name:/Apple Calendar/})).toBeVisible();
  await expect(calendar.getByRole('link',{name:/Google Calendar/})).toHaveAttribute('href',/calendar.google.com/);
  await expect(calendar.getByRole('link',{name:/Apple Calendar/})).toHaveAttribute('download',/e2e-falcon/);
  await calendar.getByRole('button',{name:'Close',exact:true}).click();
