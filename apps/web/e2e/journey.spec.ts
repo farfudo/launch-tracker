@@ -27,8 +27,15 @@ test('search, filters, mission, persistent favorite, streams, language and theme
   await expect(rows).toHaveCount(1);
   // Details now open directly on every screen size; no in-page preview is mounted.
   await expect(page.locator('#selected-mission')).toHaveCount(0);
+  const calendarQuery = new URLSearchParams({
+    period: 'upcoming', q: 'Test Starlink', agency: 'SpaceX', vehicle: 'Falcon 9', favorites: '1',
+  });
+  const returnTo = `/?${calendarQuery}#launch-calendar`;
+
   await rows.locator('.launch-card-link').click();
-  await expect(page).toHaveURL(/\/launches\/e2e-falcon$/);
+  await expect(page).toHaveURL(url =>
+    url.pathname === '/launches/e2e-falcon' && url.searchParams.get('returnTo') === returnTo
+  );
   await expect(page.getByRole('heading', { name: 'Test Starlink', exact: true, level: 1 })).toBeVisible();
   await expect(page.locator('.mission-description')).toContainText('Controlled mission for browser tests.');
   await expect(page.locator('.mission-clock-panel .time-comparison')).toBeVisible();
@@ -45,6 +52,14 @@ test('search, filters, mission, persistent favorite, streams, language and theme
   await expect(stream).toHaveAttribute('href', 'https://example.com/stream');
   await disclosure.locator('summary').press('Enter');
   await expect(stream).toBeHidden();
+  await page.getByRole('link', { name: /Back to calendar/ }).click();
+  await expect(page).toHaveURL(returnTo);
+  await expect(page.getByRole('link', { name: '☆ My favorites', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(rows).toHaveCount(1);
+  await expect(rows.first()).toContainText('Falcon 9 | Test Starlink');
+  await rows.locator('.launch-card-link').click();
+  await expect(page.getByRole('heading', { name: 'Test Starlink', exact: true, level: 1 })).toBeVisible();
+
   await page.getByRole('combobox', { name: 'Language', exact: true }).selectOption('es-ES');
   await expect(page.locator('html')).toHaveAttribute('lang', 'es-ES');
   await page.reload();
