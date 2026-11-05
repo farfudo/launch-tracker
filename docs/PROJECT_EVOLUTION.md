@@ -1068,3 +1068,9 @@ Diagnóstico documentado em MVP_RELIABILITY_REVIEW_2026-11-04.md. Reproduzido re
 ### Ajustes aprovados da auditoria Launches — 4/11/2026
 
 Rascunho codex/launches-audit-fixes: mobile mais compacto, aviso de cache em linha própria, calendário rápido com opções diretas, ilustrações sem recorte e erro específico do detalhe com refresh/regresso. Countdown preservado por instrução. Testes e limitações descritos em LAUNCHES_AUDIT_FIXES_REVIEW.md. Sem commit/push/deploy.
+
+### Refinamento de Launches após a auditoria visual
+
+- O detalhe aguarda a leitura validada quando a cópia excede o limite de idade, partilhando o pedido em curso com a revalidação quando disponível. A ligação de regresso restaura filtros e vista de favoritos.
+- Em mobile, a atividade apresenta contagens compactas com contexto no botão de informação, e o atalho «Ver lançamentos» salta para a lista.
+- O calendário concentra o aviso, a hora da última atualização disponível e a ação de verificação. As miniaturas usam a ilustração genérica para imagens identificadas como renderizações, preservando a imagem de origem no detalhe.

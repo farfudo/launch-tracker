@@ -46,7 +46,11 @@ export function usableResult<T>(result: CachedResult<T>, now = Date.now()): Cach
   return result;
 }
 function cached<T, A extends unknown[]>(kind: string, load: (...args: A) => Promise<T>, validate: (value: unknown) => void) {
-  const read = unstable_cache(async (...args: A): Promise<CachedResult<T>> => {
+  const pending = new Map<string, Promise<CachedResult<T>>>();
+  function readFresh(...args: A): Promise<CachedResult<T>> {
+    const key = JSON.stringify(args);
+    const existing = pending.get(key);
+    if (existing) return existing;
     const started = performance.now();
     const task = (async () => {
       try {
@@ -60,12 +64,27 @@ function cached<T, A extends unknown[]>(kind: string, load: (...args: A) => Prom
         throw error;
       }
     })();
+    pending.set(key, task);
+    const clear = () => { pending.delete(key); };
+    void task.then(clear, clear);
+    return task;
+  }
+
+  const read = unstable_cache(async (...args: A) => {
+    const task = readFresh(...args);
     // Explicitly keep the server invocation alive for a stale read's existing task.
     // Reuses the same promise: no second fetch, cron or artificial keep-alive.
     after(async () => { await task.catch(() => undefined); });
     return task;
   }, ["public-api-v1", origin, kind, String(CACHE_REVALIDATE_SECONDS)], { revalidate: CACHE_REVALIDATE_SECONDS });
-  return async (...args: A) => usableResult(await read(...args));
+  return async (...args: A) => {
+    const result = await read(...args);
+    try { return usableResult(result); }
+    catch (error) {
+      if (!(error instanceof CacheExpiredError)) throw error;
+      return readFresh(...args);
+    }
+  };
 }
 const readList = cached("list", (period: "upcoming" | "past") => getUpcomingLaunches(100, { period }, CACHE_API_TIMEOUT_MS), validateLaunches);
 const readOptions = cached("filters", () => getFilterOptions(CACHE_API_TIMEOUT_MS), validateOptions);

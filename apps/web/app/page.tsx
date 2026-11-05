@@ -42,6 +42,9 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const allHref = `/?${viewParams.toString()}`;
   viewParams.set("favorites", "1");
   const favoritesHref = `/?${viewParams.toString()}`;
+  const returnTo = favoritesOnly || period === "past" || filters.period || filters.q || filters.agency || filters.vehicle || filters.status
+    ? `${favoritesOnly ? favoritesHref : allHref}#launch-calendar`
+    : undefined;
   const locale = await getLocale();
   const t = dictionaries[locale];
   const d = dashboardCopy[locale];
@@ -56,6 +59,9 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const statusResult = await dataStatusPromise;
   const dataStatus = statusResult?.value ?? null;
   const statusConfirmed = statusResult?.freshnessConfirmed ?? false;
+  const freshnessWarning = hasLaunchData
+    ? !statusConfirmed ? freshnessCopy[locale].unknown : dataStatus?.stale ? t.staleNotice : undefined
+    : undefined;
   const nextLaunch = nextSpotlightLaunch(nextCandidates);
   const cacheEntries = [...cache, ...(nextResult ? [nextResult.cache] : []), ...(statusResult ? [statusResult.cache] : [])];
   const agencies = new Set(launches.map(launch => launch.agency).filter(Boolean));
@@ -63,8 +69,9 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   return (
     <main className="launch-dashboard mission-control" id="main-content">
       <div className="dashboard-introduction">
-        <LaunchSpotlight launch={nextLaunch} locale={locale} />
-        <section className="launch-activity" aria-labelledby="activity-title"><h2 id="activity-title">{control.activity}</h2><div className="dashboard-benefits" aria-label={d.overview}>
+        <LaunchSpotlight launch={nextLaunch} locale={locale} returnTo={returnTo} />
+        <a className="mobile-launch-jump" href="#launch-calendar">{control.viewList} ↓</a>
+        <section className="launch-activity" aria-labelledby="activity-title"><div className="activity-heading"><h2 id="activity-title">{control.activity}</h2><div className="activity-info"><InfoDisclosure label={control.activity}>{control.scope}</InfoDisclosure></div></div><div className="dashboard-benefits" aria-label={d.overview}>
           <div><MissionIcon name="rocket" /><span><strong>{hasLaunchData ? launches.length : "—"}</strong><small>{d.inView}</small></span></div>
           <div><MissionIcon name="orbit" /><span><strong>{hasLaunchData ? agencies.size : "—"}</strong><small>{d.agencies}</small></span></div>
         </div>
@@ -115,7 +122,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         <div className="section-heading">
           <div className="launch-heading-with-info">
             <h2 id="next-launch-heading">{period === "past" ? t.history : t.upcoming}</h2>
-        <CacheNotice entries={cacheEntries} compact>
+        <CacheNotice entries={cacheEntries} compact warning={freshnessWarning} lastUpdated={hasLaunchData ? dataStatus?.last_updated_at ?? undefined : undefined}>
         {hasLaunchData && dataStatus?.last_updated_at ? (
           <p className="launch-meta">
             {t.source}: {dataStatus.source} · {freshnessCopy[locale].global}: {formatLaunchDate(dataStatus.last_updated_at, locale)}.
@@ -125,19 +132,18 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         <p className="launch-meta">{period === "past" ? t.historyNotice : t.upcomingNotice}</p>
         </CacheNotice>
           </div>
-          <span className="status">
-            {!hasLaunchData ? t.dataUnavailable : !dataStatus || !statusConfirmed ? freshnessCopy[locale].unknown : dataStatus.cached_launches === 0 ? t.awaitingData : dataStatus?.stale ? t.staleData : t.launchCalendar}
-          </span>
+          {!freshnessWarning ? <span className="status">
+            {!hasLaunchData ? t.dataUnavailable : dataStatus?.cached_launches === 0 ? t.awaitingData : t.launchCalendar}
+          </span> : null}
         </div>
 
-        {dataStatus?.stale ? <p className="launch-meta" role="status">{t.staleNotice}</p> : null}
         <nav className="favorite-views" aria-label={t.calendarView}>
           <Link href={allHref} scroll={false} aria-current={!favoritesOnly ? "page" : undefined}>{t.allLaunches}<LinkPending /></Link>
           <div className="favorites-view-with-info"><Link href={favoritesHref} scroll={false} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}<LinkPending /></Link><InfoDisclosure label={d.privacy}>{t.favoritePrivacy}</InfoDisclosure></div>
         </nav>
         <LaunchResultsScroll>
         {hasLaunchData ? (
-          <FavoriteLaunchList showWatch key={JSON.stringify(filters)} launches={launches} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} historical={period === "past"} initialLimit={process.env.DESIGN_PREVIEW === "true" && filters.q === "scroll-fixture" ? 30 : 6} />
+          <FavoriteLaunchList showWatch returnTo={returnTo} key={JSON.stringify(filters)} launches={launches} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} historical={period === "past"} initialLimit={process.env.DESIGN_PREVIEW === "true" && filters.q === "scroll-fixture" ? 30 : 6} />
         ) : (
           <article className="launch-card">
             <h3>{t.unavailableTitle}</h3>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState, useSyncExternalStore } from "react";
 import { parseFavorites, readFavorites, subscribeFavorites, toggleFavorite } from "../lib/favorites";
 import type { Launch } from "../lib/api";
+import { launchDetailsHref } from "../lib/launch-navigation";
 import { VehicleVisual } from "./vehicle-visual";
 import { LaunchQuickActions } from "./launch-quick-actions";
 import { QuickActionIcon } from "./quick-action-icon";
@@ -37,8 +38,8 @@ export function FavoriteButton({ id, name, iconOnly = false }: { id: string; nam
   </div>;
 }
 
-export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, historical = false, initialLimit = 6, showWatch = false }: {
-  launches: Launch[]; favoritesOnly: boolean; emptyCache: boolean; historical?: boolean; initialLimit?: number; showWatch?: boolean;
+export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, historical = false, initialLimit = 6, showWatch = false, returnTo }: {
+  launches: Launch[]; favoritesOnly: boolean; emptyCache: boolean; historical?: boolean; initialLimit?: number; showWatch?: boolean; returnTo?: string;
 }) {
   const { locale, messages: t } = useLocale();
   const { ids, ready } = useFavorites();
@@ -49,8 +50,8 @@ export function FavoriteLaunchList({ launches, favoritesOnly, emptyCache, histor
   if (favoritesOnly && !ready) return <p role="status"><Spinner /> {t.loadingFavorites}</p>;
   return <>
     {visible.length ? <div className="launch-list">{visible.slice(0, limit).map((launch, index) => <article className="launch-card favorite-launch-card" data-selected={selection?.selected?.id === launch.id || undefined} key={launch.id}>
-      <div className="launch-thumbnail"><VehicleVisual launch={launch} priority={false} /></div>
-      <Link className="launch-card-link" href={`/launches/${launch.id}`} prefetch={false}
+      <div className="launch-thumbnail"><VehicleVisual launch={launch} priority={false} thumbnail /></div>
+      <Link className="launch-card-link" href={launchDetailsHref(launch.id, returnTo)} prefetch={false}
         aria-controls={selection ? "selected-mission" : undefined}
         onClick={event => {
           if (!selection || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !window.matchMedia("(min-width: 801px)").matches) return;

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { launchReturnHref } from "../../../lib/launch-navigation";
 import { FavoriteButton } from "../../../components/favorites";
 import { notFound } from "next/navigation";
 
@@ -31,13 +32,14 @@ type RouteParams = Promise<{ id: string }>;
 
 export default async function LaunchDetail({ params, searchParams }: {
   params: RouteParams;
-  searchParams: Promise<{ design?: string }>;
+  searchParams: Promise<{ design?: string; returnTo?: string | string[] }>;
 }) {
   const { id } = await params;
   const locale = await getLocale();
   const t = dictionaries[locale];
   const preview = process.env.DESIGN_PREVIEW === "true";
-  const design = preview ? resolveDesign((await searchParams).design) : "mission-control";
+  const query = await searchParams;
+  const design = preview ? resolveDesign(query.design) : "mission-control";
 
     const result = await getCachedLaunch(id).catch((error: unknown) => {
       if (error instanceof LaunchNotFoundError) notFound();
@@ -57,7 +59,7 @@ export default async function LaunchDetail({ params, searchParams }: {
       <main id="main-content" className={`mission-detail-page design-${design}`}>
         {preview ? <DesignReview launchId={id} selected={design} messages={t} /> : null}
         <div className="mission-navigation">
-          <Link className="back-link" href="/">← {t.backToCalendar}<LinkPending /></Link>
+          <Link className="back-link" href={launchReturnHref(query.returnTo)}>← {t.backToCalendar}<LinkPending /></Link>
           <BrandMark className="mission-wordmark" />
         </div>
 

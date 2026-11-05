@@ -1,12 +1,19 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { after } from "next/server";
-vi.mock("next/cache", () => ({ unstable_cache: (fn: (...args: unknown[]) => unknown) => fn }));
+const { expiredDetail } = vi.hoisted(() => ({ expiredDetail: { enabled: false } }));
+vi.mock("next/cache", () => ({
+  unstable_cache: (fn: (...args: unknown[]) => Promise<unknown>, keys: string[]) => (...args: unknown[]) => {
+    if (keys[2] !== "detail" || !expiredDetail.enabled) return fn(...args);
+    void fn(...args).catch(() => undefined);
+    return { value: null, cache: { checkedAt: "2000-01-01T00:00:00Z", revalidateSeconds: 300 } };
+  },
+}));
 vi.mock("next/server", () => ({ after: vi.fn() }));
 import { CACHE_API_TIMEOUT_MS, CACHE_MAX_AGE_SECONDS, usableResult, getCachedCalendarData, getCachedLaunch, getCachedLaunches, getCachedStatus, InvalidApiDataError, CacheExpiredError } from "../lib/cached-api";
 import { LaunchNotFoundError } from "../lib/api";
 
 const item = { id: "mission", name: "Mission", status: "Go", net: "2099-01-01T12:00:00Z", source_updated_at: "2026-10-24T10:00:00Z", agency: null, vehicle: null, source_url: null, launch_timezone: null };
-afterEach(() => { vi.restoreAllMocks(); vi.clearAllMocks(); });
+afterEach(() => { expiredDetail.enabled = false; vi.restoreAllMocks(); vi.clearAllMocks(); });
 
 it("registers the existing read with the server lifecycle without fetching twice", async () => {
   let resolve!: (response: Response) => void;
@@ -82,4 +89,13 @@ it("rejects malformed mission identifiers before any API access", async () => {
   const fetch = vi.spyOn(globalThis, "fetch");
   await expect(getCachedLaunch("../secrets")).rejects.toBeInstanceOf(InvalidApiDataError);
   expect(fetch).not.toHaveBeenCalled();
+});
+
+it("waits for the existing revalidation instead of rejecting an expired mission snapshot", async () => {
+  expiredDetail.enabled = true;
+  const detail = { ...item, mission_name: null, mission_description: null, location_name: null, pad_name: null, window_start: null, window_end: null };
+  const fetch = vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json(detail));
+
+  await expect(getCachedLaunch("mission")).resolves.toMatchObject({ value: detail });
+  expect(fetch).toHaveBeenCalledOnce();
 });
