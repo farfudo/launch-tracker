@@ -70,7 +70,6 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
     <main className="launch-dashboard mission-control" id="main-content">
       <div className="dashboard-introduction">
         <LaunchSpotlight launch={nextLaunch} locale={locale} returnTo={returnTo} />
-        <a className="mobile-launch-jump" href="#launch-calendar">{control.viewList} ↓</a>
         <section className="launch-activity" aria-labelledby="activity-title"><div className="activity-heading"><h2 id="activity-title">{control.activity}</h2><div className="activity-info"><InfoDisclosure label={control.activity}>{control.scope}</InfoDisclosure></div></div><div className="dashboard-benefits" aria-label={d.overview}>
           <div><MissionIcon name="rocket" /><span><strong>{hasLaunchData ? launches.length : "—"}</strong><small>{d.inView}</small></span></div>
           <div><MissionIcon name="orbit" /><span><strong>{hasLaunchData ? agencies.size : "—"}</strong><small>{d.agencies}</small></span></div>

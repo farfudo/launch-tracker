@@ -2,7 +2,7 @@
 .launch-dashboard.mission-control { grid-template-columns:minmax(300px,.47fr) minmax(0,1fr); gap:1.25rem; align-items:start; }
 .mission-control .dashboard-introduction { display:flex; flex-direction:column; gap:1.1rem; }
 .mission-control .launch-spotlight { position:relative; isolation:isolate; min-height:475px; padding:0; border-radius:20px; overflow:hidden; background:#102b40; color:#f1fbff; box-shadow:0 12px 32px #081b2914; }
-.mission-control .launch-spotlight::after { content:''; position:absolute; inset:0; z-index:1; pointer-events:none; background:linear-gradient(90deg,#061b2ff2 0%,#061b2fc9 45%,#061b2f38 100%),linear-gradient(0deg,#061b2ff2,transparent 80%); }
+.mission-control .launch-spotlight::after { content:''; position:absolute; inset:0; z-index:1; pointer-events:none; background:linear-gradient(100deg,#061726fa 5%,#061726db 43%,#06172632 100%),linear-gradient(0deg,#061726f5,transparent 74%); }
 .launch-spotlight > .vehicle-visual { position:absolute; inset:0; width:100%; height:100%; margin:0; border:0; border-radius:0; }
 .launch-spotlight .vehicle-visual-frame { height:100%; width:100%; aspect-ratio:auto; }
 .launch-spotlight .vehicle-visual-frame img { object-fit:cover; object-position:65% center; }
@@ -13,8 +13,8 @@
 .launch-spotlight .eyebrow { color:#abd0da; margin:0 0 1rem; }
 .launch-spotlight h1 { font-size:clamp(1.6rem,2.1vw,2.2rem); line-height:1.12; letter-spacing:-.04em; margin:.4rem 0; }
 .launch-spotlight h2 { font-size:1.1rem; line-height:1.4; font-weight:500; margin:0 0 1.5rem; overflow-wrap:anywhere; }
-.launch-spotlight .countdown { gap:.45rem; margin:1.5rem 0; }
-.launch-spotlight .countdown > div { background:#ffffff0a; border:1px solid #ffffff26; border-radius:10px; padding:.6rem .2rem; }
+.launch-spotlight .countdown { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); text-align:center; gap:.45rem; margin:1.5rem 0; }
+.launch-spotlight .countdown > div { background:#0a2138ad; border:1px solid #cde9ff38; border-radius:10px; padding:.6rem .2rem; }
 .launch-spotlight .countdown strong { font-size:clamp(1.4rem,2vw,2rem); color:#fff; }
 .launch-spotlight .countdown span { color:#e2f2f6; opacity:1; font-size:.72rem; }
 .launch-spotlight .countdown-note { color:#e2f2f6; font-size:.9rem; }
@@ -65,7 +65,7 @@
 /* Keep attribution above the photograph wash and clear of the primary action. */
 .mission-control .launch-spotlight > .vehicle-visual { z-index:0; }
 .mission-control .launch-spotlight::after { display:none; }
-.mission-control .launch-spotlight .vehicle-visual-frame::after { background:linear-gradient(90deg,#061b2ff2 0%,#061b2fc9 45%,#061b2f38 100%),linear-gradient(0deg,#061b2ff2,transparent 80%); }
+.mission-control .launch-spotlight .vehicle-visual-frame::after { background:linear-gradient(100deg,#061726fa 5%,#061726db 43%,#06172632 100%),linear-gradient(0deg,#061726f5,transparent 74%); }
 .launch-spotlight .spotlight-copy { padding-bottom:4.8rem; pointer-events:none; }
 .launch-spotlight .spotlight-copy > * { pointer-events:auto; }
 .mission-control .launch-spotlight > .vehicle-visual { z-index:auto; }
@@ -140,13 +140,26 @@ html[data-theme="dark"] .mission-control .launch-quick-actions .launch-watch-but
 .cache-status-row:not([hidden]) { display:flex; align-items:center; flex-wrap:wrap; gap:.35rem .75rem; }
 .cache-status-row p { margin:0; }
 .mission-control .launch-heading-with-info .cache-status-row { flex:1 0 100%; }
-.activity-info,.mobile-launch-jump { display:none; }
+/* Keep the mission title prominent and preserve a slot for optional playback. */
+.mission-control .launch-card-link h3 { font-weight:750; line-height:1.28; letter-spacing:-.018em; }
+.mission-control .launch-card-link .launch-agency { font-size:.78rem; color:var(--text-soft); margin-bottom:.2rem; }
+.mission-control .launch-quick-actions { display:grid; grid-template-columns:repeat(4,44px); align-items:center; }
+.mission-control .launch-quick-actions .favorite-action { grid-column:2; margin:0; }
+
+.spotlight-actions { display:flex; align-items:center; flex-wrap:wrap; gap:.25rem .7rem; }
+.activity-info,.mobile-launch-jump,.spotlight-details-short { display:none; }
 @media(max-width:700px) {
- .mobile-launch-jump { display:flex; align-items:center; justify-content:center; min-height:44px; font-weight:650; color:var(--accent); }
- .activity-heading { display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
- .activity-heading h2 { margin:0; }
+ .spotlight-details-label { display:none; }
+ .spotlight-details-short { display:inline; }
+ .launch-spotlight .spotlight-details { padding:.55rem .75rem; font-size:.82rem; }
+ .mobile-launch-jump { display:inline-flex; align-items:center; min-height:44px; font-size:.8rem; font-weight:650; color:#d2faf5; text-underline-offset:.22em; }
+ .mobile-launch-jump:focus-visible { outline:2px solid #d2faf5; outline-offset:2px; }
+ .mission-control .launch-activity { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:.3rem; padding:.35rem .65rem; }
+ .activity-heading { grid-column:2; grid-row:1; }
+ .activity-heading h2 { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
  .activity-info { display:block; }
- .mission-control .launch-activity { padding:.4rem .75rem .65rem; }
- .mission-control .launch-activity .dashboard-benefits { margin:0; gap:.5rem; }
+ .mission-control .launch-activity .dashboard-benefits { grid-column:1; grid-row:1; margin:0; gap:.5rem; }
+ .mission-control .launch-activity .dashboard-benefits > div { padding:0; gap:.35rem; }
+ .mission-control .launch-activity .dashboard-benefits svg { width:1rem; height:1rem; flex-shrink:0; }
  .launch-activity .activity-scope { display:none; }
 }
