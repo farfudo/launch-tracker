@@ -70,3 +70,33 @@ test('broadcast discovery does not resize the card or shift the scroll area',asy
  release();await expect(row.locator('.launch-watch-button')).toBeVisible();
  expect((await row.boundingBox())!.height).toBe(before!.height);
 });
+
+test('stream preview loads the player on demand and stops it on close', async ({ page }) => {
+  await page.route('https://i.ytimg.com/**', route => route.fulfill({
+    contentType: 'image/svg+xml',
+    body: '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360"/>',
+  }));
+  await page.route('https://www.youtube-nocookie.com/**', route => route.fulfill({ body: 'Fixture player' }));
+  await page.goto('/');
+  const row = page.locator('.launch-card').filter({ hasText: 'Falcon 9 | Test Starlink' }).first();
+  await row.locator('.launch-quick-actions').scrollIntoViewIfNeeded();
+  const play = row.getByRole('button', { name: 'Watch here: Falcon 9 | Test Starlink', exact: true });
+  await play.click();
+  const dialog = page.getByRole('dialog', { name: 'Watch here', exact: true });
+  const player = page.locator('iframe[title="Fixture independent coverage"]');
+  const preview = dialog.getByRole('button', { name: 'Watch here: Fixture independent coverage' });
+  await expect(dialog.getByText('Independent coverage', { exact: true })).toBeVisible();
+  await expect(player).toHaveCount(0);
+  await preview.click();
+  await expect(player).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/abcdefghijk?autoplay=1');
+  await dialog.getByRole('button', { name: 'Close', exact: true }).click();
+  await expect(player).toHaveCount(0);
+
+  await page.goto('/launches/e2e-falcon');
+  const streams = page.locator('details.mission-streams');
+  await streams.locator('summary').click();
+  await streams.getByRole('button', { name: 'Watch here: Fixture independent coverage' }).click();
+  await expect(player).toBeVisible();
+  await streams.locator('summary').press('Enter');
+  await expect(player).toHaveCount(0);
+});

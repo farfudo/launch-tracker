@@ -10,7 +10,10 @@ const base = {
   pad_name: 'Test pad', location_name: 'Test launch site', window_start: '2099-01-01T12:00:00Z',
   window_end: '2099-01-01T13:00:00Z', image_url: null, image_credit: null,
   image_license: null, image_license_url: null, image_kind: null, image_title: null,
-  streams: [{ url: 'https://example.com/stream', title: 'Fixture broadcast', publisher: 'Test channel', live: false }],
+  streams: [
+    { url: 'https://example.com/stream', title: 'Fixture broadcast', publisher: 'Test channel', live: false },
+    { url: 'https://www.youtube.com/watch?v=abcdefghijk', title: 'Fixture independent coverage', publisher: 'Everyday Astronaut', live: false },
+  ],
   mission_links: [
     { kind: 'agency', url: 'https://example.com/agency', title: 'Example agency website' },
     { kind: 'vehicle', url: 'https://example.com/rocket', title: 'Example rocket website' },

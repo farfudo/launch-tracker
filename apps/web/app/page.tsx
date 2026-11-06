@@ -8,6 +8,7 @@ import { CacheNotice } from "../components/cache-notice";
 import { formatLaunchDate } from "../lib/date";
 import { dictionaries } from "../lib/i18n";
 import { getLocale } from "../lib/locale-server";
+import { LaunchChannels } from "../components/launch-channels";
 import { LaunchSpotlight } from "../components/launch-spotlight";
 import { LaunchFilterPanel } from "../components/launch-filter-panel";
 import { launchControlCopy } from "../lib/launch-control-copy";
@@ -152,6 +153,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         )}
         </LaunchResultsScroll>
       </section>
+      <LaunchChannels locale={locale} showBrowse />
       <p className="dashboard-footer"><InfoDisclosure label={t.aboutData}>{t.dataSource} {t.datesNotice}</InfoDisclosure> {t.source}: Launch Library 2</p>
     </main>
   );

@@ -244,6 +244,17 @@ html { scroll-padding-top:calc(var(--site-header-height,100px) + 12px); }
 .stream-disclosure > summary::-webkit-details-marker { display: none; }
 .stream-disclosure > summary:focus-visible { outline: 2px solid var(--accent-strong); outline-offset: 4px; }
 .stream-disclosure > summary .stream-count { border-radius: 99px; padding: .25rem .55rem; background: #ffffff20; font-size: .8rem; }
+.stream-preview { aspect-ratio:16/9; overflow:hidden; border-radius:8px; background:#171717; margin-bottom:.6rem; }
+.stream-preview :is(img, iframe) { display:block; width:100%; height:100%; border:0; }
+.stream-preview img { object-fit:cover; }
+.stream-preview[data-playing] { min-height:200px; }
+.stream-preview iframe { min-height:200px; }
+.stream-kind { display:inline-block; margin-inline-start:.55rem; color:var(--stream-ink); font-size:.7rem; font-weight:650; }
+.stream-title { display:block; margin-top:.3rem; }
+.stream-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.25rem .75rem; }
+.stream-actions button, .stream-disclosure-content .stream-actions a { display:inline-flex; align-items:center; min-height:44px; margin:0; font-size:.85rem; font-weight:650; }
+.stream-actions button { padding:.3rem .65rem; border:1px solid var(--stream-border); border-radius:8px; background:var(--stream-card); color:var(--stream-ink); cursor:pointer; }
+.stream-actions :is(button,a):focus-visible { outline:2px solid var(--stream-link); outline-offset:2px; }
 .stream-disclosure[open] .stream-chevron { transform: rotate(180deg); }
 .stream-disclosure-content { --stream-ink: #572d19; --stream-muted: #70452e; --stream-link: #84350d; --stream-card: #ffe2c9; --stream-border: #eeb68c; margin-top: .75rem; padding: 1rem; border: 1px solid var(--stream-border); border-radius: 15px; background: #fff0e3; color: var(--stream-ink); }
 .stream-disclosure-content h3 { color: var(--stream-ink); }
@@ -342,6 +353,7 @@ button .action-spinner { margin-right: .5rem; }
 html[data-theme="dark"] .development-badge { background: #3d321e; color: #f5d595; border-color: #80683b; }
 .stream-unavailable { padding: .8rem 1rem; border: 1px dashed var(--border); border-radius: 12px; color: var(--text-soft); font-size: .85rem; }
 .stream-unavailable .stream-button-unavailable { width: 100%; box-sizing: border-box; background: #f8e7d9; border: 1px solid #d6b69e; color: #785138; box-shadow: none; cursor: not-allowed; }
+.launch-channels-link { display:inline-flex; min-height:44px; align-items:center; color:var(--accent-strong); }
 .stream-unavailable p { margin: .65rem 0 0; line-height: 1.6; }
 html[data-theme="dark"] .stream-unavailable .stream-button-unavailable { background: #352b25; border-color: #80624d; color: #ddbea7; }
 .mission-hero-copy .mission-target { margin-top: 1rem; margin-bottom: 1.25rem; padding-top: .8rem; }

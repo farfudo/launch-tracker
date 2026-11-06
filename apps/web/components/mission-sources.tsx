@@ -2,7 +2,7 @@
 
 import type { LaunchDetail } from "../lib/api";
 import { useLocale } from "./locale-provider";
-import { safeMissionLink } from "./mission-streams";
+import { safeMissionLink } from "../lib/stream-links";
 
 const copy = {
   "pt-PT": { heading: "Explorar fontes", notice: "Websites indicados pela Launch Library 2. A classificação não garante que sejam oficiais. Abrem num novo separador.", agency: "Agência", vehicle: "Foguetão", pad: "Local de lançamento", mission: "Missão e carga útil", missing: "Ligação não disponibilizada pela fonte", visit: "Visitar website" },

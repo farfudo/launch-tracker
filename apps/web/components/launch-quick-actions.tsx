@@ -6,7 +6,7 @@ import {FavoriteButton} from "./favorites";
 import {LaunchWatchButton} from "./launch-watch-button";
 import {MissionCalendar} from "./mission-calendar";
 import {MissionShare} from "./mission-share";
-import {safeMissionLink} from "./mission-streams";
+import {safeMissionLink} from "../lib/stream-links";
 import {QuickActionIcon} from "./quick-action-icon";
 import {useLocale} from "./locale-provider";
 const copy={"pt-PT":{calendar:"Adicionar ao calendário",close:"Fechar",unavailable:"Calendário indisponível para esta data ou estado"},"en-GB":{calendar:"Add to calendar",close:"Close",unavailable:"Calendar unavailable for this date or status"},"es-ES":{calendar:"Añadir al calendario",close:"Cerrar",unavailable:"Calendario no disponible para esta fecha o estado"}};
