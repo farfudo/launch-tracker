@@ -1074,3 +1074,19 @@ Rascunho codex/launches-audit-fixes: mobile mais compacto, aviso de cache em lin
 - O detalhe aguarda a leitura validada quando a cópia excede o limite de idade, partilhando o pedido em curso com a revalidação quando disponível. A ligação de regresso restaura filtros e vista de favoritos.
 - Em mobile, a atividade apresenta contagens compactas com contexto no botão de informação, e o atalho «Ver lançamentos» salta para a lista.
 - O calendário concentra o aviso, a hora da última atualização disponível e a ação de verificação. As miniaturas usam a ilustração genérica para imagens identificadas como renderizações, preservando a imagem de origem no detalhe.
+
+### Diagnóstico e recuperação limitada do readiness — 24/11/2026
+
+Rascunho na branch codex/readiness-recovery. Os checks de leitura repetem uma única vez após timeout, erro de transporte ou HTTP 502/503/504, com três segundos de intervalo. Dados antigos, conteúdo inválido e falhas de autorização continuam a reprovar. O POST de validação de feedback é executado uma única vez.
+
+Os logs apresentam categorias controladas, estado HTTP quando aplicável e idade da cache em minutos, preservando a omissão de corpos de resposta, cabeçalhos e mensagens arbitrárias. Onze testes de operações isolados passaram, incluindo recuperação transitória, cache com oito horas, autorização e ausência de repetição do POST.
+
+Os logs GitHub confirmaram importações às 03:51 e 15:04 de 23/11; a regularidade do cron principal Cloudflare não foi confirmada. A01_1_SYNC_REVIEW.md documenta ativação pendente. Concluir a correção operacional exige confirmar o trigger principal no painel e observar importações naturais consecutivas. Atrasos e eventual descarte de jobs agendados são uma limitação documentada do GitHub Actions: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule
+
+### Carregamento progressivo de Launches — 24/11/2026
+
+Rascunho codex/launches-progressive-loading. Destaque, atividade, filtros, lista e aviso de frescura usam limites Suspense independentes. Cada leitura pública é iniciada uma vez e a mesma promessa é partilhada entre os blocos que usam os lançamentos. A cache e o limite máximo de idade existentes continuam a ser usados.
+
+Uma fixture com lançamentos após dois segundos e filtros/estado após doze segundos comprovou a apresentação da lista antes das respostas secundárias, em 1440 e 390 px. O teste é incluído na validação local de push e no CI. Passaram 171 testes unitários, build e 20 percursos de browser relevantes; oito casos foram ignorados pelas condições existentes da suite.
+
+A prévia com a API pública devolveu o primeiro byte em 0,27 s numa leitura cujos pedidos de dados falharam após cerca de dez segundos; após recuperação da API, outra leitura devolveu o primeiro byte em 0,10 s e terminou em 1,25 s. São medições locais pontuais, sem garantia sobre o tempo de arranque do Render em produção. Rascunho preparado para revisão.

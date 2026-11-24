@@ -117,6 +117,10 @@ export async function getCachedLaunches(limit = 100, filters: LaunchFilters = {}
   const now = Date.now();
   return { ...result, value: result.value.filter(item => period === "past" ? Date.parse(item.net) < now : Date.parse(item.net) >= now).slice(0, limit) };
 }
+export async function getCachedFilterOptions() {
+  return readOptions();
+}
+
 export async function getCachedCalendarData(filters: LaunchFilters = {}) {
   const [launches, options] = await Promise.allSettled([getCachedLaunches(100, filters), readOptions()]);
   return {

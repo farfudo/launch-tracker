@@ -42,10 +42,13 @@ const scrollLaunches = Array.from({length: 30}, (_, index) => ({
 
 createServer(async (req, res) => {
   // Optional slow-start proof; affects only this read-only loopback fixture.
-  const delayMs = Math.min(35000, Math.max(0, Number(process.env.FIXTURE_DELAY_MS) || 0));
+  const url = new URL(req.url, 'http://127.0.0.1:3301');
+  const endpointDelay = url.pathname.endsWith('/filter-options') ? process.env.FIXTURE_FILTER_DELAY_MS
+    : url.pathname.endsWith('/data-status') ? process.env.FIXTURE_STATUS_DELAY_MS
+    : process.env.FIXTURE_LIST_DELAY_MS;
+  const delayMs = Math.min(35000, Math.max(0, Number(endpointDelay ?? process.env.FIXTURE_DELAY_MS) || 0));
   if (delayMs) await delay(delayMs);
   if (res.destroyed) return;
-  const url = new URL(req.url, 'http://127.0.0.1:3301');
   let result;
   if (req.method !== 'GET') { res.writeHead(405).end(); return; }
   if ((process.env.FIXTURE_STATUS_FAILURE === 'true' && url.pathname === '/api/v1/data-status')

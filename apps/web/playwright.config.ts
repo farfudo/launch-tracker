@@ -4,7 +4,7 @@ const fixturePort=process.env.FIXTURE_SPOTLIGHT_PHOTO==='true'?3303:3302;
 const fixtureOrigin=`http://127.0.0.1:${fixturePort}`;
 export default defineConfig({
   testDir: './e2e',
-  testIgnore: 'starship-validation.spec.ts',
+  testIgnore: ['starship-validation.spec.ts', 'startup-validation.spec.ts'],
   fullyParallel: false,
   workers: 1,
   retries: process.env.CI ? 1 : 0,

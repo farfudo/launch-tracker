@@ -117,6 +117,9 @@ jobs:
       - name: Run isolated browser journeys
         run: npm run test:e2e
 
+      - name: Verify progressive loading with delayed secondary reads
+        run: npx playwright test --config e2e/startup.validation.config.ts
+
       - name: Run Starship fixture journeys
         run: npx playwright test --config e2e/starship.validation.config.ts
 
@@ -129,4 +132,5 @@ jobs:
             apps/web/playwright-report/
             apps/web/test-results/
             apps/web/output/playwright/starship-validation/
+            apps/web/output/playwright/startup/
           retention-days: 7

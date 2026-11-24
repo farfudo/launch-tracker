@@ -1,9 +1,10 @@
+import { Suspense } from "react";
 import { freshnessCopy } from "../lib/freshness";
 import Link from "next/link";
 import { InfoDisclosure } from "../components/info-disclosure";
 import { RetryButton } from "../components/retry-button";
 import { FavoriteLaunchList } from "../components/favorites";
-import { getCachedCalendarData, getCachedLaunches, getCachedStatus } from "../lib/cached-api";
+import { getCachedFilterOptions, getCachedLaunches, getCachedStatus } from "../lib/cached-api";
 import { CacheNotice } from "../components/cache-notice";
 import { formatLaunchDate } from "../lib/date";
 import { dictionaries } from "../lib/i18n";
@@ -17,65 +18,55 @@ import './launch-control.css';
 import { LaunchResultsScroll } from "../components/launch-results-scroll";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { MissionIcon } from "../components/mission-icon";
-import { LinkPending, SearchForm } from "../components/pending-feedback";
+import { LinkPending, SearchForm, Spinner } from "../components/pending-feedback";
 import { statusFilters } from "../lib/launch";
 
-type SearchParams = Promise<{ q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string; status?: string }>;
+type Filters = { q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string; status?: string };
+type SearchParams = Promise<Filters>;
+type Locale = Awaited<ReturnType<typeof getLocale>>;
+type Period = "past" | "upcoming";
+type LaunchData = Promise<Awaited<ReturnType<typeof getCachedLaunches>> | null>;
+type FilterData = Promise<Awaited<ReturnType<typeof getCachedFilterOptions>> | null>;
+type StatusData = Promise<Awaited<ReturnType<typeof getCachedStatus>> | null>;
+
 export const maxDuration = 60;
 
-export default async function Home({ searchParams }: { searchParams: SearchParams }) {
-  const filters = await searchParams;
-  const favoritesOnly = filters.favorites === "1";
-  const period = filters.period === "past" ? "past" : "upcoming";
-  const periodParams = new URLSearchParams();
-  for (const key of ["q", "agency", "vehicle", "favorites", "status"] as const) {
-    if (filters[key]) periodParams.set(key, filters[key]);
-  }
-  periodParams.set("period", "upcoming");
-  const upcomingHref = `/?${periodParams}#launch-calendar`;
-  periodParams.set("period", "past");
-  const historyHref = `/?${periodParams}#launch-calendar`;
-  const viewParams = new URLSearchParams();
-  viewParams.set("period", period);
-  for (const key of ["q", "agency", "vehicle", "status"] as const) {
-    if (filters[key]) viewParams.set(key, filters[key]);
-  }
-  const allHref = `/?${viewParams.toString()}`;
-  viewParams.set("favorites", "1");
-  const favoritesHref = `/?${viewParams.toString()}`;
-  const returnTo = favoritesOnly || period === "past" || filters.period || filters.q || filters.agency || filters.vehicle || filters.status
-    ? `${favoritesOnly ? favoritesHref : allHref}#launch-calendar`
-    : undefined;
-  const locale = await getLocale();
-  const t = dictionaries[locale];
-  const d = dashboardCopy[locale];
-  const control = launchControlCopy[locale];
-  const dataStatusPromise = getCachedStatus().catch(() => null);
-  const nextCandidatesPromise = period === "past" || filters.q || filters.agency || filters.vehicle || filters.status ? getCachedLaunches(100, { period: "upcoming" }).catch(() => null) : null;
-  const { launches, filterOptions, hasLaunchData, hasFilterOptions, cache } = await getCachedCalendarData(
-    { q: filters.q, agency: filters.agency, vehicle: filters.vehicle, status: filters.status, period }
-  );
-  const nextResult = nextCandidatesPromise ? await nextCandidatesPromise : null;
-  const nextCandidates = nextCandidatesPromise ? nextResult?.value ?? [] : launches;
-  const statusResult = await dataStatusPromise;
-  const dataStatus = statusResult?.value ?? null;
-  const statusConfirmed = statusResult?.freshnessConfirmed ?? false;
-  const freshnessWarning = hasLaunchData
-    ? !statusConfirmed ? freshnessCopy[locale].unknown : dataStatus?.stale ? t.staleNotice : undefined
-    : undefined;
-  const nextLaunch = nextSpotlightLaunch(nextCandidates);
-  const cacheEntries = [...cache, ...(nextResult ? [nextResult.cache] : []), ...(statusResult ? [statusResult.cache] : [])];
-  const agencies = new Set(launches.map(launch => launch.agency).filter(Boolean));
+function SectionLoading({ label, spotlight = false }: { label: string; spotlight?: boolean }) {
+  return <div className={spotlight ? "launch-section-loading spotlight-loading" : "launch-section-loading"} role="status" aria-busy="true">
+    <Spinner /> {label}
+  </div>;
+}
 
+async function SpotlightSection({ data, locale, returnTo }: { data: LaunchData; locale: Locale; returnTo?: string }) {
+  const result = await data;
+  return <LaunchSpotlight launch={nextSpotlightLaunch(result?.value ?? [])} locale={locale} returnTo={returnTo} />;
+}
+
+async function ActivitySection({ data, locale }: { data: LaunchData; locale: Locale }) {
+  const result = await data;
+  const launches = result?.value ?? [];
+  const hasLaunchData = result !== null;
+  const agencies = new Set(launches.map(launch => launch.agency).filter(Boolean));
+  const control = launchControlCopy[locale];
+  const d = dashboardCopy[locale];
   return (
-    <main className="launch-dashboard mission-control" id="main-content">
-      <div className="dashboard-introduction">
-        <LaunchSpotlight launch={nextLaunch} locale={locale} returnTo={returnTo} />
         <section className="launch-activity" aria-labelledby="activity-title"><div className="activity-heading"><h2 id="activity-title">{control.activity}</h2><div className="activity-info"><InfoDisclosure label={control.activity}>{control.scope}</InfoDisclosure></div></div><div className="dashboard-benefits" aria-label={d.overview}>
           <div><MissionIcon name="rocket" /><span><strong>{hasLaunchData ? launches.length : "—"}</strong><small>{d.inView}</small></span></div>
           <div><MissionIcon name="orbit" /><span><strong>{hasLaunchData ? agencies.size : "—"}</strong><small>{d.agencies}</small></span></div>
         </div>
         <p className="activity-scope">{control.scope}</p></section>
+  );
+}
+
+async function FiltersSection({ data, locale, filters, period, favoritesOnly, upcomingHref, historyHref }: {
+  data: FilterData; locale: Locale; filters: Filters; period: Period; favoritesOnly: boolean; upcomingHref: string; historyHref: string;
+}) {
+  const result = await data;
+  const filterOptions = result?.value ?? { agencies: [], vehicles: [] };
+  const hasFilterOptions = result !== null;
+  const t = dictionaries[locale];
+  const control = launchControlCopy[locale];
+  return (
         <LaunchFilterPanel title={control.filters} active={Boolean(filters.q || filters.agency || filters.vehicle || filters.status || period==='past')}>
         <div className="filter-panel-heading">
         <nav className="period-tabs" aria-label={t.launchPeriod}>
@@ -117,8 +108,20 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </SearchForm>
         <p className="filter-site-note"><strong>{control.site}</strong><br/>{control.siteNote}</p>
         </LaunchFilterPanel>
-      </div>
-      <section className="calendar-panel" id="launch-calendar" aria-labelledby="next-launch-heading">
+  );
+}
+
+async function CalendarHeader({ data, status, locale, period }: { data: LaunchData; status: StatusData; locale: Locale; period: Period }) {
+  const [result, statusResult] = await Promise.all([data, status]);
+  const hasLaunchData = result !== null;
+  const dataStatus = statusResult?.value ?? null;
+  const statusConfirmed = statusResult?.freshnessConfirmed ?? false;
+  const t = dictionaries[locale];
+  const freshnessWarning = hasLaunchData
+    ? !statusConfirmed ? freshnessCopy[locale].unknown : dataStatus?.stale ? t.staleNotice : undefined
+    : undefined;
+  const cacheEntries = [...(result ? [result.cache] : []), ...(statusResult ? [statusResult.cache] : [])];
+  return (
         <div className="section-heading">
           <div className="launch-heading-with-info">
             <h2 id="next-launch-heading">{period === "past" ? t.history : t.upcoming}</h2>
@@ -136,14 +139,21 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             {!hasLaunchData ? t.dataUnavailable : dataStatus?.cached_launches === 0 ? t.awaitingData : t.launchCalendar}
           </span> : null}
         </div>
+  );
+}
 
-        <nav className="favorite-views" aria-label={t.calendarView}>
-          <Link href={allHref} scroll={false} aria-current={!favoritesOnly ? "page" : undefined}>{t.allLaunches}<LinkPending /></Link>
-          <div className="favorites-view-with-info"><Link href={favoritesHref} scroll={false} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}<LinkPending /></Link><InfoDisclosure label={d.privacy}>{t.favoritePrivacy}</InfoDisclosure></div>
-        </nav>
+async function CalendarRows({ data, locale, filters, period, favoritesOnly, returnTo }: {
+  data: LaunchData; locale: Locale; filters: Filters; period: Period; favoritesOnly: boolean; returnTo?: string;
+}) {
+  const result = await data;
+  const launches = result?.value ?? [];
+  const hasLaunchData = result !== null;
+  const emptyCache = !filters.q && !filters.agency && !filters.vehicle && !filters.status && launches.length === 0;
+  const t = dictionaries[locale];
+  return (
         <LaunchResultsScroll>
         {hasLaunchData ? (
-          <FavoriteLaunchList showWatch returnTo={returnTo} key={JSON.stringify(filters)} launches={launches} favoritesOnly={favoritesOnly} emptyCache={dataStatus?.cached_launches === 0} historical={period === "past"} initialLimit={process.env.DESIGN_PREVIEW === "true" && filters.q === "scroll-fixture" ? 30 : 6} />
+          <FavoriteLaunchList showWatch returnTo={returnTo} key={JSON.stringify(filters)} launches={launches} favoritesOnly={favoritesOnly} emptyCache={emptyCache} historical={period === "past"} initialLimit={process.env.DESIGN_PREVIEW === "true" && filters.q === "scroll-fixture" ? 30 : 6} />
         ) : (
           <article className="launch-card">
             <h3>{t.unavailableTitle}</h3>
@@ -152,6 +162,68 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           </article>
         )}
         </LaunchResultsScroll>
+  );
+}
+
+export default async function Home({ searchParams }: { searchParams: SearchParams }) {
+  const filters = await searchParams;
+  const favoritesOnly = filters.favorites === "1";
+  const period = filters.period === "past" ? "past" : "upcoming";
+  const periodParams = new URLSearchParams();
+  for (const key of ["q", "agency", "vehicle", "favorites", "status"] as const) {
+    if (filters[key]) periodParams.set(key, filters[key]);
+  }
+  periodParams.set("period", "upcoming");
+  const upcomingHref = `/?${periodParams}#launch-calendar`;
+  periodParams.set("period", "past");
+  const historyHref = `/?${periodParams}#launch-calendar`;
+  const viewParams = new URLSearchParams();
+  viewParams.set("period", period);
+  for (const key of ["q", "agency", "vehicle", "status"] as const) {
+    if (filters[key]) viewParams.set(key, filters[key]);
+  }
+  const allHref = `/?${viewParams.toString()}`;
+  viewParams.set("favorites", "1");
+  const favoritesHref = `/?${viewParams.toString()}`;
+  const returnTo = favoritesOnly || period === "past" || filters.period || filters.q || filters.agency || filters.vehicle || filters.status
+    ? `${favoritesOnly ? favoritesHref : allHref}#launch-calendar`
+    : undefined;
+  const locale = await getLocale();
+  const t = dictionaries[locale];
+  const d = dashboardCopy[locale];
+  const control = launchControlCopy[locale];
+  // Start each public read once. Sibling boundaries consume the same promises.
+  const data = getCachedLaunches(100, { q: filters.q, agency: filters.agency, vehicle: filters.vehicle, status: filters.status, period }).catch(() => null);
+  const options = getCachedFilterOptions().catch(() => null);
+  const status = getCachedStatus().catch(() => null);
+  const spotlight = period === "past" || filters.q || filters.agency || filters.vehicle || filters.status
+    ? getCachedLaunches(100, { period: "upcoming" }).catch(() => null)
+    : data;
+
+  return (
+    <main className="launch-dashboard mission-control" id="main-content">
+      <div className="dashboard-introduction">
+        <Suspense fallback={<SectionLoading label={t.loadingTitle} spotlight />}>
+          <SpotlightSection data={spotlight} locale={locale} returnTo={returnTo} />
+        </Suspense>
+        <Suspense fallback={<SectionLoading label={control.activity} />}>
+          <ActivitySection data={data} locale={locale} />
+        </Suspense>
+        <Suspense fallback={<SectionLoading label={control.filters} />}>
+          <FiltersSection data={options} locale={locale} filters={filters} period={period} favoritesOnly={favoritesOnly} upcomingHref={upcomingHref} historyHref={historyHref} />
+        </Suspense>
+      </div>
+      <section className="calendar-panel" id="launch-calendar" aria-labelledby="next-launch-heading">
+        <Suspense fallback={<div className="section-heading"><h2 id="next-launch-heading">{period === "past" ? t.history : t.upcoming}</h2></div>}>
+          <CalendarHeader data={data} status={status} locale={locale} period={period} />
+        </Suspense>
+        <nav className="favorite-views" aria-label={t.calendarView}>
+          <Link href={allHref} scroll={false} aria-current={!favoritesOnly ? "page" : undefined}>{t.allLaunches}<LinkPending /></Link>
+          <div className="favorites-view-with-info"><Link href={favoritesHref} scroll={false} aria-current={favoritesOnly ? "page" : undefined}>☆ {t.myFavorites}<LinkPending /></Link><InfoDisclosure label={d.privacy}>{t.favoritePrivacy}</InfoDisclosure></div>
+        </nav>
+        <Suspense key={JSON.stringify(filters)} fallback={<SectionLoading label={t.loadingBody} />}>
+          <CalendarRows data={data} locale={locale} filters={filters} period={period} favoritesOnly={favoritesOnly} returnTo={returnTo} />
+        </Suspense>
       </section>
       <LaunchChannels locale={locale} showBrowse />
       <p className="dashboard-footer"><InfoDisclosure label={t.aboutData}>{t.dataSource} {t.datesNotice}</InfoDisclosure> {t.source}: Launch Library 2</p>

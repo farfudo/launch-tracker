@@ -181,3 +181,7 @@ html[data-theme="dark"] .mission-control .launch-quick-actions .launch-watch-but
 .broadcast-group h2 { margin:0 0 .8rem; }
 .broadcast-group h3 { overflow-wrap:anywhere; }
 .broadcast-group article + article { margin-top:1rem; }
+
+.mission-control .launch-section-loading { display:flex; gap:.6rem; align-items:center; min-height:80px; padding:1.1rem; border:1px solid var(--border); border-radius:18px; background:var(--surface-raised); color:var(--text-soft); }
+.mission-control .spotlight-loading { min-height:475px; background:#102b40; color:#f1fbff; }
+@media(max-width:700px) { .mission-control .spotlight-loading { min-height:320px; } }
