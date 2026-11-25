@@ -4,7 +4,7 @@ import Link from "next/link";
 import { InfoDisclosure } from "../components/info-disclosure";
 import { RetryButton } from "../components/retry-button";
 import { FavoriteLaunchList } from "../components/favorites";
-import { getCachedFilterOptions, getCachedLaunches, getCachedStatus } from "../lib/cached-api";
+import { getCachedLaunch, getCachedFilterOptions, getCachedLaunches, getCachedStatus } from "../lib/cached-api";
 import { CacheNotice } from "../components/cache-notice";
 import { formatLaunchDate } from "../lib/date";
 import { dictionaries } from "../lib/i18n";
@@ -19,7 +19,13 @@ import { LaunchResultsScroll } from "../components/launch-results-scroll";
 import { dashboardCopy } from "../lib/dashboard-i18n";
 import { MissionIcon } from "../components/mission-icon";
 import { LinkPending, SearchForm, Spinner } from "../components/pending-feedback";
-import { statusFilters } from "../lib/launch";
+import { launchTimingStatus, statusFilters } from "../lib/launch";
+
+import type { Launch } from "../lib/api";
+import { clockPrecision } from "../lib/temporal-precision";
+import { safeMissionLink } from "../lib/stream-links";
+import { LaunchWatchButton } from "../components/launch-watch-button";
+import { LocalLaunchDate } from "../components/local-launch-date";
 
 type Filters = { q?: string; agency?: string; vehicle?: string; favorites?: string; period?: string; status?: string };
 type SearchParams = Promise<Filters>;
@@ -37,9 +43,37 @@ function SectionLoading({ label, spotlight = false }: { label: string; spotlight
   </div>;
 }
 
+async function SpotlightCoverage({ launch, locale }: { launch: Launch; locale: Locale }) {
+  const result = await getCachedLaunch(launch.id).catch(() => null);
+  if (!result) return null;
+
+  const detail = result.value;
+  const { window_start: start, window_end: end } = detail;
+  const showWindow = clockPrecision(launch.net_precision)
+    && ["scheduled", "uncertain"].includes(launchTimingStatus(launch.status))
+    && start && end && Date.parse(start) < Date.parse(end)
+    && [start, end].every(date => /(?:Z|[+-]\d{2}:\d{2})$/.test(date));
+  const hasStream = detail.streams?.some(link => safeMissionLink(link));
+  const t = dictionaries[locale];
+
+  return <>
+    {showWindow && start && end ? (
+      <div className="spotlight-window">
+        <strong>{t.launchWindow}</strong>
+        <div>{t.windowStart} · <LocalLaunchDate date={start} precision={launch.net_precision} showNotice={false} /></div>
+        <div>{t.windowEnd} · <LocalLaunchDate date={end} precision={launch.net_precision} showNotice={false} /></div>
+      </div>
+    ) : null}
+    {hasStream ? <LaunchWatchButton key={launch.id} launch={launch} initialDetail={detail} showLabel /> : null}
+  </>;
+}
+
 async function SpotlightSection({ data, locale, returnTo }: { data: LaunchData; locale: Locale; returnTo?: string }) {
   const result = await data;
-  return <LaunchSpotlight launch={nextSpotlightLaunch(result?.value ?? [])} locale={locale} returnTo={returnTo} />;
+  const launch = nextSpotlightLaunch(result?.value ?? []);
+  return <LaunchSpotlight launch={launch} locale={locale} returnTo={returnTo} coverage={launch ? (
+    <Suspense fallback={null}><SpotlightCoverage launch={launch} locale={locale} /></Suspense>
+  ) : null} />;
 }
 
 async function ActivitySection({ data, locale }: { data: LaunchData; locale: Locale }) {

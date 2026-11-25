@@ -6,7 +6,7 @@ import {dashboardCopy} from '../lib/dashboard-i18n';
 import {MissionStreams} from './mission-streams';
 import {QuickActionIcon} from './quick-action-icon';
 import {Spinner} from './pending-feedback';
-export function LaunchWatchButton({launch,initialDetail}:{launch:Launch;initialDetail?:LaunchDetail}){
+export function LaunchWatchButton({launch,initialDetail,showLabel=false}:{launch:Launch;initialDetail?:LaunchDetail;showLabel?:boolean}){
  const {locale,messages}=useLocale(),d=dashboardCopy[locale];
  const [open,setOpen]=useState(false);
  const title=useId(),dialog=useRef<HTMLDialogElement>(null),request=useRef<AbortController|null>(null);
@@ -19,6 +19,6 @@ export function LaunchWatchButton({launch,initialDetail}:{launch:Launch;initialD
   catch{if(request.current===controller&&dialog.current?.open)setError(true);}
   finally{clearTimeout(timeout);if(request.current===controller&&dialog.current?.open)setLoading(false);}
  }
- return <><button className="launch-watch-button quick-action" type="button" aria-label={`${d.watchHere}: ${launch.name}`} title={d.watchHere} aria-haspopup="dialog" onClick={event=>{event.stopPropagation();dialog.current?.showModal();setOpen(true);if(!detail)void load();}}><QuickActionIcon kind="play"/><span className="visually-hidden">{d.watchHere}</span></button>
+ return <><button className={showLabel ? "launch-watch-button spotlight-watch" : "launch-watch-button quick-action"} type="button" aria-label={`${d.watchHere}: ${launch.name}`} title={d.watchHere} aria-haspopup="dialog" onClick={event=>{event.stopPropagation();dialog.current?.showModal();setOpen(true);if(!detail)void load();}}><QuickActionIcon kind="play"/><span className={showLabel ? undefined : "visually-hidden"}>{d.watchHere}</span></button>
  <dialog className="launch-watch-dialog" ref={dialog} aria-labelledby={title} onClose={()=>{setOpen(false);request.current?.abort();request.current=null;setLoading(false);}}><button className="launch-watch-close" type="button" aria-label={{'pt-PT':'Fechar','en-GB':'Close','es-ES':'Cerrar'}[locale]} onClick={()=>dialog.current?.close()}>×</button><h2 id={title}>{d.watchHere}</h2><p>{launch.name}</p>{loading?<p role="status"><Spinner/> {d.loadingMission}</p>:null}{error?<div role="alert"><p>{d.missionError}</p><button type="button" onClick={()=>void load()}>{messages.retry}</button></div>:null}{open&&detail&&!loading?<MissionStreams launch={detail} inline/>:null}</dialog></>;
 }

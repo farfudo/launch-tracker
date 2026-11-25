@@ -26,7 +26,9 @@ test('main navigation exposes Launches and Explore Space while old content route
 
 test('upcoming and history are separate and preserve search on switching', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.dashboard-hero').getByRole('button', { name: /Watch here/ })).toHaveCount(0);
+  const spotlight = page.locator('.dashboard-hero');
+  await expect(spotlight.getByRole('button', { name: 'Watch here: Falcon 9 | Test Starlink' })).toBeVisible();
+  await expect(spotlight.getByText('Launch window', { exact: true })).toBeVisible();
   const calendar = page.locator('#launch-calendar');
   await expect(calendar.getByRole('heading', { name: 'Falcon 9 | Test Starlink', exact: true })).toBeVisible();
   await expect(calendar.getByRole('heading', { name: 'Falcon 9 | Archived test mission', exact: true })).toHaveCount(0);

@@ -185,3 +185,7 @@ html[data-theme="dark"] .mission-control .launch-quick-actions .launch-watch-but
 .mission-control .launch-section-loading { display:flex; gap:.6rem; align-items:center; min-height:80px; padding:1.1rem; border:1px solid var(--border); border-radius:18px; background:var(--surface-raised); color:var(--text-soft); }
 .mission-control .spotlight-loading { min-height:475px; background:#102b40; color:#f1fbff; }
 @media(max-width:700px) { .mission-control .spotlight-loading { min-height:320px; } }
+
+.launch-spotlight .launch-state { border:1px solid #cde9ff70; border-radius:1rem; color:#f1fbff; padding:.2rem .55rem; font-size:.8rem; }
+.launch-spotlight .spotlight-window { font-size:.8rem; line-height:1.55; }
+.launch-spotlight .spotlight-watch { display:inline-flex; align-items:center; gap:.45rem; width:auto; padding:.55rem .9rem; border-radius:25px; font-weight:700; }
