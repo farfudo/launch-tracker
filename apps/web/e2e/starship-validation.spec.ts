@@ -37,7 +37,8 @@ test('no matching metadata leaves no invented launch cards',async({page})=>{
 });
 test('upstream failure displays an accessible message',async({page})=>{
  await page.goto('http://127.0.0.1:3353/explore-space/programs/starship');
- await expect(page.locator('.related-launches-error')).toBeVisible();
- await expect(page.locator('.related-launches-error')).toHaveAttribute('role','status');
+ const related = page.getByRole('region', { name: 'Related launches' });
+ const message = related.getByRole('status').filter({ hasText: 'Related launches could not be confirmed right now.' });
+ await expect(message).toBeVisible();
  await expect(page.locator('.related-launch-card')).toHaveCount(0);
 });
